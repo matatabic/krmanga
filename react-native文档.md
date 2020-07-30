@@ -359,3 +359,6 @@ export default Carousel;
 
 ```
 
+# 6.axios
+
+yarn add axios

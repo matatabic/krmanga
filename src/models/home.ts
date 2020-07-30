@@ -1,55 +1,60 @@
-import { Model, Effect } from 'dva-core-ts';
-import { Reducer } from 'redux';
+import {Model, Effect} from 'dva-core-ts';
+import {Reducer} from 'redux';
+import axios from 'axios';
+
+const CAROUSEL_URL = '/carousel/getCarouselList';
+
+export interface ICarousel {
+  id: string;
+  image_url: string;
+  colors: [string, string];
+}
 
 export interface HomeState {
-    num:number;
+  carousels: ICarousel[];
 }
 
 const action = {
-    type:'add',
-}
+  type: 'add',
+};
 
 interface HomeModel extends Model {
-    namespace: 'home';
-    state: HomeState;
-    reducers: {
-       add: Reducer<HomeState>
-    };
-    effects: {
-        asyncAdd :Effect;
-    };
+  namespace: 'home';
+  state: HomeState;
+  reducers: {
+    setState: Reducer<HomeState>;
+  };
+  effects: {
+    fetchCarousels: Effect;
+  };
 }
 
 const initealState = {
-    num:0,
+  carousels: [],
 };
 
-function delay(timeout:number){
-    return new Promise(resolve=>{
-        setTimeout(resolve,timeout);
-    })
-}
-
-const homeModel:HomeModel= {
-    namespace:'home',
-    state:initealState,
-    reducers:{
-        add(state = initealState,{payload}){
-            return{
-                ...state,
-                num:state.num + payload.num,
-            }
-        }
+const homeModel: HomeModel = {
+  namespace: 'home',
+  state: initealState,
+  reducers: {
+    setState(state = initealState, {payload}) {
+      return {
+        ...state,
+        ...payload,
+      };
     },
-    effects:{
-        *asyncAdd({payload},{call,put}){
-            yield call(delay,3000);
-            yield put({
-                type:'add',
-                payload
-            })
-        }
-    }
-}
+  },
+  effects: {
+    *fetchCarousels(_, {call, put}) {
+      const {data} = yield call(axios.get, CAROUSEL_URL);
+      yield put({
+        type: 'setState',
+        payload: {
+          carousels: data.list,
+        },
+      });
+    },
+  },
+};
 
 export default homeModel;
