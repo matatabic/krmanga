@@ -42,7 +42,9 @@ class Navigator extends React.Component {
                 })
             }
           }}>
-          <Stack.Screen name="BottomTabs" component={BottomTabs} />
+          <Stack.Screen name="BottomTabs" component={BottomTabs} options={{
+            headerTitle:'首页'
+          }} />
           <Stack.Screen name="Detail" component={Detail} />
         </Stack.Navigator>
       </NavigationContainer>
