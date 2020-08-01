@@ -4,9 +4,9 @@ import SnapCarousel, {
   Pagination,
   AdditionalParallaxProps,
 } from 'react-native-snap-carousel';
-import {viewportWidth, wp, hp} from '@/utils/index';
-import {StyleSheet, View} from 'react-native';
-import {ICarousel} from '@/models/home';
+import { viewportWidth, wp, hp } from '@/utils/index';
+import { StyleSheet, View } from 'react-native';
+import { ICarousel } from '@/models/home';
 
 const sliderWidth = viewportWidth;
 const sidewidth = wp(90);
@@ -29,12 +29,12 @@ class Carousel extends React.Component<IProps> {
   };
 
   renderItem = (
-    {item}: {item: ICarousel},
+    { item }: { item: ICarousel },
     parallaxProps?: AdditionalParallaxProps,
   ) => {
     return (
       <ParallaxImage
-        source={{uri: item.image_url}}
+        source={{ uri: item.image }}
         style={styles.image}
         containerStyle={styles.containerStyle}
         parallaxFactor={0.8}
@@ -46,9 +46,8 @@ class Carousel extends React.Component<IProps> {
   };
 
   get pagination() {
-    const {data} = this.props;
-    console.log(data);
-    const {activeSlide} = this.state;
+    const { data } = this.props;
+    const { activeSlide } = this.state;
     return (
       <View style={styles.paginationWrapper}>
         <Pagination
@@ -65,7 +64,7 @@ class Carousel extends React.Component<IProps> {
   }
 
   render() {
-    const {data} = this.props;
+    const { data } = this.props;
     return (
       <View>
         <SnapCarousel
