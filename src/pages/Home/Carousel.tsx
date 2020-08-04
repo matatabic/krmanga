@@ -12,7 +12,7 @@ import { connect, ConnectedProps } from "react-redux";
 
 const sliderWidth = viewportWidth;
 const sideWidth = wp(90);
-const sideHeight = hp(26);
+export const sideHeight = hp(26);
 const itemWidth = sideWidth + wp(2) * 2;
 
 const mapStateToProps = ({ home }: RootState) => {
@@ -70,7 +70,7 @@ class Carousel extends React.Component<IProps> {
   };
 
   get pagination() {
-    const { carousels ,activeCarouselIndex} = this.props;
+    const { carousels, activeCarouselIndex } = this.props;
     return (
       <View style={styles.paginationWrapper}>
         <Pagination

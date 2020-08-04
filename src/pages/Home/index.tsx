@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, ListRenderItemInfo } from 'react-native';
+import { View, ListRenderItemInfo, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootStackNavigation } from '@/navigator/index';
 import { RootState } from '@/models/index';
-import Carousel from './Carousel';
+import Carousel, { sideHeight } from './Carousel';
 import Guess from './Guess';
 import { FlatList } from "react-native-gesture-handler";
 import CommendItem from "@/pages/Home/CommendItem";
@@ -12,6 +12,7 @@ import { ICommends, ICommend, IGuess } from "@/models/home";
 const mapStateToProps = ({ home, loading }: RootState) => ({
   carousels: home.carousels,
   commends: home.commends,
+  gradientVisible: home.gradientVisible,
   loading: loading.effects['home/asyncAdd'],
 });
 
@@ -39,13 +40,29 @@ class Home extends React.Component<IProps> {
     return (
       <View>
         <Carousel />
-        <Guess onPress={this.onPress} />
+        <View style={{ backgroundColor: '#fff' }}>
+          <Guess onPress={this.onPress} />
+        </View>
       </View>
     )
   }
 
   keyExtractor = (item: ICommends, index: Number) => {
     return index.toString();
+  }
+
+  onScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetY = nativeEvent.contentOffset.y;
+    let newGradientVisible = offsetY < sideHeight;
+    const { dispatch, gradientVisible } = this.props;
+    if (gradientVisible !== newGradientVisible) {
+      dispatch({
+        type: 'home/setState',
+        payload: {
+          gradientVisible: newGradientVisible,
+        }
+      })
+    }
   }
 
   renderItem = ({ item }: ListRenderItemInfo<ICommends>) => {
@@ -57,8 +74,13 @@ class Home extends React.Component<IProps> {
   render() {
     const { commends } = this.props;
     return (
-      <FlatList ListHeaderComponent={this.header} keyExtractor={this.keyExtractor} data={commends}
-                renderItem={this.renderItem} />
+      <FlatList
+        ListHeaderComponent={this.header}
+        keyExtractor={this.keyExtractor}
+        data={commends}
+        renderItem={this.renderItem}
+        onScroll={this.onScroll}
+      />
     );
   }
 
