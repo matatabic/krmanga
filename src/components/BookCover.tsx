@@ -3,6 +3,8 @@ import { Image, Text } from 'react-native';
 import { ICommend, IGuess } from "@/models/home";
 import Touchable from "@/components/Touchable";
 
+const DEFAULT_IMAGE = 'https://jiecaomh.com/media/uploads/a/目標就是妳內褲完結/cover.jpg';
+
 interface itemStyle {
   width: Number;
   marginVertical: Number;
@@ -18,8 +20,9 @@ export interface IProps {
 
 class BookCover extends React.PureComponent<IProps> {
 
-  showError = () =>{
-    console.log('error')
+  showError = () => {
+    const {data} = this.props;
+    console.log('error'+data.id)
   }
 
   render() {
@@ -32,7 +35,9 @@ class BookCover extends React.PureComponent<IProps> {
         <Image
           source={{ uri: data.image }}
           onError={this.showError}
-          style={{ ...imageStyle }} />
+          style={{ ...imageStyle }}
+          resizeMode='stretch'
+        />
         <Text numberOfLines={1}>{data.title}</Text>
         <Text numberOfLines={1}>{data.category ? data.category : ''}</Text>
       </Touchable>
