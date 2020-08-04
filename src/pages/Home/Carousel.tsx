@@ -7,19 +7,40 @@ import SnapCarousel, {
 import { viewportWidth, wp, hp } from '@/utils/index';
 import { StyleSheet, View } from 'react-native';
 import { ICarousel } from '@/models/home';
+import { RootState } from "@/models/index";
+import { connect, ConnectedProps } from "react-redux";
 
 const sliderWidth = viewportWidth;
-const sidewidth = wp(90);
+const sideWidth = wp(90);
 const sideHeight = hp(26);
-const itemWidth = sidewidth + wp(2) * 2;
+const itemWidth = sideWidth + wp(2) * 2;
 
-interface IProps {
-  data: ICarousel[];
-}
+const mapStateToProps = ({ home }: RootState) => {
+  return {
+    carousels: home.carousels,
+  };
+};
+
+const connector = connect(mapStateToProps);
+
+type ModelState = ConnectedProps<typeof connector>;
+
+interface IProps extends ModelState{}
 
 class Carousel extends React.Component<IProps> {
   state = {
     activeSlide: 0,
+  };
+
+  componentDidMount() {
+    this.fetch();
+  }
+
+  fetch = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'home/fetchCarousels',
+    });
   };
 
   onSnapToItem = (index: number) => {
@@ -46,7 +67,7 @@ class Carousel extends React.Component<IProps> {
   };
 
   get pagination() {
-    const { data } = this.props;
+    const { carousels } = this.props;
     const { activeSlide } = this.state;
     return (
       <View style={styles.paginationWrapper}>
@@ -55,7 +76,7 @@ class Carousel extends React.Component<IProps> {
           activeDotIndex={activeSlide}
           dotContainerStyle={styles.dotContainer}
           dotStyle={styles.dot}
-          dotsLength={data.length}
+          dotsLength={carousels.length}
           inactiveDotScale={0.7}
           inactiveDotOpacity={0.4}
         />
@@ -64,11 +85,11 @@ class Carousel extends React.Component<IProps> {
   }
 
   render() {
-    const { data } = this.props;
+    const { carousels } = this.props;
     return (
       <View>
         <SnapCarousel
-          data={data}
+          data={carousels}
           renderItem={this.renderItem}
           sliderWidth={sliderWidth}
           itemWidth={itemWidth}
@@ -115,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Carousel;
+export default connector(Carousel);

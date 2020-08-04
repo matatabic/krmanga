@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '@/models/index';
 import Touchable from '@/components/Touchable';
 import { IGuess } from '@/models/home';
 import Icon from '@/assets/iconfont/index';
+import BookCover from "@/components/BookCover";
 
 const mapStateToProps = ({ home }: RootState) => {
   return {
@@ -16,7 +17,12 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-class Guess extends React.Component<ModelState> {
+interface IProps extends ModelState {
+  onPress: (data: IGuess) => void;
+}
+
+class Guess extends React.Component<IProps> {
+
   componentDidMount() {
     this.fetch();
   }
@@ -29,12 +35,15 @@ class Guess extends React.Component<ModelState> {
   };
 
   renderItem = ({ item }: { item: IGuess }) => {
+    const { onPress } = this.props;
     return (
-      <Touchable onPress={() => {
-      }} style={styles.item}>
-        <Image source={{ uri: item.image }} style={styles.image} />
-        <Text numberOfLines={2}>{item.title}</Text>
-      </Touchable>
+      <BookCover
+        data={item}
+        onPress={onPress}
+        itemStyle={styles.item}
+        imageStyle={styles.image}
+        key={item.id}
+      />
     );
   };
 
@@ -60,9 +69,9 @@ class Guess extends React.Component<ModelState> {
         />
         <Touchable
           style={styles.changeGuess}
-          onPress={() => {
-            this.fetch;
-          }}>
+          onPress={
+            this.fetch
+          }>
           <Icon name="icon-refresh" color="red" />
           <Text style={styles.changeGuessText}>换一批</Text>
         </Touchable>

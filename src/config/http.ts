@@ -6,7 +6,7 @@ axios.defaults.baseURL = Config.API_URL;
 //添加请求拦截器
 axios.interceptors.request.use(
   function (config) {
-    console.log('相应数据request', config);
+    // console.log('相应数据request', config);
     return config;
   },
   function (error) {
@@ -17,7 +17,7 @@ axios.interceptors.request.use(
 //添加响应拦截器
 axios.interceptors.response.use(
   function (response) {
-    console.log('响应数据response', response);
+    // console.log('响应数据response', response);
     return response.data;
   },
   function (error) {
