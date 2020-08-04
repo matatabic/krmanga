@@ -18,6 +18,7 @@ const itemWidth = sideWidth + wp(2) * 2;
 const mapStateToProps = ({ home }: RootState) => {
   return {
     carousels: home.carousels,
+    activeCarouselIndex: home.activeCarouselIndex,
   };
 };
 
@@ -25,12 +26,10 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-interface IProps extends ModelState{}
+interface IProps extends ModelState {
+}
 
 class Carousel extends React.Component<IProps> {
-  state = {
-    activeSlide: 0,
-  };
 
   componentDidMount() {
     this.fetch();
@@ -44,9 +43,13 @@ class Carousel extends React.Component<IProps> {
   };
 
   onSnapToItem = (index: number) => {
-    this.setState({
-      activeSlide: index,
-    });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'home/setState',
+      payload: {
+        activeCarouselIndex: index
+      }
+    })
   };
 
   renderItem = (
@@ -67,13 +70,12 @@ class Carousel extends React.Component<IProps> {
   };
 
   get pagination() {
-    const { carousels } = this.props;
-    const { activeSlide } = this.state;
+    const { carousels ,activeCarouselIndex} = this.props;
     return (
       <View style={styles.paginationWrapper}>
         <Pagination
           containerStyle={styles.paginationContainer}
-          activeDotIndex={activeSlide}
+          activeDotIndex={activeCarouselIndex}
           dotContainerStyle={styles.dotContainer}
           dotStyle={styles.dot}
           dotsLength={carousels.length}

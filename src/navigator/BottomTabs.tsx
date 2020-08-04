@@ -60,7 +60,7 @@ class BottomTabs extends React.Component<IProps> {
     const { navigation, route } = this.props;
     const routeName = route.state
       ? route.state.routes[route.state.index].name
-      : route.params?.screen || 'homeTabs';
+      : route.params?.screen || 'HomeTabs';
     if (routeName === 'HomeTabs') {
       navigation.setOptions({
         headerTransparent: true,

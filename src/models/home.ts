@@ -32,6 +32,7 @@ export interface ICommends {
 
 export interface HomeState {
   carousels: ICarousel[];
+  activeCarouselIndex: number;
   guess: IGuess[];
   commends: ICommends[];
 }
@@ -52,6 +53,7 @@ interface HomeModel extends Model {
 
 const initealState = {
   carousels: [],
+  activeCarouselIndex: 0,
   guess: [],
   commends: [],
 };

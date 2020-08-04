@@ -5863,6 +5863,19 @@ react-native-iphone-x-helper@^1.2.1:
   resolved "https://registry.npm.taobao.org/react-native-iphone-x-helper/download/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
   integrity sha1-ZF4v+7tJ6AhEu0y740oSb9oeZ3I=
 
+react-native-linear-animated-gradient-transition@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.npm.taobao.org/react-native-linear-animated-gradient-transition/download/react-native-linear-animated-gradient-transition-0.1.6.tgz#874553e5ff432f06764a486979a51586cd71ec96"
+  integrity sha1-h0VT5f9DLwZ2SkhpeaUVhs1x7JY=
+  dependencies:
+    lodash "^4.17.19"
+    react-native-linear-gradient "^2.5.6"
+
+react-native-linear-gradient@^2.5.6:
+  version "2.5.6"
+  resolved "https://registry.npm.taobao.org/react-native-linear-gradient/download/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
+  integrity sha1-liFcvF7HoBJHogiQiIqnW4NNRKA=
+
 react-native-reanimated@^1.10.1:
   version "1.10.1"
   resolved "https://registry.npm.taobao.org/react-native-reanimated/download/react-native-reanimated-1.10.1.tgz#82e79ae119e97b282ce53d16bc6db9765a56b22b"

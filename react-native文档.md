@@ -362,3 +362,13 @@ export default Carousel;
 # 6.axios
 
 yarn add axios
+
+# 7.渐变色组件
+
+yarn add react-native-linear-gradient
+
+cd ios pod install
+
+
+
+yarn add react-native-linear-animated-gradient-transition
