@@ -34,6 +34,11 @@ class TopTabBarWrapper extends React.Component<IProps> {
     }
   }
 
+  goCategorySetting = () => {
+    const { navigation } = this.props;
+    navigation.navigate('CategorySetting');
+  }
+
   render() {
     let { gradientVisible, indicatorStyle, ...restProps } = this.props;
     let textStyle = styles.text;
@@ -55,7 +60,7 @@ class TopTabBarWrapper extends React.Component<IProps> {
             activeTintColor={activeTintColor}
             style={styles.tabBar}
           />
-          <Touchable style={styles.categoryBtn}>
+          <Touchable style={styles.categoryBtn} onPress={this.goCategorySetting}>
             <Text style={textStyle}>分类</Text>
           </Touchable>
         </View>

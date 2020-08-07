@@ -27,7 +27,7 @@ export interface ICommend {
 }
 
 export interface ICommends {
-  commend: ICommend[];
+  [key: string]: ICommend[];
 }
 
 export interface HomeState {
@@ -52,7 +52,7 @@ interface HomeModel extends Model {
   };
 }
 
-const initealState = {
+const initialState = {
   carousels: [],
   activeCarouselIndex: 0,
   gradientVisible: true,
@@ -62,9 +62,9 @@ const initealState = {
 
 const homeModel: HomeModel = {
   namespace: 'home',
-  state: initealState,
+  state: initialState,
   reducers: {
-    setState(state = initealState, { payload }) {
+    setState(state = initialState, { payload }) {
       return {
         ...state,
         ...payload,
@@ -95,7 +95,7 @@ const homeModel: HomeModel = {
       yield put({
         type: 'setState',
         payload: {
-          commends: data,
+          commends: data.list,
         },
       });
     }

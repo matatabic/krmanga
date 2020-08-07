@@ -32,7 +32,7 @@ interface IProps extends ModelState {
 class Carousel extends React.Component<IProps> {
 
   componentDidMount() {
-    this.fetch();
+    // this.fetch();
   }
 
   fetch = () => {

@@ -24,7 +24,7 @@ interface IProps extends ModelState {
 class Guess extends React.Component<IProps> {
 
   componentDidMount() {
-    this.fetch();
+    // this.fetch();
   }
 
   fetch = () => {

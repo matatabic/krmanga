@@ -26,6 +26,10 @@ interface IProps extends MadelState {
 
 class Home extends React.Component<IProps> {
   componentDidMount() {
+    // this.fetch()
+  }
+
+  fetch = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'home/fetchCommends',
@@ -66,6 +70,7 @@ class Home extends React.Component<IProps> {
   }
 
   renderItem = ({ item }: ListRenderItemInfo<ICommends>) => {
+    console.log(item)
     return (
       <CommendItem data={item} onPress={this.onPress} />
     )

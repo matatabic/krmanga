@@ -372,3 +372,11 @@ cd ios pod install
 
 
 yarn add react-native-linear-animated-gradient-transition
+
+# 8.本地存储
+
+yarn add @react-native-community/async-storage
+
+cd ios pod install
+
+yarn add react-native-storage

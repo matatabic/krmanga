@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import {
   createStackNavigator,
   StackNavigationProp,
@@ -9,12 +9,14 @@ import {
 import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
 import { Platform, StyleSheet, StatusBar } from 'react-native';
+import CategorySetting from "@/pages/CategorySetting";
 
 export type RootStackParamList = {
   BottomTabs: {
     screen?: string;
   };
   Detail: undefined;
+  CategorySetting: undefined;
 };
 
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
@@ -30,23 +32,37 @@ class Navigator extends React.Component {
           screenOptions={{
             headerTitleAlign: 'center',
             headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
-            cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS,
-            gestureEnabled:true,
-            gestureDirection:'horizontal',
-            headerStatusBarHeight:StatusBar.currentHeight,
-            headerStyle:{
-                ...Platform.select({
-                    android:{
-                        elevation:0,
-                        borderBottomWidth:StyleSheet.hairlineWidth,
-                    }
-                })
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            gestureEnabled: true,
+            gestureDirection: 'horizontal',
+            headerStatusBarHeight: StatusBar.currentHeight,
+            headerStyle: {
+              ...Platform.select({
+                android: {
+                  elevation: 0,
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                }
+              })
             }
           }}>
-          <Stack.Screen name="BottomTabs" component={BottomTabs} options={{
-            headerTitle:'首页'
-          }} />
-          <Stack.Screen name="Detail" component={Detail} />
+          <Stack.Screen
+            name="BottomTabs"
+            component={BottomTabs}
+            options={{
+              headerTitle: '首页'
+            }}
+          />
+          <Stack.Screen
+            name="Detail"
+            component={Detail}
+          />
+          <Stack.Screen
+            name="CategorySetting"
+            component={CategorySetting}
+            options={{
+              headerTitle: '分类设置'
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );

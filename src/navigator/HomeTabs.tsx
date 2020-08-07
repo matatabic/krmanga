@@ -37,7 +37,13 @@ class HomeTabs extends React.Component {
           inactiveTintColor: '#333',
         }}
       >
-        <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: '推荐' }} />
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarLabel: '推荐',
+          }}
+        />
       </Tab.Navigator>
     )
   }
