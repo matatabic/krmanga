@@ -1,4 +1,4 @@
-# react native
+# .react native
 
 ## 1.1初始化react native
 
@@ -384,3 +384,7 @@ yarn add react-native-storage
 # 9.header-buttons
 
 yarn add react-navigation-header-buttons
+
+10.拖拽
+
+yarn add react-native-drag-sort

@@ -2,7 +2,8 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {RootState} from '@/models/index';
 import {connect, ConnectedProps} from 'react-redux';
-import {ICategories, ICategory} from '@/models/categorySetting';
+import {ICategory} from '@/models/categorySetting';
+import {DragSortableView} from 'react-native-drag-sort';
 import {viewportWidth} from '@/utils/index';
 import Item from '@/pages/CategorySetting/Item';
 import {RootStackNavigation} from '@/navigator/index';
@@ -33,6 +34,8 @@ const fixedItems = [0, 1];
 
 const parentWidth = viewportWidth - 10;
 const itemWidth = parentWidth / 4;
+const itemHeight = 48;
+const margin = 5;
 
 class CategorySetting extends React.Component<IProps, IState> {
   state = {
@@ -99,20 +102,22 @@ class CategorySetting extends React.Component<IProps, IState> {
     }
   };
 
+  onClickItem = (data: ICategory[], item: ICategory) => {
+    this.onPress(item, data.indexOf(item), true);
+  };
+
   renderItem = (item: ICategory, index: number) => {
     const {isEdit} = this.props;
     const disabled = fixedItems.indexOf(index) > -1;
     return (
-      <Touchable key={item.id} onPress={() => this.onPress(item, index, true)}>
-        <Item
-          data={item}
-          isEdit={isEdit}
-          disabled={disabled}
-          itemWrapperStyle={styles.itemWrapper}
-          item={styles.item}
-          selected
-        />
-      </Touchable>
+      <Item
+        data={item}
+        isEdit={isEdit}
+        disabled={disabled}
+        itemWrapperStyle={styles.itemWrapper}
+        item={styles.item}
+        selected
+      />
     );
   };
 
@@ -134,14 +139,32 @@ class CategorySetting extends React.Component<IProps, IState> {
     );
   };
 
+  onDataChange = (data: ICategory[]) => {
+    this.setState({
+      myCategories: data,
+    });
+  };
+
   render() {
     const {myCategories} = this.state;
-    const {categories} = this.props;
+    const {categories, isEdit} = this.props;
     return (
       <ScrollView style={styles.container}>
         <Text style={styles.classifyName}>我的分类</Text>
         <View style={styles.classifyView}>
-          {myCategories.map(this.renderItem)}
+          <DragSortableView
+            dataSource={myCategories}
+            fixedItems={fixedItems}
+            renderItem={this.renderItem}
+            sortable={isEdit}
+            keyExtractor={(item) => item.id}
+            onDataChange={this.onDataChange}
+            parentWidth={parentWidth}
+            childrenWidth={itemWidth}
+            childrenHeight={itemHeight}
+            marginChildrenTop={margin}
+            onClickItem={this.onClickItem}
+          />
         </View>
         <View>
           {Object.keys(categories).map((classify) => {
@@ -191,12 +214,12 @@ const styles = StyleSheet.create({
   },
   itemWrapper: {
     width: itemWidth,
-    height: 48,
+    height: itemHeight,
   },
   item: {
     flex: 1,
     backgroundColor: '#fff',
-    margin: 5,
+    margin: margin,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
