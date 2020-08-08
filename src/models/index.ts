@@ -1,8 +1,8 @@
 import home from './home';
 import {DvaLoadingState} from 'dva-loading-ts';
-import categorySetting from "./categorySetting";
+import categorySetting from './categorySetting';
 
-const models = [home,categorySetting];
+const models = [home, categorySetting];
 
 export type RootState = {
   home: typeof home.state;

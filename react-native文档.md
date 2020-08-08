@@ -380,3 +380,7 @@ yarn add @react-native-community/async-storage
 cd ios pod install
 
 yarn add react-native-storage
+
+# 9.header-buttons
+
+yarn add react-navigation-header-buttons

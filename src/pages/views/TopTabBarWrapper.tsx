@@ -26,7 +26,7 @@ type IProps = MaterialTopTabBarProps & ModelState;
 class TopTabBarWrapper extends React.Component<IProps> {
 
   get linearGradient() {
-    const { linearColors = ['#ccc', '#e2e2e2'], gradientVisible } = this.props;
+    const { linearColors = ['rgba(0,0,0,0.5)', 'rgba(255,255,255,0.5)'], gradientVisible } = this.props;
     if (gradientVisible) {
       return <LinearAnimatedGradientTransition colors={linearColors} style={styles.gradient} />;
     } else {

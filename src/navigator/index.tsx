@@ -10,6 +10,9 @@ import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
 import { Platform, StyleSheet, StatusBar } from 'react-native';
 import CategorySetting from "@/pages/CategorySetting";
+import HeaderRightBtn from "@/pages/CategorySetting/HeaderRightBtn";
+import { connect, ConnectedProps } from "react-redux";
+import { RootState } from "@/models/index";
 
 export type RootStackParamList = {
   BottomTabs: {
@@ -23,7 +26,27 @@ export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-class Navigator extends React.Component {
+const mapStateToProps = ({}: RootState) => {
+  return {}
+}
+
+const connector = connect(mapStateToProps);
+
+type ModelState = ConnectedProps<typeof connector>;
+
+interface IProps extends ModelState {
+  navigation: RootStackNavigation
+}
+
+class Navigator extends React.Component<IProps> {
+
+  onSubmit = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'categorySetting/toggle'
+    })
+  }
+
   render() {
     return (
       <NavigationContainer>
@@ -35,7 +58,13 @@ class Navigator extends React.Component {
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
             gestureEnabled: true,
             gestureDirection: 'horizontal',
-            headerStatusBarHeight: StatusBar.currentHeight,
+            ...Platform.select({
+              android:{
+                headerStatusBarHeight: StatusBar.currentHeight,
+              }
+            }),
+            headerBackTitleVisible: false,
+            headerTintColor:'#333',
             headerStyle: {
               ...Platform.select({
                 android: {
@@ -60,7 +89,8 @@ class Navigator extends React.Component {
             name="CategorySetting"
             component={CategorySetting}
             options={{
-              headerTitle: '分类设置'
+              headerTitle: '分类设置',
+              // headerRight: () => <HeaderRightBtn onSubmit={this.onSubmit} />
             }}
           />
         </Stack.Navigator>
@@ -69,4 +99,4 @@ class Navigator extends React.Component {
   }
 }
 
-export default Navigator;
+export default connector(Navigator);

@@ -1,5 +1,5 @@
-import { Model, Effect } from 'dva-core-ts';
-import { Reducer } from 'redux';
+import {Model, Effect} from 'dva-core-ts';
+import {Reducer} from 'redux';
 import axios from 'axios';
 
 const CAROUSEL_URL = '/carousel/getCarouselList';
@@ -38,7 +38,6 @@ export interface HomeState {
   commends: ICommends[];
 }
 
-
 interface HomeModel extends Model {
   namespace: 'home';
   state: HomeState;
@@ -64,7 +63,7 @@ const homeModel: HomeModel = {
   namespace: 'home',
   state: initialState,
   reducers: {
-    setState(state = initialState, { payload }) {
+    setState(state = initialState, {payload}) {
       return {
         ...state,
         ...payload,
@@ -72,8 +71,8 @@ const homeModel: HomeModel = {
     },
   },
   effects: {
-    *fetchCarousels(_, { call, put }) {
-      const { data } = yield call(axios.get, CAROUSEL_URL);
+    *fetchCarousels(_, {call, put}) {
+      const {data} = yield call(axios.get, CAROUSEL_URL);
       yield put({
         type: 'setState',
         payload: {
@@ -81,8 +80,8 @@ const homeModel: HomeModel = {
         },
       });
     },
-    *fetchGuess(_, { call, put }) {
-      const { data } = yield call(axios.get, GUESS_URL);
+    *fetchGuess(_, {call, put}) {
+      const {data} = yield call(axios.get, GUESS_URL);
       yield put({
         type: 'setState',
         payload: {
@@ -90,15 +89,15 @@ const homeModel: HomeModel = {
         },
       });
     },
-    *fetchCommends(_, { call, put }) {
-      const { data } = yield call(axios.get, COMMEND_URL);
+    *fetchCommends(_, {call, put}) {
+      const {data} = yield call(axios.get, COMMEND_URL);
       yield put({
         type: 'setState',
         payload: {
           commends: data.list,
         },
       });
-    }
+    },
   },
 };
 
