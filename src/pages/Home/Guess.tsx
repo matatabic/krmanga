@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { connect, ConnectedProps } from 'react-redux';
-import { RootState } from '@/models/index';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {connect, ConnectedProps} from 'react-redux';
+import {RootState} from '@/models/index';
 import Touchable from '@/components/Touchable';
-import { IGuess } from '@/models/home';
+import {IGuess} from '@/models/home';
 import Icon from '@/assets/iconfont/index';
-import BookCover from "@/components/BookCover";
+import BookCover from '@/components/BookCover';
 
-const mapStateToProps = ({ home }: RootState) => {
+const mapStateToProps = ({home}: RootState) => {
   return {
     guess: home.guess,
   };
@@ -19,23 +19,23 @@ type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
   onPress: (data: IGuess) => void;
+  namespace: string;
 }
 
 class Guess extends React.Component<IProps> {
-
   componentDidMount() {
-    // this.fetch();
+    this.fetch();
   }
 
   fetch = () => {
-    const { dispatch } = this.props;
+    const {dispatch, namespace} = this.props;
     dispatch({
-      type: 'home/fetchGuess',
+      type: namespace + '/fetchGuess',
     });
   };
 
-  renderItem = ({ item }: { item: IGuess }) => {
-    const { onPress } = this.props;
+  renderItem = ({item}: {item: IGuess}) => {
+    const {onPress} = this.props;
     return (
       <BookCover
         data={item}
@@ -48,7 +48,7 @@ class Guess extends React.Component<IProps> {
   };
 
   render() {
-    const { guess } = this.props;
+    const {guess} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -67,11 +67,7 @@ class Guess extends React.Component<IProps> {
           numColumns={3}
           renderItem={this.renderItem}
         />
-        <Touchable
-          style={styles.changeGuess}
-          onPress={
-            this.fetch
-          }>
+        <Touchable style={styles.changeGuess} onPress={this.fetch}>
           <Icon name="icon-refresh" color="red" />
           <Text style={styles.changeGuessText}>换一批</Text>
         </Touchable>

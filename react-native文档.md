@@ -216,6 +216,10 @@ yarn add @types/react-redux(ts声明库)
 
 yarn add dva-loading-ts
 
+## 动态dva-model
+
+yarn add dva-model-extend
+
 # 4.Iconfont
 
 yarn add react-native-svg

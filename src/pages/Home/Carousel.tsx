@@ -4,18 +4,18 @@ import SnapCarousel, {
   Pagination,
   AdditionalParallaxProps,
 } from 'react-native-snap-carousel';
-import { viewportWidth, wp, hp } from '@/utils/index';
-import { StyleSheet, View } from 'react-native';
-import { ICarousel } from '@/models/home';
-import { RootState } from "@/models/index";
-import { connect, ConnectedProps } from "react-redux";
+import {viewportWidth, wp, hp} from '@/utils/index';
+import {StyleSheet, View} from 'react-native';
+import {ICarousel} from '@/models/home';
+import {RootState} from '@/models/index';
+import {connect, ConnectedProps} from 'react-redux';
 
 const sliderWidth = viewportWidth;
 const sideWidth = wp(90);
 export const sideHeight = hp(26);
 const itemWidth = sideWidth + wp(2) * 2;
 
-const mapStateToProps = ({ home }: RootState) => {
+const mapStateToProps = ({home}: RootState) => {
   return {
     carousels: home.carousels,
     activeCarouselIndex: home.activeCarouselIndex,
@@ -27,38 +27,38 @@ const connector = connect(mapStateToProps);
 type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
+  namespace: string;
 }
 
 class Carousel extends React.Component<IProps> {
-
   componentDidMount() {
-    // this.fetch();
+    this.fetch();
   }
 
   fetch = () => {
-    const { dispatch } = this.props;
+    const {dispatch, namespace} = this.props;
     dispatch({
-      type: 'home/fetchCarousels',
+      type: namespace + '/fetchCarousels',
     });
   };
 
   onSnapToItem = (index: number) => {
-    const { dispatch } = this.props;
+    const {dispatch, namespace} = this.props;
     dispatch({
-      type: 'home/setState',
+      type: namespace + '/setState',
       payload: {
-        activeCarouselIndex: index
-      }
-    })
+        activeCarouselIndex: index,
+      },
+    });
   };
 
   renderItem = (
-    { item }: { item: ICarousel },
+    {item}: {item: ICarousel},
     parallaxProps?: AdditionalParallaxProps,
   ) => {
     return (
       <ParallaxImage
-        source={{ uri: item.image }}
+        source={{uri: item.image}}
         style={styles.image}
         containerStyle={styles.containerStyle}
         parallaxFactor={0.8}
@@ -70,7 +70,7 @@ class Carousel extends React.Component<IProps> {
   };
 
   get pagination() {
-    const { carousels, activeCarouselIndex } = this.props;
+    const {carousels, activeCarouselIndex} = this.props;
     return (
       <View style={styles.paginationWrapper}>
         <Pagination
@@ -87,7 +87,7 @@ class Carousel extends React.Component<IProps> {
   }
 
   render() {
-    const { carousels } = this.props;
+    const {carousels} = this.props;
     return (
       <View>
         <SnapCarousel

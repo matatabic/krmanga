@@ -1,21 +1,30 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { MaterialTopTabBar, MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
-import { getStatusBarHeight } from 'react-native-iphone-x-helper';
+import {StyleSheet, View, Text} from 'react-native';
+import {
+  MaterialTopTabBar,
+  MaterialTopTabBarProps,
+} from '@react-navigation/material-top-tabs';
+import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearAnimatedGradientTransition from 'react-native-linear-animated-gradient-transition';
-import Touchable from "@/components/Touchable";
-import { RootState } from "@/models/index";
-import { connect, ConnectedProps } from "react-redux";
+import Touchable from '@/components/Touchable';
+import {RootState} from '@/models/index';
+import {connect, ConnectedProps} from 'react-redux';
+import {getActiveRouteName} from '@/utils/index';
 
-const mapStateToProps = ({ home }: RootState) => {
+const mapStateToProps = (state: RootState, props: MaterialTopTabBarProps) => {
+  const routeName = getActiveRouteName(props.state);
+  const modelState = state[routeName];
   return {
-    linearColors: home.carousels && home.carousels.length > 0
-      ? (home.carousels[home.activeCarouselIndex] ? home.carousels[home.activeCarouselIndex].colors : undefined)
-      : undefined,
-    activeCarouselIndex: home.activeCarouselIndex,
-    gradientVisible: home.gradientVisible,
-  }
-}
+    linearColors:
+      modelState.carousels && modelState.carousels.length > 0
+        ? modelState.carousels[modelState.activeCarouselIndex]
+          ? modelState.carousels[modelState.activeCarouselIndex].colors
+          : undefined
+        : undefined,
+    activeCarouselIndex: modelState.activeCarouselIndex,
+    gradientVisible: modelState.gradientVisible,
+  };
+};
 
 const connector = connect(mapStateToProps);
 
@@ -24,30 +33,40 @@ type ModelState = ConnectedProps<typeof connector>;
 type IProps = MaterialTopTabBarProps & ModelState;
 
 class TopTabBarWrapper extends React.Component<IProps> {
-
   get linearGradient() {
-    const { linearColors = ['rgba(0,0,0,0.5)', 'rgba(255,255,255,0.5)'], gradientVisible } = this.props;
+    const {
+      linearColors = ['rgba(0,0,0,0.5)', 'rgba(255,255,255,0.5)'],
+      gradientVisible,
+    } = this.props;
     if (gradientVisible) {
-      return <LinearAnimatedGradientTransition colors={linearColors} style={styles.gradient} />;
+      return (
+        <LinearAnimatedGradientTransition
+          colors={linearColors}
+          style={styles.gradient}
+        />
+      );
     } else {
       return null;
     }
   }
 
   goCategorySetting = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     navigation.navigate('CategorySetting');
-  }
+  };
 
   render() {
-    let { gradientVisible, indicatorStyle, ...restProps } = this.props;
+    let {gradientVisible, indicatorStyle, ...restProps} = this.props;
     let textStyle = styles.text;
     let activeTintColor = '#333';
     if (gradientVisible) {
       textStyle = styles.whiteText;
       activeTintColor = '#fff';
       if (indicatorStyle) {
-        indicatorStyle = StyleSheet.compose(indicatorStyle, styles.whiteBackgroundColor);
+        indicatorStyle = StyleSheet.compose(
+          indicatorStyle,
+          styles.whiteBackgroundColor,
+        );
       }
     }
     return (
@@ -60,7 +79,9 @@ class TopTabBarWrapper extends React.Component<IProps> {
             activeTintColor={activeTintColor}
             style={styles.tabBar}
           />
-          <Touchable style={styles.categoryBtn} onPress={this.goCategorySetting}>
+          <Touchable
+            style={styles.categoryBtn}
+            onPress={this.goCategorySetting}>
             <Text style={textStyle}>分类</Text>
           </Touchable>
         </View>
@@ -73,7 +94,7 @@ class TopTabBarWrapper extends React.Component<IProps> {
           </Touchable>
         </View>
       </View>
-    )
+    );
   }
 }
 
@@ -126,7 +147,7 @@ const styles = StyleSheet.create({
   },
   whiteBackgroundColor: {
     backgroundColor: '#fff',
-  }
-})
+  },
+});
 
 export default connector(TopTabBarWrapper);

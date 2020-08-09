@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {
   createStackNavigator,
   StackNavigationProp,
@@ -8,11 +8,10 @@ import {
 } from '@react-navigation/stack';
 import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
-import { Platform, StyleSheet, StatusBar } from 'react-native';
-import CategorySetting from "@/pages/CategorySetting";
-import HeaderRightBtn from "@/pages/CategorySetting/HeaderRightBtn";
-import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "@/models/index";
+import {Platform, StyleSheet, StatusBar} from 'react-native';
+import CategorySetting from '@/pages/CategorySetting';
+import {connect, ConnectedProps} from 'react-redux';
+import {RootState} from '@/models/index';
 
 export type RootStackParamList = {
   BottomTabs: {
@@ -26,27 +25,7 @@ export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-const mapStateToProps = ({}: RootState) => {
-  return {}
-}
-
-const connector = connect(mapStateToProps);
-
-type ModelState = ConnectedProps<typeof connector>;
-
-interface IProps extends ModelState {
-  navigation: RootStackNavigation
-}
-
-class Navigator extends React.Component<IProps> {
-
-  onSubmit = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'categorySetting/toggle'
-    })
-  }
-
+class Navigator extends React.Component {
   render() {
     return (
       <NavigationContainer>
@@ -59,38 +38,34 @@ class Navigator extends React.Component<IProps> {
             gestureEnabled: true,
             gestureDirection: 'horizontal',
             ...Platform.select({
-              android:{
+              android: {
                 headerStatusBarHeight: StatusBar.currentHeight,
-              }
+              },
             }),
             headerBackTitleVisible: false,
-            headerTintColor:'#333',
+            headerTintColor: '#333',
             headerStyle: {
               ...Platform.select({
                 android: {
                   elevation: 0,
                   borderBottomWidth: StyleSheet.hairlineWidth,
-                }
-              })
-            }
+                },
+              }),
+            },
           }}>
           <Stack.Screen
             name="BottomTabs"
             component={BottomTabs}
             options={{
-              headerTitle: '首页'
+              headerTitle: '首页',
             }}
           />
-          <Stack.Screen
-            name="Detail"
-            component={Detail}
-          />
+          <Stack.Screen name="Detail" component={Detail} />
           <Stack.Screen
             name="CategorySetting"
             component={CategorySetting}
             options={{
               headerTitle: '分类设置',
-              // headerRight: () => <HeaderRightBtn onSubmit={this.onSubmit} />
             }}
           />
         </Stack.Navigator>
@@ -99,4 +74,4 @@ class Navigator extends React.Component<IProps> {
   }
 }
 
-export default connector(Navigator);
+export default Navigator;

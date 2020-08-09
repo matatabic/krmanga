@@ -1,20 +1,35 @@
 import React from 'react';
-import { View, ListRenderItemInfo, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { connect, ConnectedProps } from 'react-redux';
-import { RootStackNavigation } from '@/navigator/index';
-import { RootState } from '@/models/index';
-import Carousel, { sideHeight } from './Carousel';
+import {
+  View,
+  ListRenderItemInfo,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from 'react-native';
+import {connect, ConnectedProps} from 'react-redux';
+import {RootStackNavigation} from '@/navigator/index';
+import {RootState} from '@/models/index';
+import Carousel, {sideHeight} from './Carousel';
 import Guess from './Guess';
-import { FlatList } from "react-native-gesture-handler";
-import CommendItem from "@/pages/Home/CommendItem";
-import { ICommends, ICommend, IGuess } from "@/models/home";
+import {FlatList} from 'react-native-gesture-handler';
+import CommendItem from '@/pages/Home/CommendItem';
+import {ICommends, ICommend, IGuess} from '@/models/home';
+import {HomeParamList} from '@/navigator/HomeTabs';
+import {RouteProp} from '@react-navigation/native';
 
-const mapStateToProps = ({ home, loading }: RootState) => ({
-  carousels: home.carousels,
-  commends: home.commends,
-  gradientVisible: home.gradientVisible,
-  loading: loading.effects['home/asyncAdd'],
-});
+const mapStateToProps = (
+  state: RootState,
+  {route}: {route: RouteProp<HomeParamList, string>},
+) => {
+  const {namespace} = route.params;
+  const modelState = state[namespace];
+  return {
+    namespace,
+    carousels: modelState.carousels,
+    commends: modelState.commends,
+    gradientVisible: modelState.gradientVisible,
+    loading: state.loading.effects[namespace + '/asyncAdd'],
+  };
+};
 
 const connector = connect(mapStateToProps);
 
@@ -26,58 +41,56 @@ interface IProps extends MadelState {
 
 class Home extends React.Component<IProps> {
   componentDidMount() {
-    // this.fetch()
+    this.fetch();
   }
 
   fetch = () => {
-    const { dispatch } = this.props;
+    const {dispatch, namespace} = this.props;
     dispatch({
-      type: 'home/fetchCommends',
+      type: namespace + '/fetchCommends',
     });
-  }
+  };
 
   onPress = (item: ICommend | IGuess) => {
-    console.log(item.id)
-  }
+    console.log(item.id);
+  };
 
   get header() {
+    const {namespace} = this.props;
     return (
       <View>
-        <Carousel />
-        <View style={{ backgroundColor: '#fff' }}>
-          <Guess onPress={this.onPress} />
+        <Carousel namespace={namespace} />
+        <View style={{backgroundColor: '#fff'}}>
+          <Guess onPress={this.onPress} namespace={namespace} />
         </View>
       </View>
-    )
+    );
   }
 
   keyExtractor = (item: ICommends, index: Number) => {
     return index.toString();
-  }
+  };
 
-  onScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+  onScroll = ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetY = nativeEvent.contentOffset.y;
     let newGradientVisible = offsetY < sideHeight;
-    const { dispatch, gradientVisible } = this.props;
+    const {dispatch, gradientVisible, namespace} = this.props;
     if (gradientVisible !== newGradientVisible) {
       dispatch({
-        type: 'home/setState',
+        type: namespace + '/setState',
         payload: {
           gradientVisible: newGradientVisible,
-        }
-      })
+        },
+      });
     }
-  }
+  };
 
-  renderItem = ({ item }: ListRenderItemInfo<ICommends>) => {
-    console.log(item)
-    return (
-      <CommendItem data={item} onPress={this.onPress} />
-    )
-  }
+  renderItem = ({item}: ListRenderItemInfo<ICommends>) => {
+    return <CommendItem data={item} onPress={this.onPress} />;
+  };
 
   render() {
-    const { commends } = this.props;
+    const {commends} = this.props;
     return (
       <FlatList
         ListHeaderComponent={this.header}
@@ -88,8 +101,6 @@ class Home extends React.Component<IProps> {
       />
     );
   }
-
-
 }
 
 export default connector(Home);

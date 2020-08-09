@@ -8,6 +8,8 @@ export type RootState = {
   home: typeof home.state;
   categorySetting: typeof categorySetting.state;
   loading: DvaLoadingState;
+} & {
+  [key:string]:typeof home.state;
 };
 
 export default models;
