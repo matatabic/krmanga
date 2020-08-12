@@ -15,8 +15,8 @@ export interface ICarousel {
 export interface IGuess {
   id: string;
   title: string;
-  category: string;
   image: string;
+  category: string;
 }
 
 export interface ICommend {

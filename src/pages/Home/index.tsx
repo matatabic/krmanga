@@ -51,8 +51,11 @@ class Home extends React.Component<IProps> {
     });
   };
 
-  onPress = (item: ICommend | IGuess) => {
-    console.log(item.id);
+  goBrief = (data: ICommend | IGuess) => {
+    const {navigation} = this.props;
+    navigation.navigate('Brief', {
+      item: data,
+    });
   };
 
   get header() {
@@ -61,7 +64,7 @@ class Home extends React.Component<IProps> {
       <View>
         <Carousel namespace={namespace} />
         <View style={{backgroundColor: '#fff'}}>
-          <Guess onPress={this.onPress} namespace={namespace} />
+          <Guess goBrief={this.goBrief} namespace={namespace} />
         </View>
       </View>
     );
@@ -86,7 +89,7 @@ class Home extends React.Component<IProps> {
   };
 
   renderItem = ({item}: ListRenderItemInfo<ICommends>) => {
-    return <CommendItem data={item} onPress={this.onPress} />;
+    return <CommendItem data={item} goBrief={this.goBrief} />;
   };
 
   render() {

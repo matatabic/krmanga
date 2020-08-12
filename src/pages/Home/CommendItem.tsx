@@ -1,48 +1,47 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { ICommends, ICommend } from "@/models/home";
-import { viewportWidth } from '@/utils/index';
-import BookCover from "@/components/BookCover";
+import {View, Text, StyleSheet} from 'react-native';
+import {ICommends, ICommend} from '@/models/home';
+import {viewportWidth} from '@/utils/index';
+import BookCover from '@/components/BookCover';
 
 interface IProps {
   data: ICommends;
-  onPress: (data: ICommend) => void;
+  goBrief: (data: ICommend) => void;
 }
 
 const BookViewWidth = viewportWidth - 16 * 2;
 const BookWidth = (BookViewWidth - 5 * 7) / 3;
 
 class CommendItem extends React.PureComponent<IProps> {
-
   renderItem = (item: ICommend, index: Number) => {
-    const { onPress } = this.props;
+    const {goBrief} = this.props;
     return (
       <BookCover
         data={item}
-        onPress={onPress}
+        goBrief={goBrief}
         itemStyle={styles.item}
         imageStyle={styles.image}
         key={item.id}
       />
-    )
-  }
+    );
+  };
 
   render() {
-    const { data } = this.props;
+    const {data} = this.props;
     return (
       <View style={styles.container}>
-        {
-          Object.keys(data).map(classify => {
-            return (
-              <View key={classify}>
-                <View style={styles.header}><Text style={styles.classifyName}>{classify}</Text></View>
-                <View style={styles.classifyView}>
-                  {data[classify].map(this.renderItem)}
-                </View>
+        {Object.keys(data).map((classify) => {
+          return (
+            <View key={classify}>
+              <View style={styles.header}>
+                <Text style={styles.classifyName}>{classify}</Text>
               </View>
-            )
-          })
-        }
+              <View style={styles.classifyView}>
+                {data[classify].map(this.renderItem)}
+              </View>
+            </View>
+          );
+        })}
       </View>
     );
   }
@@ -78,6 +77,6 @@ const styles = StyleSheet.create({
     height: 165,
     borderRadius: 5,
   },
-})
+});
 
 export default CommendItem;

@@ -18,7 +18,7 @@ const connector = connect(mapStateToProps);
 type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
-  onPress: (data: IGuess) => void;
+  goBrief: (data: IGuess) => void;
   namespace: string;
 }
 
@@ -35,11 +35,11 @@ class Guess extends React.Component<IProps> {
   };
 
   renderItem = ({item}: {item: IGuess}) => {
-    const {onPress} = this.props;
+    const {goBrief} = this.props;
     return (
       <BookCover
         data={item}
-        onPress={onPress}
+        goBrief={goBrief}
         itemStyle={styles.item}
         imageStyle={styles.image}
         key={item.id}

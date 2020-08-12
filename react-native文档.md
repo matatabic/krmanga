@@ -389,6 +389,10 @@ yarn add react-native-storage
 
 yarn add react-navigation-header-buttons
 
-10.拖拽
+# 10.拖拽
 
 yarn add react-native-drag-sort
+
+# 11.图片模糊
+
+yarn add @react-native-community/blur 

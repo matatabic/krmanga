@@ -37,7 +37,6 @@ class HomeTabs extends React.Component<IProps> {
   };
 
   renderScreen = (item: ICategory) => {
-    console.log(item);
     createHomeModel(item.id.toString());
     return (
       <Tab.Screen
@@ -54,7 +53,6 @@ class HomeTabs extends React.Component<IProps> {
 
   render() {
     const {myCategories} = this.props;
-    console.log(myCategories);
     return (
       <Tab.Navigator
         lazy

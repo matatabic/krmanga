@@ -1,5 +1,6 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {Animated} from 'react-native';
+import {NavigationContainer, RouteProp} from '@react-navigation/native';
 import {
   createStackNavigator,
   StackNavigationProp,
@@ -10,8 +11,7 @@ import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
 import {Platform, StyleSheet, StatusBar} from 'react-native';
 import CategorySetting from '@/pages/CategorySetting';
-import {connect, ConnectedProps} from 'react-redux';
-import {RootState} from '@/models/index';
+import Brief from '@/pages/Brief';
 
 export type RootStackParamList = {
   BottomTabs: {
@@ -19,11 +19,44 @@ export type RootStackParamList = {
   };
   Detail: undefined;
   CategorySetting: undefined;
+  Brief: {
+    item: {
+      id: string;
+      title: string;
+      image: string;
+      category: string;
+    };
+  };
 };
 
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
 
 const Stack = createStackNavigator<RootStackParamList>();
+
+function getBriefOptions({
+  route,
+}: {
+  route: RouteProp<RootStackParamList, 'Brief'>;
+}) {
+  return {
+    headerTitle: route.params.item.title,
+    headerTransparent: true,
+    headerTitleStyle: {
+      opacity: 0,
+    },
+    headerBackground: () => {
+      return <Animated.View style={styles.headerBackground} />;
+    },
+  };
+}
+
+const styles = StyleSheet.create({
+  headerBackground: {
+    flex: 1,
+    backgroundColor: '#fff',
+    opacity: 0,
+  },
+});
 
 class Navigator extends React.Component {
   render() {
@@ -67,6 +100,11 @@ class Navigator extends React.Component {
             options={{
               headerTitle: '分类设置',
             }}
+          />
+          <Stack.Screen
+            name="Brief"
+            component={Brief}
+            options={getBriefOptions}
           />
         </Stack.Navigator>
       </NavigationContainer>
