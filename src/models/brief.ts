@@ -2,7 +2,7 @@ import { Effect, Model } from "dva-core-ts";
 import { Reducer } from "redux";
 import { getBriefList} from '@/services/brief'
 
-interface IChapter {
+export interface IChapter {
   id: string;
   title: string;
   created_at: string;
@@ -50,7 +50,7 @@ const briefModel: BriefModel = {
       yield put({
         type: 'setState',
         payload: {
-          carousels: data,
+          ...data,
         },
       });
     },
