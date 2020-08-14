@@ -599,3 +599,8 @@ panRef = React.createRef<PanGestureHandler>(); //创建一个ref对象
 
 拖动到指定高度将点击响应组件设置成不响应，这样原生响应组件就能继续获取手势的操作权
 
+# 13.优化tab-view
+
+yarn add react-native-tab-view-viewpager-adapter(适配器)
+
+yarn  add @react-native-community/viewpager(core)

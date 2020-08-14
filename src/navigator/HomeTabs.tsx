@@ -3,6 +3,7 @@ import {
   createMaterialTopTabNavigator,
   MaterialTopTabBarProps,
 } from '@react-navigation/material-top-tabs';
+import ViewPagerAdapter from 'react-native-tab-view-viewpager-adapter';
 import Home from '@/pages/Home';
 import TopTabBarWrapper from '@/pages/views/TopTabBarWrapper';
 import {StyleSheet, View} from 'react-native';
@@ -57,6 +58,7 @@ class HomeTabs extends React.Component<IProps> {
       <Tab.Navigator
         lazy
         tabBar={this.renderTabBar}
+        pager={props => <ViewPagerAdapter {...props} /> }
         sceneContainerStyle={styles.sceneContainer}
         tabBarOptions={{
           scrollEnabled: true,

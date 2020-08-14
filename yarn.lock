@@ -1144,6 +1144,11 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/masked-view/download/@react-native-community/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
   integrity sha1-XdpkPhnlh3k7wgNN2b9zmK1D1AE=
 
+"@react-native-community/viewpager@^4.1.4":
+  version "4.1.4"
+  resolved "https://registry.npm.taobao.org/@react-native-community/viewpager/download/@react-native-community/viewpager-4.1.4.tgz#055ff1636ea2362c991e795959da1f68a377c732"
+  integrity sha1-BV/xY26iNiyZHnlZWdofaKN3xzI=
+
 "@react-navigation/bottom-tabs@^5.7.2":
   version "5.7.2"
   resolved "https://registry.npm.taobao.org/@react-navigation/bottom-tabs/download/@react-navigation/bottom-tabs-5.7.2.tgz#330c8ade026030830fce7806ce53cbae97a36e28"
@@ -6078,6 +6083,11 @@ react-native-svg@^12.1.0:
   dependencies:
     css-select "^2.1.0"
     css-tree "^1.0.0-alpha.39"
+
+react-native-tab-view-viewpager-adapter@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/react-native-tab-view-viewpager-adapter/download/react-native-tab-view-viewpager-adapter-1.1.0.tgz#d6e085ed1c91a13e714d87395d428f8afc2b3377"
+  integrity sha1-1uCF7RyRoT5xTYc5XUKPivwrM3c=
 
 react-native-tab-view@^2.15.0:
   version "2.15.0"

@@ -13,6 +13,7 @@
     "@react-native-community/async-storage": "^1.11.0",
     "@react-native-community/blur": "^3.6.0",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/viewpager": "^4.1.4",
     "@react-navigation/bottom-tabs": "^5.7.2",
     "@react-navigation/material-top-tabs": "^5.2.14",
     "@react-navigation/native": "^5.7.1",
@@ -37,6 +38,7 @@
     "react-native-storage": "^1.0.1",
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": "^2.15.0",
+    "react-native-tab-view-viewpager-adapter": "^1.1.0",
     "react-navigation-header-buttons": "^5.0.0",
     "react-redux": "^7.2.1"
   },
