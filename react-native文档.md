@@ -396,3 +396,206 @@ yarn add react-native-drag-sort
 # 11.图片模糊
 
 yarn add @react-native-community/blur 
+
+# 12.手势
+
+手势一般分两个大类:持续手势和不持续手势
+
+持续手势:拖动 旋转 捏合
+
+不持续手势:点击 长按 压力触控
+
+只有Animated动画组件才能使用动画，动画组件:View,Text,Image,ScrollView,FlatList,SectionList,也可以自定义动画组件
+
+## Animated.timing()
+
+```javascript
+Animated.timing(this.translateY, { //绑定动画属性到this.translateY
+        useNativeDriver: true, //开启原生动画驱动
+        toValue: -170,  //变化值
+        duration: 3000, //变化时间
+  }).start();
+```
+
+作用:**普通滑动动画**，推动一个值平均随着时间变化
+
+## Animated.spring()
+
+作用:弹簧动画，推动一个值弹簧动画时间变化
+
+```javascript
+ Animated.spring(this.translateY, { //绑定动画属性到this.translateY
+        useNativeDriver: true, //开启原生动画驱动
+        toValue: -170,  //变化值
+        tension:100, //弹力值
+   			friction:10, //摩擦力
+  }).start();
+```
+
+创建一个动画值
+
+```javascript
+进入组件，y轴3秒下拉170
+componentDidMount(){
+  translateY = new Animated.Value(0); Animated.Value只能接受一个number
+  Animated.timing(this.translateY, { //绑定动画属性到this.translateY
+        useNativeDriver: true, //开启原生动画驱动
+        toValue: -170,  //变化值
+        duration: 3000, //变化时间
+  }).start();
+]
+
+render() {
+  return (
+    <Animated.View
+      style={[
+      styles.container,
+      {transform: [{translateY: this.translateY}]},
+      ]}>
+		<View><Text>Animated。demo</Text></View>
+    </Animated.View>
+	);
+}
+```
+
+差值函数interpolate(可以使颜色变化，图片角度旋转)
+
+```javascript
+进入组件，y轴10秒下拉170，从#fff变成red
+translateY = new Animated.Value(0); Animated.Value只能接受一个number
+Animated.timing(this.translateY, { //绑定动画属性到this.translateY
+      useNativeDriver: false, //0.63rn使用差值函数改变backgroundColor需关闭原生驱动
+      toValue: -170,  //变化值
+      duration: 10000, //变化时间
+}).start();
+
+render() {
+  return (
+    <Animated.View
+      style={[
+      styles.container,
+        {
+          padding:10,
+          backgroundColor: this.translateY.interpolate({
+          inputRange: [-170, 0],
+          outputRange: ['red', '#fff']
+        }),
+          transform: [{translateY: this.translateY}],
+        },
+      ]}>
+      <View><Text>Animated.demo</Text></View>
+    </Animated.View>
+  );
+}
+```
+
+```javascript
+进入组件，y轴10秒下拉170，组件透明度从1到0
+translateY = new Animated.Value(0); Animated.Value只能接受一个number
+Animated.timing(this.translateY, { //绑定动画属性到this.translateY
+      useNativeDriver: true, //opcity可开启原生驱动
+      toValue: -170,  //变化值
+      duration: 10000, //变化时间
+}).start();
+
+render() {
+  return (
+    <Animated.View
+      style={[
+      styles.container,
+        {
+          opcity: this.translateY.interpolate({
+          inputRange: [-170, 0],
+          outputRange: [1, 0]
+        }),
+          transform: [{translateY: this.translateY}],
+        },
+      ]}>
+      <View><Text>Animated.demo</Text></View>
+    </Animated.View>
+  );
+}
+```
+
+监听拖动组件(PanGestureHandler)
+
+```javascript
+监听滑动距离
+onGestureEvent = (event: PanGestureHandlerGestureEvent) => {
+      console.log(event.nativeEvent.translationY)
+}
+render() 
+{
+  return (
+    <PanGestureHandler onGestureEvent={this.onGestureEvent}>
+    <Animated.View
+      style={[
+             styles.container,
+             {
+               transform:[{translateY:this.translateY}],
+             }
+             ]}>
+			<View><Text>Animated.demo</Text></View>
+    </Animated.View>
+		</PanGestureHandler>
+);
+}
+```
+
+```javascript
+Animated.event是动画监听库，作用是映射动画值
+onGestureEvent = Animated.event(
+        [{nativeEvent:{translationY:this.translationY}}],{
+        useNativeDriver:USE_NATIVE_DRIVER
+})
+```
+
+```javascript
+Animated.Value生成的对象中有两个值value和offset
+translationY = new Animated.Value(0); //y轴初始值
+translationYOffset = new Animated.Value(0); //y轴偏移值
+translateY = Animated.add(this.translationY,this.translationYOffset);
+
+onHandlerStateChange = ({nativeEvent}:PanGestureHandlerStateChangeEvent) =>{
+    if(nativeEvent.oldState === State.ACTIVE){ 
+      let {translationY} = nativeEvent;
+      //将每次拖动的值都累积计算
+      this.translationYOffset.extractOffset(); //将translationYOffset的动画值设置到offset，清空value值
+      this.translationYOffset.setValue(translationY); //重新设置translationYOffset的value
+      this.translationYOffset.flattenOffset(); //value = value + offset
+      
+      this.translationY.setValue(0);
+    }
+}
+```
+
+目的:拉下到指定高度，list才开始滚动
+
+```javascript
+panRef = React.createRef<PanGestureHandler>(); //创建一个ref对象
+<PanGestureHandler ref={this.panRef} > //将ref绑定到PanGestureHandler
+</PanGestureHandler>
+
+<NativeViewGestureHandler waitFor={panRef}> //传入PanGestureHandler的ref，拦截flatlist的滚动事件，这会导致flatlist不能获取到手势，因为PanGestureHandler是连续手势响应组件，PanGestureHandler滚动的时候设置不了非激活状态
+   <FlatList />
+</NativeViewGestureHandler>
+```
+
+
+
+[点击响应组件 (wapper)
+
+​	[ 拖动响应组件 (wapper)
+
+​		[原生响应组件 (flatlist)]
+
+​	]
+
+]
+
+
+
+在组件最外层建立点击响应组件，将点击响应组件的ref传给flatlist的waitFor，
+
+拖动到指定高度将点击响应组件设置成不响应，这样原生响应组件就能继续获取手势的操作权
+

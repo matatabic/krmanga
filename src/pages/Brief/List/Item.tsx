@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {IChapter} from '@/models/brief';
 import Touchable from '@/components/Touchable';
 
@@ -18,14 +18,21 @@ class Item extends React.Component<IProps> {
     };
 
     render() {
-        const {data, index, onPress} = this.props;
+        const {data, index} = this.props;
         return (
-            <Touchable onPress={this.onPress}>
+            <Touchable onPress={this.onPress} style={styles.container}>
                 <Text>{`第${index + 1}`}话</Text>
                 <Text>{`第${index + 1}`}话</Text>
             </Touchable>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container:{
+        flex:1,
+        backgroundColor:'#fff',
+    }
+})
 
 export default Item;

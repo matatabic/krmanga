@@ -13,6 +13,7 @@ import {Platform, StyleSheet, StatusBar} from 'react-native';
 import CategorySetting from '@/pages/CategorySetting';
 import Brief from '@/pages/Brief';
 
+
 export type RootStackParamList = {
   BottomTabs: {
     screen?: string;
@@ -25,7 +26,8 @@ export type RootStackParamList = {
       title: string;
       image: string;
       category: string;
-    };
+    },
+    opacity?: Animated.Value;
   };
 };
 
@@ -42,10 +44,10 @@ function getBriefOptions({
     headerTitle: route.params.item.title,
     headerTransparent: true,
     headerTitleStyle: {
-      opacity: 0,
+      opacity: route.params.opacity,
     },
     headerBackground: () => {
-      return <Animated.View style={styles.headerBackground} />;
+      return <Animated.View style={[styles.headerBackground,{opacity: route.params.opacity}]} />;
     },
   };
 }

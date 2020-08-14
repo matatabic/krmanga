@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {RootState} from '@/models/index';
 import {connect, ConnectedProps} from 'react-redux';
 
@@ -17,11 +17,18 @@ class Introduction extends React.Component<ModelState> {
     render() {
         const {description} = this.props;
         return (
-            <View>
+            <View style={styles.container}>
                 <Text>{description}</Text>
             </View>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container:{
+        padding:10,
+        flex:1
+    }
+})
 
 export default connector(Introduction);

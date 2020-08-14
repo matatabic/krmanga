@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Platform} from 'react-native';
+import {View, Text, StyleSheet, Platform, NativeSyntheticEvent, NativeScrollEvent} from 'react-native';
 import {SceneRendererProps, TabBar, TabView} from 'react-native-tab-view';
 import Introduction from './Introduction';
 import List from './List/index';
+import {NativeViewGestureHandler, PanGestureHandler, TapGestureHandler} from "react-native-gesture-handler";
 
 interface IRoute {
     key: string;
@@ -14,9 +15,14 @@ interface IState {
     index: number;
 }
 
-interface IProps {}
+export interface ITabProps {
+    panRef: React.RefObject<PanGestureHandler>;
+    tapRef: React.RefObject<TapGestureHandler>;
+    nativeRef: React.RefObject<NativeViewGestureHandler>;
+    onScrollDrag:(event:NativeSyntheticEvent<NativeScrollEvent>) =>void;
+}
 
-class Tab extends Component<IProps, IState> {
+class Tab extends Component<ITabProps, IState> {
     state = {
         routes: [
             {key: 'introduction', title: '简介'},
@@ -31,16 +37,17 @@ class Tab extends Component<IProps, IState> {
         });
     };
 
-    renderScene = ({route}: {route: IRoute}) => {
+    renderScene = ({route}: { route: IRoute }) => {
+        const {panRef, tapRef, nativeRef,onScrollDrag} = this.props;
         switch (route.key) {
             case 'introduction':
-                return <Introduction />;
+                return <Introduction/>;
             case 'brief':
-                return <List />;
+                return <List panRef={panRef} tapRef={tapRef} nativeRef={nativeRef} onScrollDrag={onScrollDrag}/>;
         }
     };
 
-    renderTabBar = (props: SceneRendererProps & {navigationState: IState}) => {
+    renderTabBar = (props: SceneRendererProps & { navigationState: IState }) => {
         return (
             <TabBar
                 {...props}
