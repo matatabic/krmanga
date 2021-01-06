@@ -19,7 +19,7 @@
     "@react-navigation/native": "^5.7.1",
     "@react-navigation/stack": "^5.7.1",
     "@types/react-redux": "^7.1.9",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-plugin-module-resolver": "^4.0.0",
     "dva-core-ts": "^2.0.7",
     "dva-loading-ts": "^3.0.23",
