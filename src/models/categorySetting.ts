@@ -8,7 +8,7 @@ import CategoryServices from "@/services/category";
 export interface ICategory {
     id: string;
     name: string;
-    classify?: string;
+    typeName?: string;
 }
 
 export interface IStatus {
@@ -16,14 +16,14 @@ export interface IStatus {
     title: string;
 }
 
-export interface ICategories {
+export interface ICategoryList {
     [key: string]: ICategory[];
 }
 
 interface CategorySettingModelState {
     isEdit: boolean;
-    myCategories: ICategory[];
-    categories: ICategories[];
+    myCategoryList: ICategory[];
+    categoryList: ICategory[];
     statusList: IStatus[];
 }
 
@@ -42,10 +42,10 @@ interface CategorySettingModel extends Model {
 
 const initialState = {
     isEdit: false,
-    myCategories: [
+    myCategoryList: [
         {id: '0', name: '全部'},
     ],
-    categories: [],
+    categoryList: [],
     statusList: [],
 };
 
@@ -54,15 +54,15 @@ const categorySettingModel: CategorySettingModel = {
     state: initialState,
     effects: {
         *loadData(_, {call, put}) {
-            const myCategories = yield call(storageLoad, {key: 'myCategories'});
-            const categories = yield call(storageLoad, {key: 'categories'});
+            const myCategoryList = yield call(storageLoad, {key: 'myCategoryList'});
+            const categoryList = yield call(storageLoad, {key: 'categoryList'});
             const statusList = yield call(storageLoad, {key: 'statusList'});
-            if (myCategories) {
+            if (myCategoryList) {
                 yield put({
                     type: 'setState',
                     payload: {
-                        myCategories,
-                        categories,
+                        myCategoryList,
+                        categoryList,
                         statusList
                     },
                 });
@@ -70,7 +70,7 @@ const categorySettingModel: CategorySettingModel = {
                 yield put({
                     type: 'setState',
                     payload: {
-                        categories,
+                        categoryList,
                         statusList
                     },
                 });
@@ -88,13 +88,13 @@ const categorySettingModel: CategorySettingModel = {
                 type: 'setState',
                 payload: {
                     isEdit: !categorySetting.isEdit,
-                    myCategories: payload.myCategories,
+                    myCategoryList: payload.myCategoryList,
                 },
             })
             if (categorySetting.isEdit) {
                 storage.save({
-                    key: 'myCategories',
-                    data: payload.myCategories,
+                    key: 'myCategoryList',
+                    data: payload.myCategoryList,
                 })
             }
         },
@@ -112,11 +112,11 @@ const categorySettingModel: CategorySettingModel = {
             dispatch({type: 'loadData'});
         },
         asyncStorage() {
-            storage.sync.categories = async () => {
+            storage.sync.categoryList = async () => {
                 const data = await CategoryServices.getTreeList();
-                return data.data;
+                return data.data.list;
             };
-            storage.sync.myCategories = async () => {
+            storage.sync.myCategoryList = async () => {
                 return null;
             };
             storage.sync.statusList = async () => {

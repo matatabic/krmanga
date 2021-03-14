@@ -33,7 +33,7 @@ const Tab = createMaterialTopTabNavigator<CategoryTabParamList>();
 const mapStateToProps = ({category, categorySetting}: RootState) => {
     return {
         statusList: categorySetting.statusList,
-        myCategories: categorySetting.myCategories,
+        myCategoryList: categorySetting.myCategoryList,
         hideHeader: category.hideHeader,
         activeCategory: category.activeCategory,
     };
@@ -47,7 +47,7 @@ interface IProps extends ModelState {
     navigation: RootStackNavigation;
 }
 
-function CategoryTabs({navigation, statusList, myCategories}: IProps) {
+function CategoryTabs({navigation, statusList, myCategoryList}: IProps) {
 
     const translateY = new Animated.Value(0);
     const headerHeight = useHeaderHeight();
@@ -81,8 +81,8 @@ function CategoryTabs({navigation, statusList, myCategories}: IProps) {
         addModel(item.id);
         return (
             <Tab.Screen
-                key={item.id.toString()}
-                name={item.id}
+                key={`item-${item.id}`}
+                name={item.id.toString()}
                 component={Category}
                 initialParams={{
                     namespace: `tab-category-${item.id}`,
@@ -97,7 +97,7 @@ function CategoryTabs({navigation, statusList, myCategories}: IProps) {
     };
 
     return (
-        <View style={{flex: 1}}>
+        <View style={styles.container}>
             <View style={[styles.statusBar, {
                 ...StyleSheet.absoluteFillObject,
                 backgroundColor: Color.page_bg
@@ -146,7 +146,7 @@ function CategoryTabs({navigation, statusList, myCategories}: IProps) {
                         activeTintColor: Color.theme,
                         inactiveTintColor: Color.black,
                     }}>
-                    {myCategories.map(renderScreen)}
+                    {myCategoryList.map(renderScreen)}
                 </Tab.Navigator>
             </Animated.View>
         </View>
@@ -154,6 +154,9 @@ function CategoryTabs({navigation, statusList, myCategories}: IProps) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
     statusBar: {
         height: getStatusBarHeight(),
     },
