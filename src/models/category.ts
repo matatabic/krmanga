@@ -82,7 +82,7 @@ const categoryModel: CategoryModel = {
 
             const namespace = type.split("/")[0];
 
-            if (refreshing) {
+            if (refreshing && !payload.onRefresh) {
                 if (loadDataList.indexOf(`tab-category-${activeCategory}-status-${activeStatus}`) > -1) {
                     return false;
                 } else {

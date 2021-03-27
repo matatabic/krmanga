@@ -1,22 +1,22 @@
-import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
 import {
     MaterialTopTabBar,
-    MaterialTopTabBarProps,
-} from '@react-navigation/material-top-tabs';
-import Touchable from '@/components/Touchable';
-import {RootState} from "@/models/index";
-import {connect, ConnectedProps} from "react-redux";
-import {Color} from "@/utils/const";
+    MaterialTopTabBarProps
+} from "@react-navigation/material-top-tabs";
+import Touchable from "@/components/Touchable";
+import { RootState } from "@/models/index";
+import { connect, ConnectedProps } from "react-redux";
+import { Color } from "@/utils/const";
 import Item from "./Item";
-import {IStatus} from "@/models/category";
+import { IStatus } from "@/models/categorySetting";
 
 const mapStateToProps = (state: RootState) => {
-    const {category, categorySetting} = state;
+    const { category, categorySetting } = state;
     return {
         activeStatus: category.activeStatus,
         activeCategory: category.activeCategory,
-        statusList: categorySetting.statusList,
+        statusList: categorySetting.statusList
     };
 };
 
@@ -26,33 +26,33 @@ type ModelState = ConnectedProps<typeof connector>;
 
 type IProps = MaterialTopTabBarProps & ModelState;
 
-function Header({
+function TopBar({
                     dispatch, activeCategory, statusList,
                     indicatorStyle, activeTintColor, activeStatus,
                     ...restProps
                 }: IProps) {
 
     const goCategorySetting = () => {
-        const {navigation} = restProps;
-        navigation.navigate('CategorySetting');
+        const { navigation } = restProps;
+        navigation.navigate("CategorySetting");
     };
 
     const onPress = (item: IStatus) => {
         dispatch({
-            type: 'category/setActiveStatus',
+            type: "category/setState",
             payload: {
                 activeStatus: item.id
             }
-        })
+        });
         dispatch({
             type: `tab-category-${activeCategory}-status-${item.id}/fetchBookList`,
             payload: {
                 refreshing: true,
                 category_id: activeCategory,
-                status: item.id,
-            },
+                status: item.id
+            }
         });
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -75,70 +75,70 @@ function Header({
                         const active = item.id == activeStatus;
                         return (
                             <View key={item.id}>
-                                <Item data={item} active={active} onClickEdit={onPress}/>
+                                <Item data={item} active={active} onClickEdit={onPress} />
                             </View>
-                        )
+                        );
                     })
                 }
             </View>
-            <View style={styles.line}/>
+            <View style={styles.line} />
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Color.white,
+        backgroundColor: Color.white
     },
     topTabBarView: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         borderBottomColor: Color.light,
-        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomWidth: StyleSheet.hairlineWidth
     },
     tabBar: {
         flex: 1,
         elevation: 0,
-        overflow: 'hidden',
-        backgroundColor: 'transparent',
+        overflow: "hidden",
+        backgroundColor: "transparent"
     },
     categoryBtn: {
         paddingHorizontal: 10,
         borderLeftWidth: StyleSheet.hairlineWidth,
-        borderColor: Color.light,
+        borderColor: Color.light
     },
     text: {
         color: Color.black,
-        fontSize: 15,
+        fontSize: 15
     },
     whiteBackgroundColor: {
-        backgroundColor: Color.page_bg,
+        backgroundColor: Color.page_bg
     },
     bottomTabBarView: {
-        flexDirection: 'row',
+        flexDirection: "row",
         justifyContent: "flex-start",
         padding: 0,
-        margin: 0,
+        margin: 0
     },
     bottomView: {
         width: 50,
         height: 35,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center"
     },
     bottomText: {
-        fontSize: 12,
+        fontSize: 12
     },
     activeText: {
         fontSize: 12,
-        color: Color.theme,
+        color: Color.theme
     },
     line: {
-        width: '100%',
+        width: "100%",
         height: 7,
         backgroundColor: Color.split_line,
-        marginBottom: 3,
+        marginBottom: 3
     }
 });
 
-export default connector(Header);
+export default connector(TopBar);
