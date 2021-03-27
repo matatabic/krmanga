@@ -1,7 +1,7 @@
-import {Model, Effect} from 'dva-core-ts';
-import {Reducer} from 'redux';
+import { Model, Effect } from "dva-core-ts";
+import { Reducer } from "redux";
 import BookServices from "@/services/book";
-import {RootState} from "@/models/index";
+import { RootState } from "@/models/index";
 
 
 export interface IBook {
@@ -21,7 +21,7 @@ export interface GuessState {
 }
 
 interface GuessModel extends Model {
-    namespace: 'guess';
+    namespace: "guess";
     state: GuessState;
     reducers: {
         setState: Reducer<GuessState>;
@@ -35,54 +35,54 @@ interface GuessModel extends Model {
 export const initialState = {
     bookList: [],
     refreshing: false,
-    hasMore: true,
+    hasMore: true
 };
 
 const GuessModel: GuessModel = {
-    namespace: 'guess',
+    namespace: "guess",
     state: initialState,
     reducers: {
-        setState(state = initialState, {payload}) {
+        setState(state = initialState, { payload }) {
             return {
                 ...state,
-                ...payload,
+                ...payload
             };
-        },
+        }
     },
     effects: {
-        *fetchGuessList(action, {call, put, select}) {
-            const {payload} = action;
-            const {refreshing} = payload;
+        *fetchGuessList(action, { call, put, select }) {
+            const { payload } = action;
+            const { refreshing } = payload;
 
-            const {bookList: list} = yield select(
-                (state: RootState) => state['guess'],
+            const { bookList: list } = yield select(
+                (state: RootState) => state["guess"]
             );
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     refreshing
-                },
+                }
             });
 
 
-            const {data} = yield call(BookServices.getGuess);
+            const { data } = yield call(BookServices.getGuess);
 
             const newList = refreshing ? data.list : [...list, ...data.list];
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     bookList: newList,
-                    refreshing: false,
+                    refreshing: false
                 }
             });
 
             if (action.callback) {
                 action.callback();
             }
-        },
-    },
+        }
+    }
 
 };
 

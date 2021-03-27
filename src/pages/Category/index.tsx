@@ -1,14 +1,160 @@
-import React from 'react'
-import {View, Text} from "react-native";
+import React, {useEffect, useState} from 'react'
+import {View, Text, FlatList, StyleSheet, ListRenderItemInfo, NativeSyntheticEvent, NativeScrollEvent} from "react-native";
+import {RootState} from "@/models/index";
+import {RouteProp} from "@react-navigation/native";
+import {CategoryTabParamList} from "@/navigator/CategoryTabs";
+import {connect, ConnectedProps} from "react-redux";
+import {RootStackNavigation} from "@/navigator/index";
+import BookPlaceholder from "@/components/Placeholder/BookPlaceholder";
+import {Color} from "@/utils/const";
+import {IBook} from "@/models/home";
+import BookCover from "@/components/BookCover";
+import More from "@/components/More";
+import End from "@/components/End";
 
-class Category extends React.Component<any, any> {
-    render() {
-        return (
-            <View>
-                <Text>Category</Text>
-            </View>
-        );
-    }
+const mapStateToProps = (state: RootState, {route}: { route: RouteProp<CategoryTabParamList, string> }) => {
+    const {namespace, category_id} = route.params;
+    const activeStatus = state['category'].activeStatus;
+    const activeModel = `${namespace}-status-${activeStatus}`;
+
+    return {
+        category_id,
+        activeModel,
+        activeCategory: state['category'].activeCategory,
+        activeStatus: state['category'].activeStatus,
+        bookList: state[activeModel].bookList,
+        hasMore: state[activeModel].hasMore,
+        refreshing: state[activeModel].refreshing,
+        hideHeader: state[activeModel].hideHeader,
+        loading: state.loading.effects[`${activeModel}/fetchBookList`],
+    };
+};
+
+const connector = connect(mapStateToProps);
+
+type ModelState = ConnectedProps<typeof connector>;
+
+interface IProps extends ModelState {
+    route: RouteProp<CategoryTabParamList, string>;
+    navigation: RootStackNavigation;
 }
 
-export default Category;
+function Category({dispatch, navigation, category_id, activeStatus, activeModel, bookList, loading, hasMore, refreshing}: IProps) {
+
+    let scrollViewStartOffsetY: number = 0;
+    const [endReached, setEndReached] = useState<boolean>(false)
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            dispatch({
+                type: 'category/setState',
+                payload: {
+                    activeCategory: category_id
+                }
+            })
+            loadData(true)
+        });
+        return unsubscribe;
+    }, [navigation, activeStatus])
+
+    const loadData = (refreshing: boolean, callback?: () => void) => {
+        dispatch({
+            type: `${activeModel}/fetchBookList`,
+            payload: {
+                refreshing,
+                category_id,
+            },
+            callback
+        });
+    }
+
+    const goBrief = (data: IBook) => {
+        navigation.navigate('Brief', {
+            id: data.id
+        });
+    };
+
+    const renderItem = ({item}: ListRenderItemInfo<IBook>) => {
+        return <BookCover
+            data={item}
+            goBrief={goBrief}
+            key={item.id}
+        />
+    }
+
+    const onRefresh = () => {
+        console.log('123')
+    }
+
+    const renderFooter = () => {
+        if (endReached) {
+            return <More/>;
+        }
+        if (!hasMore) {
+            return <End/>;
+        }
+
+        return null;
+    }
+
+    const onScrollBeginDrag = ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
+        scrollViewStartOffsetY = nativeEvent.contentOffset.y;
+    }
+
+    const onScrollEndDrag = ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
+        if (scrollViewStartOffsetY > nativeEvent.contentOffset.y) {
+            dispatch({
+                type: 'category/setState',
+                payload: {
+                    hideHeader: false,
+                },
+            });
+        } else {
+            dispatch({
+                type: 'category/setState',
+                payload: {
+                    hideHeader: true,
+                },
+            });
+        }
+    }
+
+    const onEndReached = () => {
+        if (!hasMore || loading) {
+            return;
+        }
+        setEndReached(true)
+
+        loadData(false, () => {
+            setEndReached(false)
+        });
+    }
+
+    return (
+        (loading && refreshing) ? <BookPlaceholder/> :
+            <FlatList
+                keyExtractor={(item, key) => `item-${item.id}-key-${key}`}
+                data={bookList}
+                extraData={endReached}
+                renderItem={renderItem}
+                refreshing={refreshing}
+                style={styles.container}
+                onRefresh={onRefresh}
+                ListFooterComponent={renderFooter}
+                scrollEventThrottle={1}
+                onScrollBeginDrag={onScrollBeginDrag}
+                onScrollEndDrag={onScrollEndDrag}
+                numColumns={3}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.1}
+            />
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: Color.page_bg
+    }
+})
+
+export default connector(Category);

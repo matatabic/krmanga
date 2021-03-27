@@ -1,13 +1,13 @@
-import home from './home';
-import guess from './guess';
+import home from "./home";
+import guess from "./guess";
 import category from "./category";
-import categorySetting from './categorySetting';
+import categorySetting from "./categorySetting";
 import brief from "./brief";
 import mangaView from "./mangaView";
 import search from "./search";
-import shelf from './shelf';
+import shelf from "./shelf";
 import user from "./user";
-import {DvaLoadingState} from 'dva-loading-ts';
+import { DvaLoadingState } from "dva-loading-ts";
 
 
 const models = [home, guess, category, categorySetting, brief, mangaView, search, shelf, user];

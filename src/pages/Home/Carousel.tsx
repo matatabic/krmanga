@@ -1,25 +1,25 @@
-import React from 'react';
+import React from "react";
 import SnapCarousel, {
     ParallaxImage,
     Pagination,
-    AdditionalParallaxProps,
-} from 'react-native-snap-carousel';
-import {viewportWidth, wp, hp} from '@/utils/index';
-import {StyleSheet, View, Text} from 'react-native';
-import {ICarousel} from '@/models/home';
-import {RootState} from '@/models/index';
-import {connect, ConnectedProps} from 'react-redux';
-import FastImage from 'react-native-fast-image';
+    AdditionalParallaxProps
+} from "react-native-snap-carousel";
+import { viewportWidth, wp, hp } from "@/utils/index";
+import { StyleSheet, View, Text } from "react-native";
+import { ICarousel } from "@/models/home";
+import { RootState } from "@/models/index";
+import { connect, ConnectedProps } from "react-redux";
+import FastImage from "react-native-fast-image";
 
 const sliderWidth = viewportWidth;
 const sideWidth = wp(90);
 export const sideHeight = hp(30);
 const itemWidth = sideWidth + wp(2) * 2;
 
-const mapStateToProps = ({home}: RootState) => {
+const mapStateToProps = ({ home }: RootState) => {
     return {
         carouselList: home.carouselList,
-        activeCarouselIndex: home.activeCarouselIndex,
+        activeCarouselIndex: home.activeCarouselIndex
     };
 };
 
@@ -31,7 +31,7 @@ interface IProps extends ModelState {
 
 }
 
-function Carousel({dispatch, carouselList, activeCarouselIndex}: IProps) {
+function Carousel({ dispatch, carouselList, activeCarouselIndex }: IProps) {
 
     // const renderItem = (
     //     {item}: { item: ICarousel },
@@ -51,22 +51,22 @@ function Carousel({dispatch, carouselList, activeCarouselIndex}: IProps) {
     // }
 
     const renderItem = (
-        {item}: { item: ICarousel }) => {
+        { item }: { item: ICarousel }) => {
         return (
             <View>
-                <FastImage source={{uri: item.image_url}} style={styles.containerStyle}/>
+                <FastImage source={{ uri: item.image_url }} style={styles.containerStyle} />
             </View>
         );
     };
 
     const onSnapToItem = (index: number) => {
         dispatch({
-            type: 'home/setState',
+            type: "home/setState",
             payload: {
-                activeCarouselIndex: index,
-            },
+                activeCarouselIndex: index
+            }
         });
-    }
+    };
 
     function PaginationView() {
         return (
@@ -81,7 +81,7 @@ function Carousel({dispatch, carouselList, activeCarouselIndex}: IProps) {
                     inactiveDotOpacity={0.4}
                 />
             </View>
-        )
+        );
     }
 
     return (
@@ -98,9 +98,9 @@ function Carousel({dispatch, carouselList, activeCarouselIndex}: IProps) {
                 autoplayInterval={3000}
                 autoplay
             />
-            <PaginationView/>
+            <PaginationView />
         </View>
-    )
+    );
 }
 
 
@@ -108,32 +108,32 @@ const styles = StyleSheet.create({
     containerStyle: {
         width: itemWidth,
         height: sideHeight,
-        paddingTop: 10,
+        paddingTop: 10
     },
     image: {
         ...StyleSheet.absoluteFillObject,
-        resizeMode: 'cover',
+        resizeMode: "cover"
     },
     paginationWrapper: {
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center"
     },
     paginationContainer: {
-        position: 'absolute',
+        position: "absolute",
         top: -20,
         paddingHorizontal: 3,
         paddingVertical: 4,
-        borderRadius: 8,
+        borderRadius: 8
     },
     dotContainer: {
-        marginHorizontal: 6,
+        marginHorizontal: 6
     },
     dot: {
         width: 6,
         height: 6,
         borderRadius: 3,
-        backgroundColor: 'rgba(255,255,255,0.92)',
-    },
+        backgroundColor: "rgba(255,255,255,0.92)"
+    }
 });
 
 export default connector(React.memo(Carousel));

@@ -1,30 +1,30 @@
 // book
-const BOOK_URL = '/book/getList';
-const CAROUSEL_URL = '/carousel/getList';
-const COMMEND_URL = '/book/getCommend';
-const INTRO_URL = '/book/getIntro';
+const BOOK_URL = "/book/getList";
+const CAROUSEL_URL = "/carousel/getList";
+const COMMEND_URL = "/book/getCommend";
+const INTRO_URL = "/book/getIntro";
 //brief
-const BRIEF_URL = '/brief/getList';
-const ADD_COLLECTION_URL = 'collection/addUserCollection';
-const DEL_COLLECTION_URL = 'collection/delUserCollection';
+const BRIEF_URL = "/brief/getList";
+const ADD_COLLECTION_URL = "collection/addUserCollection";
+const DEL_COLLECTION_URL = "collection/delUserCollection";
 //shelf
-const COLLECTION_URL = 'collection/getList';
-const DEL_HISTORY_URL = 'mark/delUserMark';
+const COLLECTION_URL = "collection/getList";
+const DEL_HISTORY_URL = "mark/delUserMark";
 //mark
-const HISTORY_URL = 'mark/getList';
-const ADD_HISTORY = 'mark/saveMark';
+const HISTORY_URL = "mark/getList";
+const ADD_HISTORY = "mark/saveMark";
 //category
-const CATEGORY_URL = '/category/getList';
-const STATUS_URL = '/status/getList';
-const CATEGORY_TREE_URL = '/category/getTreeList';
+const CATEGORY_URL = "/category/getList";
+const STATUS_URL = "/status/getList";
+const CATEGORY_TREE_URL = "/category/getTreeList";
 //episode
-const EPISODE_URL = '/episode/getList';
+const EPISODE_URL = "/episode/getList";
 //guess
-const RANDOM_URL = '/book/getRandomList';
+const RANDOM_URL = "/book/getRandomList";
 //user
-const REGISTER_URL = '/passport/register';
-const LOGIN_URL = '/passport/login';
-const LOGOUT_URL = '/passport/logout';
+const REGISTER_URL = "/passport/register";
+const LOGIN_URL = "/passport/login";
+const LOGOUT_URL = "/passport/logout";
 
 
 export {

@@ -1,33 +1,33 @@
-import React from 'react';
+import React from "react";
 import {
     NavigationContainer,
     RouteProp,
     NavigationState,
-    DefaultTheme,
-} from '@react-navigation/native';
+    DefaultTheme
+} from "@react-navigation/native";
 import {
     createStackNavigator,
     StackNavigationProp,
     HeaderStyleInterpolators,
     CardStyleInterpolators,
-    TransitionPresets,
-} from '@react-navigation/stack';
+    TransitionPresets
+} from "@react-navigation/stack";
 
 import {
     statusBarHeight,
-    navigationRef,
-} from '@/utils/index';
+    navigationRef
+} from "@/utils/index";
 import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import Brief from "@/pages/Brief";
-import {Platform, StyleSheet} from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import BottomTabs from "@/navigator/BottomTabs";
-import {Color} from "@/utils/const";
+import { Color } from "@/utils/const";
 import CategorySetting from "@/pages/CategorySetting";
 import Search from "@/pages/Search";
 import MangaView from "@/pages/MangaView";
 import Guess from "@/pages/Guess";
-import {getStatusBarHeight} from "react-native-iphone-x-helper";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -69,7 +69,7 @@ function ModalStackScreen() {
                 ...TransitionPresets.ModalSlideFromBottomIOS,
                 cardOverlayEnabled: true,
                 gestureEnabled: true,
-                headerTitleAlign: 'center',
+                headerTitleAlign: "center",
                 // headerStatusBarHeight: statusBarHeight,
                 headerBackTitleVisible: false,
                 headerTintColor: Color.white,
@@ -78,32 +78,32 @@ function ModalStackScreen() {
                     ...Platform.select({
                         android: {
                             elevation: 0,
-                            borderBottomWidth: StyleSheet.hairlineWidth,
-                        },
-                    }),
-                },
+                            borderBottomWidth: StyleSheet.hairlineWidth
+                        }
+                    })
+                }
             })}>
             <ModalStack.Screen
                 name="Root"
                 component={RootStackScreen}
-                options={{headerShown: false}}
+                options={{ headerShown: false }}
             />
             <ModalStack.Screen
                 name="Login"
                 component={Login}
                 options={{
-                    headerTitle: '登录',
+                    headerTitle: "登录"
                 }}
             />
             <ModalStack.Screen
                 name="Register"
                 component={Register}
                 options={{
-                    headerTitle: '登录',
+                    headerTitle: "登录"
                 }}
             />
         </ModalStack.Navigator>
-    )
+    );
 }
 
 function RootStackScreen() {
@@ -111,12 +111,12 @@ function RootStackScreen() {
         <RootStack.Navigator
             headerMode="float"
             screenOptions={{
-                headerTitleAlign: 'center',
+                headerTitleAlign: "center",
                 headerBackTitleVisible: false,
                 headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
                 gestureEnabled: true,
-                gestureDirection: 'horizontal',
+                gestureDirection: "horizontal",
                 // headerStatusBarHeight: statusBarHeight+getStatusBarHeight(),
                 headerTintColor: Color.white,
                 headerStyle: {
@@ -124,32 +124,32 @@ function RootStackScreen() {
                     ...Platform.select({
                         android: {
                             elevation: 0,
-                            borderBottomWidth: StyleSheet.hairlineWidth,
-                        },
-                    }),
-                },
+                            borderBottomWidth: StyleSheet.hairlineWidth
+                        }
+                    })
+                }
             }}>
             <RootStack.Screen
                 name="BottomTabs"
                 options={{
                     headerTransparent: true,
-                    headerTitle: '',
+                    headerTitle: ""
                 }}
-                component={BottomTabs}/>
+                component={BottomTabs} />
             <RootStack.Screen
                 name="Brief"
                 component={Brief}
                 options={{
                     headerTransparent: true,
-                    headerTitle: '',
-                    cardStyle: {backgroundColor: Color.page_bg},
+                    headerTitle: "",
+                    cardStyle: { backgroundColor: Color.page_bg }
                 }}
             />
             <RootStack.Screen
                 name="CategorySetting"
                 component={CategorySetting}
                 options={{
-                    headerTitle: '分类设置',
+                    headerTitle: "分类设置"
                 }}
             />
             <RootStack.Screen
@@ -157,10 +157,10 @@ function RootStackScreen() {
                 component={Search}
                 options={{
                     headerTransparent: true,
-                    headerTitle: '',
+                    headerTitle: "",
                     headerLeft: () => {
                         return null;
-                    },
+                    }
                 }}
             />
             <RootStack.Screen
@@ -168,11 +168,11 @@ function RootStackScreen() {
                 component={MangaView}
                 options={{
                     headerTransparent: true,
-                    headerTitle: '',
-                    cardStyle: {backgroundColor: Color.black},
+                    headerTitle: "",
+                    cardStyle: { backgroundColor: Color.black },
                     headerLeft: () => {
                         return null;
-                    },
+                    }
                 }}
             />
             <RootStack.Screen
@@ -180,15 +180,13 @@ function RootStackScreen() {
                 component={Guess}
             />
         </RootStack.Navigator>
-    )
+    );
 }
 
 function Navigator() {
     return (
-        <NavigationContainer
-            // ref={navigationRef}
-        >
-            <ModalStackScreen/>
+        <NavigationContainer>
+            <ModalStackScreen />
         </NavigationContainer>
     );
 }

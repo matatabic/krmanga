@@ -1,26 +1,12 @@
-import React from 'react';
-import {Dimensions, StatusBar} from 'react-native';
-import {ModalStackParamList, ModalStackNavigation} from '../navigator';
-import {NavigationState} from '@react-navigation/native';
+import React from "react";
+import { Dimensions, StatusBar } from "react-native";
+import { ModalStackParamList, ModalStackNavigation } from "../navigator";
+import { NavigationState } from "@react-navigation/native";
 
 
-const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
+const { width: viewportWidth, height: viewportHeight } = Dimensions.get("window");
 
 const statusBarHeight = StatusBar.currentHeight;
-
-const navigationRef = React.createRef<ModalStackNavigation>();
-
-function navigate(name: keyof ModalStackParamList, params?: any) {
-    if (navigationRef.current) {
-      navigationRef.current.navigate(name, params);
-    }
-}
-
-function back() {
-    if (navigationRef.current) {
-      navigationRef.current.goBack();
-    }
-}
 
 //百分比获取宽度
 function wp(percentage: number) {
@@ -53,22 +39,19 @@ function getCurrentDate() {
 
     let hour = date.getHours();
     let minute = date.getMinutes();
-    let min = minute >= 10 ? minute : `0${minute}`
+    let min = minute >= 10 ? minute : `0${minute}`;
 
     return `${hour}:${min}`;
 }
 
 
 export {
-    wp, 
-    hp, 
-    ip, 
-    getActiveRouteName, 
+    wp,
+    hp,
+    ip,
+    getActiveRouteName,
     getCurrentDate,
     viewportWidth,
     viewportHeight,
-    statusBarHeight, 
-    navigationRef,
-    navigate,
-    back,
+    statusBarHeight
 };

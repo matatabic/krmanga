@@ -1,18 +1,18 @@
-import {Effect, Model, SubscriptionsMapObject} from 'dva-core-ts';
-import {Reducer} from 'redux';
-import storage, {storageLoad} from '@/config/storage';
-import {RootState} from '@/models/index';
+import { Effect, Model, SubscriptionsMapObject } from "dva-core-ts";
+import { Reducer } from "redux";
+import storage, { storageLoad } from "@/config/storage";
+import { RootState } from "@/models/index";
 import CategoryServices from "@/services/category";
 
 
 export interface ICategory {
-    id: string;
+    id: number;
     name: string;
     typeName?: string;
 }
 
 export interface IStatus {
-    id: string;
+    id: number;
     title: string;
 }
 
@@ -28,7 +28,7 @@ interface CategorySettingModelState {
 }
 
 interface CategorySettingModel extends Model {
-    namespace: 'categorySetting';
+    namespace: "categorySetting";
     state: CategorySettingModelState;
     reducers: {
         setState: Reducer<CategorySettingModelState>;
@@ -43,73 +43,74 @@ interface CategorySettingModel extends Model {
 const initialState = {
     isEdit: false,
     myCategoryList: [
-        {id: '0', name: '全部'},
+        { id: 0, name: "全部" }
     ],
     categoryList: [],
-    statusList: [],
+    statusList: []
 };
 
 const categorySettingModel: CategorySettingModel = {
-    namespace: 'categorySetting',
+    namespace: "categorySetting",
     state: initialState,
     effects: {
-        *loadData(_, {call, put}) {
-            const myCategoryList = yield call(storageLoad, {key: 'myCategoryList'});
-            const categoryList = yield call(storageLoad, {key: 'categoryList'});
-            const statusList = yield call(storageLoad, {key: 'statusList'});
+        *loadData(_, { call, put }) {
+            const myCategoryList = yield call(storageLoad, { key: "myCategoryList" });
+            const categoryList = yield call(storageLoad, { key: "categoryList" });
+            const statusList = yield call(storageLoad, { key: "statusList" });
             if (myCategoryList) {
                 yield put({
-                    type: 'setState',
+                    type: "setState",
                     payload: {
                         myCategoryList,
                         categoryList,
                         statusList
-                    },
+                    }
                 });
             } else {
                 yield put({
-                    type: 'setState',
+                    type: "setState",
                     payload: {
                         categoryList,
                         statusList
-                    },
+                    }
                 });
             }
             storage.save({
-                key: 'statusList',
-                data: statusList,
-            })
+                key: "statusList",
+                data: statusList
+            });
         },
-        *toggle({payload}, {put, select}) {
+        *toggle({ payload }, { put, select }) {
             const categorySetting = yield select(
-                ({categorySetting}: RootState) => categorySetting,
+                ({ categorySetting }: RootState) => categorySetting
             );
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     isEdit: !categorySetting.isEdit,
-                    myCategoryList: payload.myCategoryList,
-                },
-            })
+                    myCategoryList: payload.myCategoryList
+                }
+            });
             if (categorySetting.isEdit) {
+                console.log(payload.myCategoryList);
                 storage.save({
-                    key: 'myCategoryList',
-                    data: payload.myCategoryList,
-                })
+                    key: "myCategoryList",
+                    data: payload.myCategoryList
+                });
             }
-        },
+        }
     },
     reducers: {
-        setState(state, {payload}) {
+        setState(state, { payload }) {
             return {
                 ...state,
-                ...payload,
+                ...payload
             };
-        },
+        }
     },
     subscriptions: {
-        setup({dispatch}) {
-            dispatch({type: 'loadData'});
+        setup({ dispatch }) {
+            dispatch({ type: "loadData" });
         },
         asyncStorage() {
             storage.sync.categoryList = async () => {
@@ -123,8 +124,8 @@ const categorySettingModel: CategorySettingModel = {
                 const data = await CategoryServices.getStatus();
                 return data.data.list;
             };
-        },
-    },
+        }
+    }
 };
 
 export default categorySettingModel;

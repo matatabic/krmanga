@@ -1,7 +1,7 @@
-import {Model, Effect} from 'dva-core-ts';
-import {Reducer} from 'redux';
+import { Model, Effect } from "dva-core-ts";
+import { Reducer } from "redux";
 import BookServices from "@/services/book";
-import {RootState} from "@/models/index";
+import { RootState } from "@/models/index";
 
 export interface IPagination {
     current_page: number;
@@ -36,7 +36,7 @@ export interface HomeState {
 }
 
 interface HomeModel extends Model {
-    namespace: 'home';
+    namespace: "home";
     state: HomeState;
     reducers: {
         setState: Reducer<HomeState>;
@@ -56,46 +56,46 @@ const initialState = {
     pagination: {
         current_page: 0,
         page_size: 0,
-        total: 0,
+        total: 0
     }
 };
 
 const homeModel: HomeModel = {
-    namespace: 'home',
+    namespace: "home",
     state: initialState,
     reducers: {
-        setState(state = initialState, {payload}) {
+        setState(state = initialState, { payload }) {
             return {
                 ...state,
-                ...payload,
+                ...payload
             };
-        },
+        }
     },
     effects: {
-        *fetchCarouselList(_, {call, put}) {
-            const {data} = yield call(BookServices.getCarousel);
+        *fetchCarouselList(_, { call, put }) {
+            const { data } = yield call(BookServices.getCarousel);
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
-                    carouselList: data.data,
-                },
+                    carouselList: data.data
+                }
             });
         },
-        *fetchCommendList(action, {call, put, select}) {
-            const {payload, type} = action;
-            const {refreshing} = payload;
-            const {commendList: list, pagination} = yield select(
-                (state: RootState) => state['home'],
+        *fetchCommendList(action, { call, put, select }) {
+            const { payload, type } = action;
+            const { refreshing } = payload;
+            const { commendList: list, pagination } = yield select(
+                (state: RootState) => state["home"]
             );
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     refreshing
-                },
+                }
             });
 
-            const {data} = yield call(BookServices.getCommend, {
+            const { data } = yield call(BookServices.getCommend, {
                 page_size: 2,
                 current_page: refreshing ? 1 : pagination.current_page + 1
             });
@@ -103,7 +103,7 @@ const homeModel: HomeModel = {
             const newList = refreshing ? data.list : [...list, ...data.list];
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     commendList: newList,
                     refreshing: false,
@@ -111,16 +111,16 @@ const homeModel: HomeModel = {
                     pagination: {
                         current_page: data.pages.current_page,
                         page_size: data.pages.page_size,
-                        total: data.pages.total,
-                    },
+                        total: data.pages.total
+                    }
                 }
             });
 
             if (action.callback) {
                 action.callback();
             }
-        },
-    },
+        }
+    }
 };
 
 export default homeModel;

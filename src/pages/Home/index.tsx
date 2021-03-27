@@ -1,25 +1,25 @@
-import React, {useEffect, useRef, useState} from 'react'
-import {View, Text, Animated, StyleSheet, SectionListRenderItemInfo} from "react-native";
-import {connect, ConnectedProps} from "react-redux";
-import {RootStackNavigation} from "@/navigator/index";
-import {RootState} from "@/models/index";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, Animated, StyleSheet, SectionListRenderItemInfo } from "react-native";
+import { connect, ConnectedProps } from "react-redux";
+import { RootStackNavigation } from "@/navigator/index";
+import { RootState } from "@/models/index";
 import CarouselBlurBackground from "@/pages/views/CarouselBlurBackground";
-import {hp} from "@/utils/index";
-import {Color} from "@/utils/const";
+import { hp } from "@/utils/index";
+import { Color } from "@/utils/const";
 import TopBarWrapper from "@/pages/views/TopBarWrapper";
-import {IBook} from "@/models/home";
+import { IBook } from "@/models/home";
 import More from "@/components/More";
 import End from "@/components/End";
 import BookCover from "@/components/BookCover";
 import Carousel from "@/pages/Home/Carousel";
 import HomePlaceholder from "@/components/Placeholder/HomePlaceholder";
 
-const mapStateToProps = ({home, loading}: RootState) => {
+const mapStateToProps = ({ home, loading }: RootState) => {
     return {
         commendList: home.commendList,
         refreshing: home.refreshing,
         hasMore: home.hasMore,
-        loading: loading.effects['home/fetchCommendList']
+        loading: loading.effects["home/fetchCommendList"]
     };
 };
 
@@ -31,29 +31,29 @@ interface IProps extends MadelState {
     navigation: RootStackNavigation;
 }
 
-const sideHeight = hp(30)
+const sideHeight = hp(30);
 const maxScroll = sideHeight + 10;
 
 
-function Home({dispatch, commendList, refreshing, navigation, loading, hasMore}: IProps) {
+function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore }: IProps) {
 
     const scrollY: Animated.Value = useRef(new Animated.Value(0)).current;
-    const [endReached, setEndReached] = useState(false)
+    const [endReached, setEndReached] = useState(false);
 
     useEffect(() => {
-        loadCarouselList()
-        loadCommendList(true)
-    }, [])
+        loadCarouselList();
+        loadCommendList(true);
+    }, []);
 
     const loadCarouselList = () => {
         dispatch({
-            type: 'home/fetchCarouselList',
+            type: "home/fetchCarouselList"
         });
-    }
+    };
 
     const loadCommendList = (refreshing: boolean, callback?: () => void) => {
         dispatch({
-            type: 'home/fetchCommendList',
+            type: "home/fetchCommendList",
             payload: {
                 refreshing
             },
@@ -61,75 +61,75 @@ function Home({dispatch, commendList, refreshing, navigation, loading, hasMore}:
         });
     };
 
-    const renderSectionHeader = ({section: {title}}: any) => {
+    const renderSectionHeader = ({ section: { title } }: any) => {
         return (
             <View style={styles.sectionHeader}>
-                <View style={styles.cell}/>
+                <View style={styles.cell} />
                 <Text style={styles.classifyName}>{title}</Text>
             </View>
         );
-    }
+    };
 
     const onRefresh = () => {
-        loadCarouselList()
-        loadCommendList(true)
-    }
+        loadCarouselList();
+        loadCommendList(true);
+    };
 
     const onEndReached = () => {
         if (!hasMore || loading) {
             return;
         }
-        setEndReached(true)
+        setEndReached(true);
         loadCommendList(false, () => {
-            setEndReached(false)
+            setEndReached(false);
         });
-    }
+    };
 
     const renderFooter = () => {
         if (endReached) {
-            return <More/>;
+            return <More />;
         }
         if (!hasMore) {
-            return <End/>;
+            return <End />;
         }
 
         return null;
     };
 
     const goBrief = (data: IBook) => {
-        navigation.navigate('Brief', {
+        navigation.navigate("Brief", {
             id: data.id
         });
     };
 
-    const renderItem = ({item}: SectionListRenderItemInfo<IBook[]>) => {
+    const renderItem = ({ item }: SectionListRenderItemInfo<IBook[]>) => {
         return (
             <View style={styles.contentContainer}>
                 {item.map(data => {
                     return (
-                        <BookCover data={data} goBrief={goBrief} key={data.id}/>
-                    )
+                        <BookCover data={data} goBrief={goBrief} key={data.id} />
+                    );
                 })}
             </View>
-        )
+        );
     };
 
     const getTopBarColor = () => {
         return scrollY.interpolate({
             inputRange: [0, maxScroll],
             outputRange: [0, 1],
-            extrapolate: "clamp",
-        })
-    }
+            extrapolate: "clamp"
+        });
+    };
 
     return (
-        (loading && refreshing) ? <HomePlaceholder/> :
-            <View style={{flex: 1}}>
-                <CarouselBlurBackground/>
-                <TopBarWrapper navigation={navigation} topBarColor={getTopBarColor()}/>
+        (loading && refreshing) ? <HomePlaceholder /> :
+            <View style={{ flex: 1 }}>
+                <CarouselBlurBackground />
+                <TopBarWrapper navigation={navigation} topBarColor={getTopBarColor()} />
                 <Animated.SectionList
-                    keyExtractor={(item, index) => `item-${item['id']}-key-${index}`}
-                    ListHeaderComponent={() => <Carousel/>}
+                    keyExtractor={(item, index) => `item-${item["id"]}-key-${index}`}
+                    ListHeaderComponent={() => <Carousel />}
                     renderSectionHeader={renderSectionHeader}
                     onRefresh={onRefresh}
                     refreshing={refreshing}
@@ -138,7 +138,7 @@ function Home({dispatch, commendList, refreshing, navigation, loading, hasMore}:
                     scrollEventThrottle={1}
                     onScroll={Animated.event(
                         [{
-                            nativeEvent: {contentOffset: {y: scrollY}}
+                            nativeEvent: { contentOffset: { y: scrollY } }
                         }],
                         {
                             useNativeDriver: true
@@ -151,7 +151,7 @@ function Home({dispatch, commendList, refreshing, navigation, loading, hasMore}:
                     ListFooterComponent={renderFooter}
                 />
             </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     },
     sectionHeader: {
         height: 35,
-        flexDirection: 'row',
+        flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "center",
         paddingVertical: 8,
@@ -169,18 +169,18 @@ const styles = StyleSheet.create({
     cell: {
         width: 6,
         height: 15,
-        backgroundColor: Color.yellow_title,
+        backgroundColor: Color.yellow_title
     },
     classifyName: {
         marginLeft: 15,
         fontSize: 15,
-        color: Color.black,
+        color: Color.black
     },
     contentContainer: {
         flexDirection: "row",
         flexWrap: "wrap",
-        backgroundColor: Color.page_bg,
+        backgroundColor: Color.page_bg
     }
-})
+});
 
 export default connector(Home);

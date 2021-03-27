@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react'
-import {View, Text, StyleSheet} from "react-native";
-import {viewportWidth} from "@/utils/index";
-import {RootState} from "@/models/index";
-import {connect, ConnectedProps} from "react-redux";
-import {RootStackNavigation} from "@/navigator/index";
-import {ICategory} from "@/models/categorySetting";
-import {ScrollView} from "react-native-gesture-handler";
-import {DragSortableView} from "react-native-drag-sort";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { viewportWidth } from "@/utils/index";
+import { RootState } from "@/models/index";
+import { connect, ConnectedProps } from "react-redux";
+import { RootStackNavigation } from "@/navigator/index";
+import { ICategory } from "@/models/categorySetting";
+import { ScrollView } from "react-native-gesture-handler";
+import { DragSortableView } from "react-native-drag-sort";
 import Touchable from "@/components/Touchable";
-import {Color} from "@/utils/const";
+import { Color } from "@/utils/const";
 import HeaderRightBtn from "@/pages/CategorySetting/HeaderRightBtn";
 import Item from "@/pages/CategorySetting/Item";
 
@@ -18,11 +18,11 @@ const itemWidth = parentWidth / 4;
 const itemHeight = 48;
 const margin = 5;
 
-const mapStateToProps = ({categorySetting}: RootState) => {
+const mapStateToProps = ({ categorySetting }: RootState) => {
     return {
         myCategoryList: categorySetting.myCategoryList,
         categoryList: categorySetting.categoryList,
-        isEdit: categorySetting.isEdit,
+        isEdit: categorySetting.isEdit
     };
 };
 
@@ -34,44 +34,44 @@ interface IProps extends ModelState {
     navigation: RootStackNavigation;
 }
 
-const CategorySetting = ({navigation, dispatch, categoryList, myCategoryList, isEdit}: IProps) => {
+const CategorySetting = ({ navigation, dispatch, categoryList, myCategoryList, isEdit }: IProps) => {
 
     const [myCategories, setMyCategories] = useState<ICategory[]>(myCategoryList);
 
     useEffect(() => {
         navigation.setOptions({
-            headerRight: () => <HeaderRightBtn onSubmit={onSubmit}/>,
+            headerRight: () => <HeaderRightBtn onSubmit={onSubmit} />
         });
-    },[myCategories])
+    }, [myCategories]);
 
     useEffect(() => {
         return () => {
             dispatch({
-                type: 'categorySetting/setState',
+                type: "categorySetting/setState",
                 payload: {
-                    isEdit: false,
-                },
+                    isEdit: false
+                }
             });
-        }
-    },[])
+        };
+    }, []);
 
     const onSubmit = () => {
         dispatch({
-            type: 'categorySetting/toggle',
+            type: "categorySetting/toggle",
             payload: {
-                myCategoryList: myCategories,
-            },
+                myCategoryList: myCategories
+            }
         });
     };
 
-    const onLongPress = () => {
+    const onLongPress = useCallback(() => {
         dispatch({
-            type: 'categorySetting/setState',
+            type: "categorySetting/setState",
             payload: {
-                isEdit: true,
-            },
+                isEdit: true
+            }
         });
-    };
+    }, []);
 
     const onPress = (item: ICategory, index: number, selected: boolean) => {
         const disabled = fixedItems.indexOf(index) > -1;
@@ -82,10 +82,10 @@ const CategorySetting = ({navigation, dispatch, categoryList, myCategoryList, is
         if (isEdit) {
             if (selected) {
                 setMyCategories(myCategories.filter(
-                    (selectedItem) => selectedItem.id !== item.id,
-                ))
+                    (selectedItem) => selectedItem.id !== item.id
+                ));
             } else {
-                setMyCategories(myCategories.concat([item]))
+                setMyCategories(myCategories.concat([item]));
             }
         }
     };
@@ -121,9 +121,9 @@ const CategorySetting = ({navigation, dispatch, categoryList, myCategoryList, is
         );
     };
 
-    const onDataChange = (data: ICategory[]) => {
-        setMyCategories(data)
-    };
+    const onDataChange = useCallback((data: ICategory[]) => {
+        setMyCategories(data);
+    }, []);
 
     return (
         <ScrollView style={styles.container}>
@@ -155,13 +155,13 @@ const CategorySetting = ({navigation, dispatch, categoryList, myCategoryList, is
                                     (item: ICategory, index: number) => {
                                         if (
                                             myCategories.find(
-                                                (selectedItem) => selectedItem.id === item.id,
+                                                (selectedItem) => selectedItem.id === item.id
                                             )
                                         ) {
                                             return null;
                                         }
                                         return renderUnSelectedItem(item, index);
-                                    },
+                                    }
                                 )}
                             </View>
                         </View>
@@ -170,24 +170,24 @@ const CategorySetting = ({navigation, dispatch, categoryList, myCategoryList, is
             </View>
         </ScrollView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Color.white,
+        backgroundColor: Color.white
     },
     classifyName: {
         fontSize: 16,
         marginTop: 14,
         marginBottom: 8,
-        marginLeft: 10,
+        marginLeft: 10
     },
     classifyView: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        padding: 5,
-    },
+        flexDirection: "row",
+        flexWrap: "wrap",
+        padding: 5
+    }
 
 });
 

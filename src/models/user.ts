@@ -1,10 +1,9 @@
-import {Model, Effect, SubscriptionsMapObject} from 'dva-core-ts';
-import {Reducer} from 'redux';
+import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
+import { Reducer } from "redux";
 import UserServices from "@/services/user";
 import Toast from "react-native-root-toast";
-import {StatusCode} from "@/utils/const";
-import storage, {storageLoad} from "@/config/storage";
-
+import { StatusCode } from "@/utils/const";
+import storage, { storageLoad } from "@/config/storage";
 
 
 interface IUser {
@@ -19,7 +18,7 @@ export interface UserState {
 }
 
 interface UserModel extends Model {
-    namespace: 'user';
+    namespace: "user";
     state: UserState;
     reducers: {
         userLogin: Reducer<UserState>;
@@ -37,46 +36,46 @@ interface UserModel extends Model {
 const initialState = {
     isLogin: false,
     userInfo: {
-        mobile: '',
-        username: '',
-        nickname: '',
+        mobile: "",
+        username: "",
+        nickname: ""
     }
 };
 
 const userModel: UserModel = {
-    namespace: 'user',
+    namespace: "user",
     state: initialState,
     reducers: {
-        userLogin(state = initialState, {payload}) {
+        userLogin(state = initialState, { payload }) {
             return {
                 ...state,
                 ...payload,
-                isLogin: true,
+                isLogin: true
             };
         },
-        userLogout(state = initialState, {payload}) {
+        userLogout(state = initialState, { payload }) {
             return {
                 ...state,
                 ...payload,
-                isLogin: false,
+                isLogin: false
             };
-        },
+        }
     },
     effects: {
-        *loadData(_, {call, put}) {
-            const isLogin = yield call(storageLoad, {key: 'isLogin'});
-            const userInfo = yield call(storageLoad, {key: 'userInfo'});
+        *loadData(_, { call, put }) {
+            const isLogin = yield call(storageLoad, { key: "isLogin" });
+            const userInfo = yield call(storageLoad, { key: "userInfo" });
             if (isLogin) {
                 yield put({
-                    type: 'userLogin',
+                    type: "userLogin",
                     payload: {
                         userInfo
                     }
-                })
+                });
             }
         },
-        *register(action, {call, put}) {
-            const {payload} = action;
+        *register(action, { call, put }) {
+            const { payload } = action;
 
             const data = yield call(UserServices.Register, payload);
             let isGoBack = false;
@@ -85,42 +84,42 @@ const userModel: UserModel = {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.CENTER,
                 shadow: true,
-                animation: true,
-            })
+                animation: true
+            });
 
             if (data.code === StatusCode.SUCCESS) {
                 isGoBack = true;
                 const userInfo = {
                     mobile: data.data.mobile,
                     username: data.data.username,
-                    nickname: data.data.nickname,
-                }
+                    nickname: data.data.nickname
+                };
                 yield put({
-                    type: 'userLogin',
+                    type: "userLogin",
                     payload: {
                         userInfo
                     }
-                })
+                });
 
                 storage.save({
-                    key: 'isLogin',
+                    key: "isLogin",
                     data: true
-                })
+                });
                 storage.save({
-                    key: 'token',
+                    key: "token",
                     data: data.data.token
-                })
+                });
                 storage.save({
-                    key: 'userInfo',
+                    key: "userInfo",
                     data: userInfo
-                })
+                });
             }
             if (action.callback) {
                 action.callback(isGoBack);
             }
         },
-        *login(action, {call, put}) {
-            const {payload} = action;
+        *login(action, { call, put }) {
+            const { payload } = action;
 
             const data = yield call(UserServices.Login, payload);
             let isGoBack = false;
@@ -129,72 +128,72 @@ const userModel: UserModel = {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.CENTER,
                 shadow: true,
-                animation: true,
-            })
+                animation: true
+            });
 
             if (data.code === StatusCode.SUCCESS) {
                 isGoBack = true;
                 const userInfo = {
                     mobile: data.data.mobile,
                     username: data.data.username,
-                    nickname: data.data.nickname,
-                }
+                    nickname: data.data.nickname
+                };
                 yield put({
-                    type: 'userLogin',
+                    type: "userLogin",
                     payload: {
                         userInfo
                     }
-                })
+                });
 
                 storage.save({
-                    key: 'isLogin',
+                    key: "isLogin",
                     data: true
-                })
+                });
                 storage.save({
-                    key: 'token',
+                    key: "token",
                     data: data.data.token
-                })
+                });
                 storage.save({
-                    key: 'userInfo',
+                    key: "userInfo",
                     data: userInfo
-                })
+                });
             }
             if (action.callback) {
                 action.callback(isGoBack);
             }
         },
-        *logout(_, {call, put}) {
+        *logout(_, { call, put }) {
             const data = yield call(UserServices.logout);
             yield put({
-                type: 'userLogout',
+                type: "userLogout",
                 payload: {
                     userInfo: initialState
                 }
-            })
+            });
 
             yield put({
-                type: 'shelf/initData',
-            })
+                type: "shelf/initData"
+            });
 
             Toast.show(data.msg, {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.CENTER,
                 shadow: true,
-                animation: true,
-            })
+                animation: true
+            });
             storage.remove({
-                key: 'isLogin',
-            })
+                key: "isLogin"
+            });
             storage.remove({
-                key: 'token',
-            })
+                key: "token"
+            });
             storage.remove({
-                key: 'userInfo',
-            })
-        },
+                key: "userInfo"
+            });
+        }
     },
     subscriptions: {
-        setup({dispatch}) {
+        setup({ dispatch }) {
             // dispatch({type: 'loadData'});
         },
         asyncStorage() {
@@ -207,8 +206,8 @@ const userModel: UserModel = {
             storage.sync.userInfo = async () => {
                 return null;
             };
-        },
-    },
+        }
+    }
 };
 
 export default userModel;

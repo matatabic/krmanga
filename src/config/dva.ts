@@ -1,21 +1,20 @@
-import {create, Model} from 'dva-core-ts';
-import createLoading from 'dva-loading-ts';
-import modelExtend from 'dva-model-extend';
-import models from '@/models/index';
-import categoryModel, {CategoryModel, CategoryType} from "@/models/category";
+import { create, Model } from "dva-core-ts";
+import createLoading from "dva-loading-ts";
+import modelExtend from "dva-model-extend";
+import models from "@/models/index";
+import categoryModel, { CategoryModel, CategoryType } from "@/models/category";
 import Toast from "react-native-root-toast";
-import Category from "@/pages/Category";
 
 
 //1.创建实例
 const app = create({
     onError: (e) => {
-        Toast.show('network error!', {
+        Toast.show("network error!", {
             position: Toast.positions.CENTER,
             duration: Toast.durations.LONG,
             shadow: true,
-            animation: true,
-        })
+            animation: true
+        });
     }
 });
 
@@ -35,8 +34,8 @@ interface Cached {
 }
 
 const cached: Cached = {
-    category: true,
-}
+    category: true
+};
 
 function registerModel(model: Model) {
     if (!cached[model.namespace]) {
@@ -46,6 +45,6 @@ function registerModel(model: Model) {
 }
 
 export function createCategoryModel(namespace: string) {
-    const model = modelExtend(categoryModel, {namespace});
+    const model = modelExtend(categoryModel, { namespace });
     registerModel(model);
 }

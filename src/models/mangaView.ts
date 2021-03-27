@@ -1,7 +1,7 @@
-import {Model, Effect} from 'dva-core-ts';
-import {Reducer} from 'redux';
+import { Model, Effect } from "dva-core-ts";
+import { Reducer } from "redux";
 import EpisodeServices from "@/services/episode";
-import {RootState} from "@/models/index";
+import { RootState } from "@/models/index";
 
 
 export interface IEpisode {
@@ -40,7 +40,7 @@ export interface MangaViewState {
 }
 
 interface MangaViewModel extends Model {
-    namespace: 'mangaView';
+    namespace: "mangaView";
     state: MangaViewState;
     reducers: {
         setState: Reducer<MangaViewState>;
@@ -61,7 +61,7 @@ export const initialState = {
     currentChapterId: 0,
     currentNumber: 0,
     currentRoast: 0,
-    currentTitle: '',
+    currentTitle: "",
     panelStatus: true,
     pagination: {
         current_chapter_id: 0,
@@ -69,40 +69,40 @@ export const initialState = {
         episode_offset: 0,
         episode_total: 0,
         chapter_total: 0,
-        current_title: '',
+        current_title: ""
     }
 };
 
 const mangaViewModel: MangaViewModel = {
-    namespace: 'mangaView',
+    namespace: "mangaView",
     state: initialState,
     reducers: {
-        setState(state = initialState, {payload}) {
+        setState(state = initialState, { payload }) {
             return {
                 ...state,
-                ...payload,
+                ...payload
             };
-        },
+        }
     },
     effects: {
-        *fetchEpisodeList(action, {call, put, select}) {
-            const {payload} = action;
-            const {refreshing} = payload;
+        *fetchEpisodeList(action, { call, put, select }) {
+            const { payload } = action;
+            const { refreshing } = payload;
 
-            let {episodeList: list,} = yield select(
-                (state: RootState) => state['mangaView'],
+            let { episodeList: list } = yield select(
+                (state: RootState) => state["mangaView"]
             );
 
-            const {data} = yield call(EpisodeServices.getList, {
+            const { data } = yield call(EpisodeServices.getList, {
                 book_id: payload.book_id,
                 roast: refreshing ? payload.roast : list[list.length - 1].roast + 1,
-                chapter_num: payload.chapter_num,
+                chapter_num: payload.chapter_num
             });
 
             const newList = refreshing ? data.list : [...list, ...data.list];
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     episodeList: newList,
                     hasMore: data.pages.current_chapter < data.pages.chapter_total,
@@ -112,7 +112,7 @@ const mangaViewModel: MangaViewModel = {
                     currentNumber: data.pages.episode_offset,
                     currentTitle: data.pages.current_title,
                     currentRoast: payload.roast,
-                    pagination: data.pages,
+                    pagination: data.pages
                 }
             });
 
@@ -120,19 +120,19 @@ const mangaViewModel: MangaViewModel = {
                 action.callback();
             }
         },
-        *addHistory({payload}, {call}) {
+        *addHistory({ payload }, { call }) {
             yield call(EpisodeServices.saveMark, payload);
         },
-        *setCurrentIndex(action, {_, put, select}) {
-            const {payload} = action;
+        *setCurrentIndex(action, { _, put, select }) {
+            const { payload } = action;
 
-            let {episodeList: list, currentChapterNum} = yield select(
-                (state: RootState) => state['mangaView'],
+            let { episodeList: list, currentChapterNum } = yield select(
+                (state: RootState) => state["mangaView"]
             );
-            const index = list.findIndex((item: IEpisode) => item.chapter_num === currentChapterNum && item.number === payload.currentNumber)
+            const index = list.findIndex((item: IEpisode) => item.chapter_num === currentChapterNum && item.number === payload.currentNumber);
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     currentNumber: list[index].number
                 }
@@ -140,11 +140,11 @@ const mangaViewModel: MangaViewModel = {
 
             if (action.callback) {
                 action.debounce(() => {
-                    action.callback(index)
-                })
+                    action.callback(index);
+                });
             }
         }
-    },
+    }
 };
 
 export default mangaViewModel;

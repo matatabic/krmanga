@@ -1,13 +1,13 @@
-import React, {memo} from 'react';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import {RootState} from "@/models/index";
-import {connect, ConnectedProps} from "react-redux";
+import React from "react";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { RootState } from "@/models/index";
+import { connect, ConnectedProps } from "react-redux";
 
-const mapStateToProps = ({categorySetting}: RootState) => {
+const mapStateToProps = ({ categorySetting }: RootState) => {
     return {
-        isEdit: categorySetting.isEdit,
-    }
-}
+        isEdit: categorySetting.isEdit
+    };
+};
 
 const connector = connect(mapStateToProps);
 
@@ -17,10 +17,10 @@ interface IProps extends ModelState {
     onSubmit: () => void;
 }
 
-function HeaderRightBtn({isEdit, onSubmit}: IProps) {
+function HeaderRightBtn({ isEdit, onSubmit }: IProps) {
     return (
         <HeaderButtons>
-            <Item title={isEdit ? '完成' : '编辑'} onPress={onSubmit}/>
+            <Item title={isEdit ? "完成" : "编辑"} onPress={onSubmit} />
         </HeaderButtons>
     );
 }

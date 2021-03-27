@@ -1,9 +1,9 @@
-import {Model, Effect} from 'dva-core-ts';
-import {Reducer} from 'redux';
-import {RootState} from "@/models/index";
+import { Model, Effect } from "dva-core-ts";
+import { Reducer } from "redux";
+import { RootState } from "@/models/index";
 import ShelfServices from "@/services/shelf";
 import BriefServices from "@/services/brief";
-import {StatusCode} from "@/utils/const";
+import { StatusCode } from "@/utils/const";
 
 
 export interface ICollection {
@@ -53,7 +53,7 @@ interface ShelfState {
 }
 
 interface ShelfModel extends Model {
-    namespace: 'shelf';
+    namespace: "shelf";
     state: ShelfState;
     reducers: {
         setState: Reducer<ShelfState>;
@@ -79,75 +79,75 @@ export const initialState = {
     collectionPagination: {
         current_page: 0,
         page_size: 0,
-        total: 0,
+        total: 0
     },
     collectionScreenReload: true,
     historyHasMore: false,
     historyPagination: {
         current_page: 0,
         page_size: 0,
-        total: 0,
+        total: 0
     },
     historyScreenReload: true,
     ids: [],
     refreshing: false,
     isEditCollection: false,
     isEditHistory: false,
-    activePage: 1,
+    activePage: 1
 };
 
 const shelfModel: ShelfModel = {
-    namespace: 'shelf',
+    namespace: "shelf",
     state: initialState,
     reducers: {
-        setState(state = initialState, {payload}) {
+        setState(state = initialState, { payload }) {
             return {
                 ...state,
-                ...payload,
+                ...payload
             };
         },
-        setIds(state = initialState, {payload}) {
+        setIds(state = initialState, { payload }) {
             return {
                 ...state,
-                ids: payload.ids,
+                ids: payload.ids
             };
         },
-        setActivePage(state = initialState, {payload}) {
+        setActivePage(state = initialState, { payload }) {
             return {
                 ...state,
                 activePage: payload.activePage,
                 isEditCollection: payload.isEditCollection,
                 isEditHistory: payload.isEditHistory,
-                ids: [],
+                ids: []
             };
         },
         setCollectionScreenReload(state = initialState) {
             return {
                 ...state,
-                collectionScreenReload: true,
-            }
+                collectionScreenReload: true
+            };
         },
         setHistoryScreenReload(state = initialState) {
             return {
                 ...state,
-                historyScreenReload: true,
-            }
+                historyScreenReload: true
+            };
         },
         initData(state = initialState) {
             return {
-                ...state,
-            }
+                ...state
+            };
         }
     },
     effects: {
-        *fetchCollectionList(action, {call, put, select}) {
-            const {payload, type} = action;
-            const {refreshing} = payload;
+        *fetchCollectionList(action, { call, put, select }) {
+            const { payload, type } = action;
+            const { refreshing } = payload;
 
-            const namespace = type.split('/')[0];
+            const namespace = type.split("/")[0];
 
-            const {collectionList: list, collectionPagination: pagination, collectionScreenReload: reload} = yield select(
-                (state: RootState) => state[namespace],
+            const { collectionList: list, collectionPagination: pagination, collectionScreenReload: reload } = yield select(
+                (state: RootState) => state[namespace]
             );
 
             if (refreshing && !reload) {
@@ -155,21 +155,21 @@ const shelfModel: ShelfModel = {
             }
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
-                    refreshing,
-                },
+                    refreshing
+                }
             });
 
-            const {data} = yield call(ShelfServices.getCollection, {
+            const { data } = yield call(ShelfServices.getCollection, {
                 page_size: 9,
-                current_page: refreshing ? 1 : pagination.current_page + 1,
+                current_page: refreshing ? 1 : pagination.current_page + 1
             });
 
             const newList = refreshing ? data.list : [...list, ...data.list];
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     collectionList: newList,
                     refreshing: false,
@@ -178,8 +178,8 @@ const shelfModel: ShelfModel = {
                     collectionPagination: {
                         current_page: data.pages.current_page,
                         page_size: data.pages.page_size,
-                        total: data.pages.total,
-                    },
+                        total: data.pages.total
+                    }
                 }
             });
 
@@ -187,14 +187,14 @@ const shelfModel: ShelfModel = {
                 action.callback();
             }
         },
-        *fetchHistoryList(action, {call, put, select}) {
-            const {payload, type} = action;
-            const {refreshing} = payload;
+        *fetchHistoryList(action, { call, put, select }) {
+            const { payload, type } = action;
+            const { refreshing } = payload;
 
-            const namespace = type.split('/')[0];
+            const namespace = type.split("/")[0];
 
-            const {historyList: list, historyPagination: pagination, historyScreenReload: reload} = yield select(
-                (state: RootState) => state[namespace],
+            const { historyList: list, historyPagination: pagination, historyScreenReload: reload } = yield select(
+                (state: RootState) => state[namespace]
             );
 
             if (refreshing && !reload) {
@@ -202,15 +202,15 @@ const shelfModel: ShelfModel = {
             }
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
-                    refreshing,
-                },
+                    refreshing
+                }
             });
 
-            const {data} = yield call(ShelfServices.getHistory, {
+            const { data } = yield call(ShelfServices.getHistory, {
                 page_size: 6,
-                current_page: refreshing ? 1 : pagination.current_page + 1,
+                current_page: refreshing ? 1 : pagination.current_page + 1
             });
 
 
@@ -221,18 +221,18 @@ const shelfModel: ShelfModel = {
             } else {
                 newList = [...list, ...data.list];
                 newList = newList.reduce((pre, cur) => {
-                    const index = pre.findIndex((i: { title: string }) => cur.title === i.title)
+                    const index = pre.findIndex((i: { title: string }) => cur.title === i.title);
                     if (index < 0) {
-                        pre.push(cur)
+                        pre.push(cur);
                     } else {
-                        pre[index].data = pre[index].data.concat(cur.data)
+                        pre[index].data = pre[index].data.concat(cur.data);
                     }
                     return pre;
-                }, [])
+                }, []);
             }
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     historyList: newList,
                     refreshing: false,
@@ -241,8 +241,8 @@ const shelfModel: ShelfModel = {
                     historyPagination: {
                         current_page: data.pages.current_page,
                         page_size: data.pages.page_size,
-                        total: data.pages.total,
-                    },
+                        total: data.pages.total
+                    }
                 }
             });
 
@@ -250,70 +250,70 @@ const shelfModel: ShelfModel = {
                 action.callback();
             }
         },
-        *delUserCollection(action, {call, put, select}) {
-            const {payload, type} = action;
+        *delUserCollection(action, { call, put, select }) {
+            const { payload, type } = action;
 
-            const namespace = type.split('/')[0];
+            const namespace = type.split("/")[0];
 
-            const {collectionList: list} = yield select(
-                (state: RootState) => state[namespace],
+            const { collectionList: list } = yield select(
+                (state: RootState) => state[namespace]
             );
 
-            let idsString = '';
+            let idsString = "";
             for (let i of payload.ids) {
                 idsString += `${i},`;
             }
 
-            const data = yield call(BriefServices.delUserCollection, {id: idsString});
+            const data = yield call(BriefServices.delUserCollection, { id: idsString });
             if (data.code === StatusCode.SUCCESS) {
                 const newList = list.filter((item: ICollection) => {
-                    return payload.ids.indexOf(item.id) === -1
-                })
+                    return payload.ids.indexOf(item.id) === -1;
+                });
                 yield put({
-                    type: 'setState',
+                    type: "setState",
                     payload: {
                         collectionList: newList,
-                        isEditCollection: false,
+                        isEditCollection: false
                     }
-                })
+                });
             }
         },
-        *delUserHistory(action, {call, put, select}) {
-            const {payload, type} = action;
+        *delUserHistory(action, { call, put, select }) {
+            const { payload, type } = action;
 
-            const namespace = type.split('/')[0];
+            const namespace = type.split("/")[0];
 
-            const {historyList: list} = yield select(
-                (state: RootState) => state[namespace],
+            const { historyList: list } = yield select(
+                (state: RootState) => state[namespace]
             );
 
-            let idsString = '';
+            let idsString = "";
             for (let i of payload.ids) {
                 idsString += `${i},`;
             }
 
-            const data = yield call(ShelfServices.delUserHistory, {book_id: idsString});
+            const data = yield call(ShelfServices.delUserHistory, { book_id: idsString });
             if (data.code === StatusCode.SUCCESS) {
                 let n = 0;
                 let newList: IHistoryList[] = [];
                 list.forEach((items: IHistoryList) => {
-                    let data = items.data.filter(item => payload.ids.indexOf(item['book_id']) === -1)
+                    let data = items.data.filter(item => payload.ids.indexOf(item["book_id"]) === -1);
                     if (data.length !== 0) {
-                        newList[n] = {title: items.title, data: data}
-                        n++
+                        newList[n] = { title: items.title, data: data };
+                        n++;
                     }
-                })
+                });
 
                 yield put({
-                    type: 'setState',
+                    type: "setState",
                     payload: {
                         historyList: newList,
-                        isEditHistory: false,
+                        isEditHistory: false
                     }
-                })
+                });
             }
-        },
-    },
+        }
+    }
 
 };
 

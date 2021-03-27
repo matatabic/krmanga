@@ -1,7 +1,7 @@
-import {Effect, Model} from "dva-core-ts";
-import {Reducer} from "redux";
+import { Effect, Model } from "dva-core-ts";
+import { Reducer } from "redux";
 import BriefServices from "@/services/brief";
-import {StatusCode} from "@/utils/const";
+import { StatusCode } from "@/utils/const";
 import Toast from "react-native-root-toast";
 
 
@@ -35,7 +35,7 @@ export interface BriefState {
 }
 
 interface CategoryModel extends Model {
-    namespace: 'brief';
+    namespace: "brief";
     state: BriefState;
     reducers: {
         setState: Reducer<BriefState>;
@@ -52,16 +52,16 @@ interface CategoryModel extends Model {
 export const initialState = {
     bookInfo: {
         id: 0,
-        title: '',
-        image: '',
-        category: '',
-        author: '',
-        description: '',
-        status: '',
+        title: "",
+        image: "",
+        category: "",
+        author: "",
+        description: "",
+        status: ""
     },
     statusBarHeight: 0,
     refreshing: false,
-    book_update_info: '',
+    book_update_info: "",
     collection_id: 0,
     markChapterNum: 0,
     markRoast: 0,
@@ -69,89 +69,89 @@ export const initialState = {
 };
 
 const briefModel: CategoryModel = {
-    namespace: 'brief',
+    namespace: "brief",
     state: initialState,
     reducers: {
-        setState(state = initialState, {payload}) {
+        setState(state = initialState, { payload }) {
             return {
                 ...state,
-                ...payload,
+                ...payload
             };
         },
-        setCollectionId(state = initialState, {payload}) {
+        setCollectionId(state = initialState, { payload }) {
             return {
                 ...state,
-                collection_id: payload.collection_id,
+                collection_id: payload.collection_id
             };
         },
-        setChapter(state = initialState, {payload}) {
+        setChapter(state = initialState, { payload }) {
             return {
                 ...state,
-                ...payload,
-            }
-        },
+                ...payload
+            };
+        }
     },
     effects: {
-        *fetchBrief(action, {call, put}) {
-            const {payload} = action;
-            const {refreshing} = payload;
+        *fetchBrief(action, { call, put }) {
+            const { payload } = action;
+            const { refreshing } = payload;
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     refreshing
-                },
+                }
             });
 
-            const {data} = yield call(BriefServices.getList, payload);
+            const { data } = yield call(BriefServices.getList, payload);
 
             yield put({
-                type: 'setState',
+                type: "setState",
                 payload: {
                     ...data,
-                    refreshing: false,
-                },
+                    refreshing: false
+                }
             });
 
             if (action.callback) {
                 action.callback();
             }
         },
-        *addUserCollection({payload}, {call, put}) {
+        *addUserCollection({ payload }, { call, put }) {
             const data = yield call(BriefServices.addUserCollection, payload);
             Toast.show(data.msg, {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.CENTER,
                 shadow: true,
-                animation: true,
-            })
+                animation: true
+            });
             if (data.code === StatusCode.SUCCESS) {
                 yield put({
-                    type: 'setCollectionId',
+                    type: "setCollectionId",
                     payload: {
                         collection_id: data.data
                     }
-                })
+                });
             }
         },
-        *delUserCollection({payload}, {call, put}) {
+        *delUserCollection({ payload }, { call, put }) {
             const data = yield call(BriefServices.delUserCollection, payload);
             Toast.show(data.msg, {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.CENTER,
                 shadow: true,
-                animation: true,
-            })
+                animation: true
+            });
             if (data.code === StatusCode.SUCCESS) {
                 yield put({
-                    type: 'setCollectionId',
+                    type: "setCollectionId",
                     payload: {
                         collection_id: 0
                     }
-                })
+                });
             }
-        },
-    },
+        }
+    }
 };
 
 export default briefModel;
