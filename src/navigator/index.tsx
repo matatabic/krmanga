@@ -17,8 +17,8 @@ import {
     statusBarHeight,
     navigationRef
 } from "@/utils/index";
-import Register from "@/pages/Register";
-import Login from "@/pages/Login";
+import Register from "@/pages/account/Register";
+import Login from "@/pages/account/Login";
 import Brief from "@/pages/Brief";
 import { Platform, StyleSheet } from "react-native";
 import BottomTabs from "@/navigator/BottomTabs";
