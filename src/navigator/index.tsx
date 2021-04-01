@@ -1,9 +1,6 @@
 import React from "react";
 import {
-    NavigationContainer,
-    RouteProp,
-    NavigationState,
-    DefaultTheme
+    NavigationContainer
 } from "@react-navigation/native";
 import {
     createStackNavigator,
@@ -12,11 +9,6 @@ import {
     CardStyleInterpolators,
     TransitionPresets
 } from "@react-navigation/stack";
-
-import {
-    statusBarHeight,
-    navigationRef
-} from "@/utils/index";
 import Register from "@/pages/account/Register";
 import Login from "@/pages/account/Login";
 import Brief from "@/pages/Brief";
@@ -27,7 +19,7 @@ import CategorySetting from "@/pages/CategorySetting";
 import Search from "@/pages/Search";
 import MangaView from "@/pages/MangaView";
 import Guess from "@/pages/Guess";
-import { getStatusBarHeight } from "react-native-iphone-x-helper";
+
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -43,7 +35,10 @@ export type RootStackParamList = {
         id: number;
     };
     CategoryTabs: undefined;
-    MangaView: undefined;
+    MangaView: {
+        roast: number,
+        book_id: number
+    };
 }
 
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
@@ -99,7 +94,7 @@ function ModalStackScreen() {
                 name="Register"
                 component={Register}
                 options={{
-                    headerTitle: "登录"
+                    headerTitle: "注册"
                 }}
             />
         </ModalStack.Navigator>

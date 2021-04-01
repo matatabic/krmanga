@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { StyleSheet, View, Animated } from "react-native";
 import { viewportWidth } from "@/utils/index";
 import moon from "@/assets/image/moon.png";
@@ -24,13 +24,12 @@ function ImageBackground({ imageSize }: IProps) {
 
 const styles = StyleSheet.create({
     container: {
-        ...StyleSheet.absoluteFillObject,
+        ...StyleSheet.absoluteFillObject
     },
     image: {
         width: viewportWidth,
         height: 600
     }
-
 });
 
 export default ImageBackground;

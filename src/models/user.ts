@@ -119,48 +119,48 @@ const userModel: UserModel = {
             }
         },
         *login(action, { call, put }) {
-            // const { payload } = action;
-            //
-            // const data = yield call(UserServices.Login, payload);
-            // let isGoBack = false;
+            const { payload } = action;
 
-            Toast.show("231123", {
+            const data = yield call(UserServices.Login, payload);
+            let isGoBack = false;
+
+            Toast.show(data.msg, {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.CENTER,
                 shadow: true,
                 animation: true
             });
-            console.log(12312)
-            // if (data.code === StatusCode.SUCCESS) {
-            //     isGoBack = true;
-            //     const userInfo = {
-            //         mobile: data.data.mobile,
-            //         username: data.data.username,
-            //         nickname: data.data.nickname
-            //     };
-            //     yield put({
-            //         type: "userLogin",
-            //         payload: {
-            //             userInfo
-            //         }
-            //     });
-            //
-            //     storage.save({
-            //         key: "isLogin",
-            //         data: true
-            //     });
-            //     storage.save({
-            //         key: "token",
-            //         data: data.data.token
-            //     });
-            //     storage.save({
-            //         key: "userInfo",
-            //         data: userInfo
-            //     });
-            // }
-            // if (action.callback) {
-            //     action.callback(isGoBack);
-            // }
+
+            if (data.code === StatusCode.SUCCESS) {
+                isGoBack = true;
+                const userInfo = {
+                    mobile: data.data.mobile,
+                    username: data.data.username,
+                    nickname: data.data.nickname
+                };
+                yield put({
+                    type: "userLogin",
+                    payload: {
+                        userInfo
+                    }
+                });
+
+                storage.save({
+                    key: "isLogin",
+                    data: true
+                });
+                storage.save({
+                    key: "token",
+                    data: data.data.token
+                });
+                storage.save({
+                    key: "userInfo",
+                    data: userInfo
+                });
+            }
+            if (action.callback) {
+                action.callback(isGoBack);
+            }
         },
         *logout(_, { call, put }) {
             const data = yield call(UserServices.logout);
@@ -194,7 +194,7 @@ const userModel: UserModel = {
     },
     subscriptions: {
         setup({ dispatch }) {
-            // dispatch({type: 'loadData'});
+            dispatch({type: 'loadData'});
         },
         asyncStorage() {
             storage.sync.token = async () => {

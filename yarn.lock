@@ -6032,7 +6032,7 @@ react-native-reanimated@^1.13.2:
   dependencies:
     fbjs "^1.0.0"
 
-react-native-root-siblings@^4.0.0:
+react-native-root-siblings@^4.0.0, react-native-root-siblings@^4.1.0:
   version "4.1.0"
   resolved "https://registry.npm.taobao.org/react-native-root-siblings/download/react-native-root-siblings-4.1.0.tgz#23305a0f96ebd27cff3667d1cb980684da35e5d1"
   integrity sha1-IzBaD5br0nz/NmfRy5gGhNo15dE=

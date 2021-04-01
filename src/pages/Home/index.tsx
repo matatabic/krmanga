@@ -38,7 +38,7 @@ const maxScroll = sideHeight + 10;
 function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore }: IProps) {
 
     const scrollY: Animated.Value = useRef(new Animated.Value(0)).current;
-    const [endReached, setEndReached] = useState(false);
+    const [endReached, setEndReached] = useState<boolean>(false);
 
     useEffect(() => {
         loadCarouselList();

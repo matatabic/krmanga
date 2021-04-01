@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, ListRenderItemInfo, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
+import React, { useState } from "react";
+import { FlatList, StyleSheet, ListRenderItemInfo, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
 import { RootState } from "@/models/index";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { CategoryTabParamList } from "@/navigator/CategoryTabs";
 import { connect, ConnectedProps } from "react-redux";
 import { RootStackNavigation } from "@/navigator/index";
@@ -22,10 +22,10 @@ const mapStateToProps = (state: RootState, { route }: { route: RouteProp<Categor
         activeModel,
         activeCategory: state["category"].activeCategory,
         activeStatus: state["category"].activeStatus,
-        bookList: state[activeModel].bookList ? state[activeModel].bookList : [],
-        hasMore: state[activeModel].hasMore ? state[activeModel].hasMore : false,
-        refreshing: state[activeModel].refreshing ? state[activeModel].refreshing : false,
-        hideHeader: state[activeModel].hideHeader ? state[activeModel] : false,
+        bookList: state[activeModel] ? state[activeModel].bookList : [],
+        hasMore: state[activeModel] ? state[activeModel].hasMore : false,
+        refreshing: state[activeModel] ? state[activeModel].refreshing : false,
+        hideHeader: state[activeModel] ? state[activeModel] : false,
         loading: state.loading.effects[`${activeModel}/fetchBookList`]
     };
 };
@@ -44,8 +44,8 @@ function Category({ dispatch, navigation, category_id, activeStatus, activeModel
     let scrollViewStartOffsetY: number = 0;
     const [endReached, setEndReached] = useState<boolean>(false);
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener("focus", () => {
+    useFocusEffect(
+        React.useCallback(() => {
             dispatch({
                 type: "category/setState",
                 payload: {
@@ -53,9 +53,8 @@ function Category({ dispatch, navigation, category_id, activeStatus, activeModel
                 }
             });
             loadData(true);
-        });
-        return unsubscribe;
-    }, [navigation, activeStatus]);
+        }, [activeStatus])
+    );
 
     const loadData = (refreshing: boolean, callback?: () => void) => {
         dispatch({
