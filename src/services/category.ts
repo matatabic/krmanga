@@ -1,5 +1,5 @@
 import axios from "axios";
-import {CATEGORY_TREE_URL, CATEGORY_URL, STATUS_URL} from "@/config/api";
+import { CATEGORY_TREE_URL, CATEGORY_URL, STATUS_URL } from "@/config/api";
 
 
 async function getList() {
@@ -17,5 +17,5 @@ async function getTreeList() {
 export default {
     getList,
     getStatus,
-    getTreeList,
+    getTreeList
 };

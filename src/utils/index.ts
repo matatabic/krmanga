@@ -1,12 +1,8 @@
-import React from "react";
-import { Dimensions, StatusBar } from "react-native";
-import { ModalStackParamList, ModalStackNavigation } from "../navigator";
+import { Dimensions } from "react-native";
 import { NavigationState } from "@react-navigation/native";
 
 
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get("window");
-
-const statusBarHeight = StatusBar.currentHeight;
 
 //百分比获取宽度
 function wp(percentage: number) {
@@ -52,6 +48,5 @@ export {
     getActiveRouteName,
     getCurrentDate,
     viewportWidth,
-    viewportHeight,
-    statusBarHeight
+    viewportHeight
 };

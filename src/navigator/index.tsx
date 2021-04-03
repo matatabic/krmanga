@@ -65,7 +65,7 @@ function ModalStackScreen() {
                 cardOverlayEnabled: true,
                 gestureEnabled: true,
                 headerTitleAlign: "center",
-                // headerStatusBarHeight: statusBarHeight,
+                // headerStatusBarHeight: headerHeight,
                 headerBackTitleVisible: false,
                 headerTintColor: Color.white,
                 headerStyle: {
@@ -112,7 +112,7 @@ function RootStackScreen() {
                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
                 gestureEnabled: true,
                 gestureDirection: "horizontal",
-                // headerStatusBarHeight: statusBarHeight+getStatusBarHeight(),
+                // headerStatusBarHeight: headerHeight,
                 headerTintColor: Color.white,
                 headerStyle: {
                     backgroundColor: Color.theme,
@@ -137,7 +137,10 @@ function RootStackScreen() {
                 options={{
                     headerTransparent: true,
                     headerTitle: "",
-                    cardStyle: { backgroundColor: Color.page_bg }
+                    cardStyle: { backgroundColor: Color.page_bg },
+                    headerLeft: () => {
+                        return null;
+                    }
                 }}
             />
             <RootStack.Screen

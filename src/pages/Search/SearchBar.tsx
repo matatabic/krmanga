@@ -1,18 +1,19 @@
-import React from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
-import {getStatusBarHeight} from "react-native-iphone-x-helper";
-import {RootState} from "@/models/index";
-import {connect, ConnectedProps} from "react-redux";
-import {RootStackNavigation} from "@/navigator/index";
+import React from "react";
+import { View, Text, StyleSheet, TextInput } from "react-native";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import { RootState } from "@/models/index";
+import { connect, ConnectedProps } from "react-redux";
+import { RootStackNavigation } from "@/navigator/index";
 import Touchable from "@/components/Touchable";
 import Icon from "@/assets/iconfont";
-import {Color} from "@/utils/const";
+import { Color } from "@/utils/const";
+import { useHeaderHeight } from "@react-navigation/stack";
 
 
-const mapStateToProps = ({search}: RootState) => {
+const mapStateToProps = ({ search }: RootState) => {
     return {
         searchTitle: search.searchTitle,
-        showBookView: search.showBookView,
+        showBookView: search.showBookView
     };
 };
 
@@ -26,143 +27,150 @@ interface IProps extends ModelState {
 
 let tempTimeout: NodeJS.Timeout | null = null;
 
-function SearchBar({navigation, dispatch, searchTitle}: IProps) {
+function SearchBar({ navigation, dispatch, searchTitle }: IProps) {
 
+    const headerHeight = useHeaderHeight();
 
     const onSubmitEditing = () => {
         if (searchTitle.length > 0) {
             dispatch({
-                type: 'search/setState',
+                type: "search/setState",
                 payload: {
-                    showBookView: true,
+                    showBookView: true
                 }
-            })
+            });
             dispatch({
-                type: 'search/fetchBookList',
+                type: "search/fetchBookList",
                 payload: {
                     title: searchTitle,
-                    refreshing: true,
+                    refreshing: true
                 },
                 addSearch: (isAdd: boolean) => {
                     if (isAdd) {
                         dispatch({
-                            type: 'search/addSearch',
+                            type: "search/addSearch",
                             payload: {
-                                title: searchTitle,
+                                title: searchTitle
                             }
-                        })
+                        });
                     }
                 }
-            })
+            });
         }
-    }
+    };
 
     const debounce = (cb: any, wait: number) => {
-        let timeout = tempTimeout
+        let timeout = tempTimeout;
         if (timeout !== null) {
-            clearTimeout(timeout)
+            clearTimeout(timeout);
         }
         tempTimeout = setTimeout(() => {
-            tempTimeout = null
-            cb && cb()
+            tempTimeout = null;
+            cb && cb();
         }, wait);
-    }
+    };
 
     const onChangeText = (title: string) => {
         dispatch({
-            type: 'search/setState',
+            type: "search/setState",
             payload: {
                 searchTitle: title
             }
-        })
+        });
 
         if (title && title.length > 0) {
-            debounce(() => loadData(title), 1000)
+            debounce(() => loadData(title), 1000);
         } else {
             dispatch({
-                type: 'search/setState',
+                type: "search/setState",
                 payload: {
                     showSimpleView: false,
-                    showBookView: false,
+                    showBookView: false
                 }
-            })
+            });
             if (tempTimeout !== null) {
-                clearTimeout(tempTimeout)
+                clearTimeout(tempTimeout);
             }
         }
-    }
+    };
 
     const cleanTitle = () => {
         dispatch({
-            type: 'search/setState',
+            type: "search/setState",
             payload: {
-                searchTitle: '',
+                searchTitle: "",
                 showSimpleView: false,
-                showBookView: false,
+                showBookView: false
             }
-        })
-    }
+        });
+    };
 
     const loadData = (title: string) => {
         dispatch({
-            type: 'search/fetchSimpleList',
+            type: "search/fetchSimpleList",
             payload: {
                 searchTitle: title
             }
-        })
-    }
+        });
+    };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.leftView}>
-                <Icon name="icon-search" style={styles.searchIcon} size={18}/>
-                <TextInput style={styles.searchInput}
-                           onSubmitEditing={onSubmitEditing}
-                           maxLength={20}
-                           placeholder={'搜索关键字...'}
-                           onChangeText={(text) => {
-                               onChangeText(text)
-                           }}
-                           value={searchTitle}
-                />
-                <Touchable onPress={cleanTitle}>
-                    <Icon name="icon-chacha" style={styles.cleanTitle} size={18}/>
+        <View style={[styles.wrapper, { height: headerHeight }]}>
+            <View style={styles.container}>
+                <View style={styles.leftView}>
+                    <Icon name="icon-search" style={styles.searchIcon} size={18} />
+                    <TextInput style={styles.searchInput}
+                               onSubmitEditing={onSubmitEditing}
+                               maxLength={20}
+                               placeholder={"搜索关键字..."}
+                               onChangeText={(text) => {
+                                   onChangeText(text);
+                               }}
+                               value={searchTitle}
+                    />
+                    <Touchable onPress={cleanTitle}>
+                        <Icon name="icon-chacha" style={styles.cleanTitle} size={18} />
+                    </Touchable>
+                </View>
+                <Touchable onPress={() => navigation.goBack()}>
+                    <View style={styles.rightView}>
+                        <Text>取消</Text>
+                    </View>
                 </Touchable>
             </View>
-            <Touchable onPress={() => navigation.goBack()}>
-                <View style={styles.rightView}>
-                    <Text>取消</Text>
-                </View>
-            </Touchable>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
+    wrapper: {
+        // marginTop: getStatusBarHeight(),
+        // justifyContent: "center",
+        backgroundColor: Color.theme
+    },
     container: {
-        height: 70,
-        flexDirection: 'row',
-        paddingTop: getStatusBarHeight(),
-        backgroundColor: Color.theme,
+        // height: 45,
+        paddingTop:getStatusBarHeight(),
+        flexDirection: "row"
     },
     leftView: {
         flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         backgroundColor: Color.page_bg,
         borderRadius: 15,
         marginHorizontal: 10,
-        marginVertical: 5,
+        marginVertical: 12
     },
     searchView: {
         flex: 1,
         backgroundColor: Color.page_bg
     },
     searchIcon: {
-        marginHorizontal: 10,
+        marginHorizontal: 10
     },
     cleanTitle: {
-        marginHorizontal: 10,
+        marginHorizontal: 10
     },
     searchInput: {
         flex: 1,
@@ -170,10 +178,10 @@ const styles = StyleSheet.create({
     },
     rightView: {
         width: 30,
-        height: '100%',
-        justifyContent: 'center',
-        marginHorizontal: 10,
-    },
-})
+        height: "100%",
+        justifyContent: "center",
+        marginHorizontal: 10
+    }
+});
 
 export default connector(SearchBar);

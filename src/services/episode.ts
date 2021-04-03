@@ -1,14 +1,8 @@
 import axios from "axios";
-import {EPISODE_URL, ADD_HISTORY} from "@/config/api";
+import { EPISODE_URL, ADD_HISTORY } from "@/config/api";
 
 
-export interface IParams {
-    book_id: number,
-    roast?: number,
-    chapter_num?: number,
-}
-
-export async function getList(params: IParams) {
+export async function getList(params: any) {
     return axios.get(EPISODE_URL, {
         params
     });

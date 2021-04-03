@@ -8,6 +8,8 @@ import { Color } from "@/utils/const";
 import Shelf from "@/pages/Shelf";
 import History from "@/pages/Shelf/History/index";
 import Download from "@/pages/Shelf/Download/index";
+import { useHeaderHeight } from "@react-navigation/stack";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
 
 
 export type ShelfTabParamList = {
@@ -18,6 +20,8 @@ const Tab = createMaterialTopTabNavigator<ShelfTabParamList>();
 
 function ShelfTabs() {
 
+    const tabHeight = useHeaderHeight() - getStatusBarHeight();
+
     return (
         <Tab.Navigator
             lazy
@@ -27,7 +31,7 @@ function ShelfTabs() {
                 scrollEnabled: true,
                 tabStyle: {
                     width: 50,
-                    height: 45,
+                    height: tabHeight,
                     padding: 0,
                     margin: 0
                 },

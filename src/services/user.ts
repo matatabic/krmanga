@@ -1,20 +1,15 @@
 import axios from "axios";
-import {REGISTER_URL, LOGIN_URL, LOGOUT_URL} from "@/config/api";
+import { REGISTER_URL, LOGIN_URL, LOGOUT_URL } from "@/config/api";
 
 
-export interface IParams {
-    account: string;
-    password: string;
-}
-
-export async function Register(params: IParams) {
+export async function Register(params: any) {
     return axios.post(REGISTER_URL, {
-        'username': params.account,
-        'password': params.password,
+        "username": params.account,
+        "password": params.password
     });
 }
 
-export async function Login(params: IParams) {
+export async function Login(params: any) {
     return axios.post(LOGIN_URL,
         params
     );
@@ -27,5 +22,5 @@ export async function logout() {
 export default {
     Register,
     Login,
-    logout,
+    logout
 };
