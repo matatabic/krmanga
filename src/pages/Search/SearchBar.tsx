@@ -115,7 +115,7 @@ function SearchBar({ navigation, dispatch, searchTitle }: IProps) {
     };
 
     return (
-        <View style={[styles.wrapper, { height: headerHeight }]}>
+        <View style={[styles.wrapper, { height: headerHeight + 15 }]}>
             <View style={styles.container}>
                 <View style={styles.leftView}>
                     <Icon name="icon-search" style={styles.searchIcon} size={18} />
@@ -144,13 +144,10 @@ function SearchBar({ navigation, dispatch, searchTitle }: IProps) {
 
 const styles = StyleSheet.create({
     wrapper: {
-        // marginTop: getStatusBarHeight(),
-        // justifyContent: "center",
         backgroundColor: Color.theme
     },
     container: {
-        // height: 45,
-        paddingTop:getStatusBarHeight(),
+        paddingTop: getStatusBarHeight(),
         flexDirection: "row"
     },
     leftView: {

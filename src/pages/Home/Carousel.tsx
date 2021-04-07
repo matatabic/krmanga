@@ -5,7 +5,7 @@ import SnapCarousel, {
     AdditionalParallaxProps
 } from "react-native-snap-carousel";
 import { viewportWidth, wp, hp } from "@/utils/index";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ICarousel } from "@/models/home";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
@@ -33,31 +33,31 @@ interface IProps extends ModelState {
 
 function Carousel({ dispatch, carouselList, activeCarouselIndex }: IProps) {
 
-    // const renderItem = (
-    //     {item}: { item: ICarousel },
-    //     parallaxProps?: AdditionalParallaxProps,
-    // ) => {
-    //     return (
-    //         <ParallaxImage
-    //             source={{uri: item.image_url}}
-    //             style={styles.image}
-    //             containerStyle={styles.containerStyle}
-    //             parallaxFactor={0.8}
-    //             showSpinner
-    //             spinnerColor="rgba(0,0,0,0.25)"
-    //             {...parallaxProps}
-    //         />
-    //     );
-    // }
-
     const renderItem = (
-        { item }: { item: ICarousel }) => {
+        {item}: { item: ICarousel },
+        parallaxProps?: AdditionalParallaxProps,
+    ) => {
         return (
-            <View>
-                <FastImage source={{ uri: item.image_url }} style={styles.containerStyle} />
-            </View>
+            <ParallaxImage
+                source={{uri: item.image_url}}
+                style={styles.image}
+                containerStyle={styles.containerStyle}
+                parallaxFactor={0.8}
+                showSpinner
+                spinnerColor="rgba(0,0,0,0.25)"
+                {...parallaxProps}
+            />
         );
-    };
+    }
+
+    // const renderItem = (
+    //     { item }: { item: ICarousel }) => {
+    //     return (
+    //         <View>
+    //             <FastImage source={{ uri: item.image_url }} style={styles.containerStyle} />
+    //         </View>
+    //     );
+    // };
 
     const onSnapToItem = (index: number) => {
         dispatch({
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     },
     image: {
         ...StyleSheet.absoluteFillObject,
-        resizeMode: "cover"
+        resizeMode: "contain"
     },
     paginationWrapper: {
         justifyContent: "center",

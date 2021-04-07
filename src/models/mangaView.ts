@@ -35,7 +35,7 @@ export interface MangaViewState {
     currentNumber: number;
     currentRoast: number;
     currentTitle: string;
-    panelStatus: boolean;
+    panelEnable: boolean;
     pagination: IPagination;
 }
 
@@ -62,7 +62,7 @@ export const initialState = {
     currentNumber: 0,
     currentRoast: 0,
     currentTitle: "",
-    panelStatus: true,
+    panelEnable: true,
     pagination: {
         current_chapter_id: 0,
         current_chapter: 0,
@@ -95,8 +95,8 @@ const mangaViewModel: MangaViewModel = {
 
             const { data } = yield call(EpisodeServices.getList, {
                 book_id: payload.book_id,
-                roast: refreshing ? payload.roast : list[list.length - 1].roast + 1,
-                chapter_num: payload.chapter_num
+                chapter_num: payload.chapter_num,
+                roast: refreshing ? payload.roast : list[list.length - 1].roast + 1
             });
 
             const newList = refreshing ? data.list : [...list, ...data.list];
@@ -120,8 +120,24 @@ const mangaViewModel: MangaViewModel = {
                 action.callback();
             }
         },
-        *addHistory({ payload }, { call }) {
-            yield call(EpisodeServices.saveMark, payload);
+        *addHistory({ payload }, { call, put, select }) {
+            let { currentChapterId, currentChapterNum, currentRoast } = yield select(
+                (state: RootState) => state["mangaView"]
+            );
+
+            yield call(EpisodeServices.saveMark, {
+                book_id: payload.book_id,
+                chapter_id: currentChapterId,
+                chapter_num: currentChapterNum,
+                roast: currentRoast
+            });
+
+            yield put({
+                type: "setState",
+                payload: {
+                    ...initialState
+                }
+            });
         },
         *setCurrentIndex(action, { _, put, select }) {
             const { payload } = action;

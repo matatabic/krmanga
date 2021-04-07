@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     register: {
+        width: "100%",
         height: 30,
         borderWidth: 2,
         borderColor: Color.black,

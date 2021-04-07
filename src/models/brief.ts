@@ -25,7 +25,7 @@ export interface IBookInfo {
 
 export interface BriefState {
     bookInfo: IBookInfo;
-    statusBarHeight: number;
+    headerHeight: number;
     book_update_info: string;
     refreshing: boolean;
     collection_id: number;
@@ -40,7 +40,6 @@ interface CategoryModel extends Model {
     reducers: {
         setState: Reducer<BriefState>;
         setCollectionId: Reducer<BriefState>;
-        setChapter: Reducer<BriefState>;
     };
     effects: {
         fetchBrief: Effect;
@@ -59,7 +58,7 @@ export const initialState = {
         description: "",
         status: ""
     },
-    statusBarHeight: 0,
+    headerHeight: 0,
     refreshing: false,
     book_update_info: "",
     collection_id: 0,
@@ -83,12 +82,6 @@ const briefModel: CategoryModel = {
                 ...state,
                 collection_id: payload.collection_id
             };
-        },
-        setChapter(state = initialState, { payload }) {
-            return {
-                ...state,
-                ...payload
-            };
         }
     },
     effects: {
@@ -103,7 +96,9 @@ const briefModel: CategoryModel = {
                 }
             });
 
-            const { data } = yield call(BriefServices.getList, payload);
+            const { data } = yield call(BriefServices.getList, {
+                book_id: payload.book_id
+            });
 
             yield put({
                 type: "setState",

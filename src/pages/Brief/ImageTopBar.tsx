@@ -17,7 +17,7 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-interface IProps extends ModelState{
+interface IProps extends ModelState {
     opacity: Animated.AnimatedInterpolation;
 }
 
@@ -35,7 +35,7 @@ function ImageTopBar({ bookInfo, opacity }: IProps) {
                 />
                 <BlurView
                     blurType="dark"
-                    blurAmount={25}
+                    blurAmount={30}
                     style={StyleSheet.absoluteFillObject}
                 />
             </Animated.View> : null

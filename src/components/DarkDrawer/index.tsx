@@ -65,7 +65,6 @@ function DarkDrawer({ chapterList, bookInfo, headerHeight, drawerX, goMangaView,
                 }
             ).start(() => spinValue.setValue(0));
         }
-
         setData([...data.reverse()]);
         setIsSpin(!isSpin);
     };
@@ -81,7 +80,6 @@ function DarkDrawer({ chapterList, bookInfo, headerHeight, drawerX, goMangaView,
                     <Header bookInfo={bookInfo} spin={spin} reverse={reverse} />
                     <FlatList
                         data={data}
-                        style={{ flexDirection: "row-reverse" }}
                         renderItem={renderItem}
                         keyExtractor={(item, key) => `item-${key}-item-${item.id}`}
                     />

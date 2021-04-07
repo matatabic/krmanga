@@ -81,7 +81,7 @@ function LightDrawer({ chapterList, bookInfo, headerHeight, drawerX, goMangaView
                 }]}>
                     <Header bookInfo={bookInfo} spin={spin} reverse={reverse} />
                     <FlatList
-                        data={chapterList}
+                        data={data}
                         renderItem={renderItem}
                         keyExtractor={(item, key) => `item-${key}-item-${item.id}`}
                     />
@@ -93,8 +93,8 @@ function LightDrawer({ chapterList, bookInfo, headerHeight, drawerX, goMangaView
 
 const styles = StyleSheet.create({
     wrapper: {
-        flex: 1,
         ...StyleSheet.absoluteFillObject,
+        flex: 1,
         zIndex: 100
     },
     container: {

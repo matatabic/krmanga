@@ -6,10 +6,11 @@ import { ip, wp } from "@/utils/index";
 import ErrorImage from "@/assets/image/error.png";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
-import { useHeaderHeight } from "@react-navigation/stack";
+
 
 const mapStateToProps = ({ brief }: RootState) => {
     return {
+        headerHeight: brief.headerHeight,
         bookInfo: brief.bookInfo
     };
 };
@@ -25,7 +26,7 @@ interface IProps extends ModelState {
 const imageWidth = wp(30);
 const imageHeight = ip(imageWidth);
 
-function Information({ bookInfo, opacity }: IProps) {
+function Information({ headerHeight, bookInfo, opacity }: IProps) {
 
     const [errorLoad, setErrorLoad] = useState<boolean>(false);
 
@@ -36,7 +37,7 @@ function Information({ bookInfo, opacity }: IProps) {
     return (
         bookInfo.image.length > 0 ?
             <Animated.View style={[styles.container, {
-                paddingTop: useHeaderHeight(),
+                paddingTop: headerHeight,
                 opacity: opacity
             }]}>
                 <View style={styles.leftView}>

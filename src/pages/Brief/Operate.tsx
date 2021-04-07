@@ -1,14 +1,12 @@
 import React from "react";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
-import { ModalStackNavigation, RootStackNavigation } from "@/navigator/index";
 import { Animated, StyleSheet, View } from "react-native";
 import { viewportWidth, wp } from "@/utils/index";
 import { Color } from "@/utils/const";
 import ImageTopBar from "@/pages/Brief/ImageTopBar";
 import Touchable from "@/components/Touchable";
 import Icon from "@/assets/iconfont/index";
-import { useNavigation } from "@react-navigation/native";
 
 
 const mapStateToProps = ({ user, brief }: RootState) => {
@@ -18,7 +16,6 @@ const mapStateToProps = ({ user, brief }: RootState) => {
         markChapterNum: brief.markChapterNum,
         markRoast: brief.markRoast,
         chapterList: brief.chapterList,
-        data: brief.bookInfo,
         collection_id: brief.collection_id
     };
 };
@@ -46,7 +43,6 @@ function Operate({
                      onClickRead, onClickCollection
                  }: IProps) {
 
-    const navigation = useNavigation<RootStackNavigation & ModalStackNavigation>();
     const headerHeight = 80;
 
     const readHandle = () => {
@@ -153,7 +149,6 @@ const styles = StyleSheet.create({
     },
     rightView: {
         flex: 1,
-        // width: viewportWidth - 140,
         height: "100%",
         justifyContent: "center",
         paddingHorizontal: 20,

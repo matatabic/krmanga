@@ -1,14 +1,361 @@
-import React from 'react'
-import {View, Text} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, StatusBar, FlatList, ListRenderItemInfo, StyleSheet, Animated, Easing, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
+import { RootState } from "@/models/index";
+import { connect, ConnectedProps } from "react-redux";
+import { RouteProp } from "@react-navigation/native";
+import { RootStackNavigation, RootStackParamList } from "@/navigator/index";
+import { IChapter } from "@/models/brief";
+import { IEpisode, initialState } from "@/models/mangaView";
+import Touchable from "@/components/Touchable";
+import Item from "@/pages/MangaView/Item";
+import More from "@/components/More";
+import End from "@/components/End";
+import { hp, viewportWidth } from "@/utils/index";
+import TopCtrPanel from "@/pages/MangaView/CtrPanel/TopCtrPanel";
+import BottomCtrPanel from "@/pages/MangaView/CtrPanel/BottomCtrPanel";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import DarkDrawer from "@/components/DarkDrawer";
+import BottomStatusBar from "@/pages/MangaView/BottomStatusBar";
 
-class MangaView extends React.Component<any, any> {
-    render() {
-        return (
-            <View>
-                <Text>MangaView</Text>
-            </View>
-        );
-    }
+
+const mapStateToProps = ({ mangaView, brief, user, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "MangaView"> }) => {
+    return {
+        book_id: route.params.book_id,
+        roast: route.params.roast,
+        isLogin: user.isLogin,
+        headerHeight: brief.headerHeight,
+        episodeList: mangaView.episodeList,
+        hasMore: mangaView.hasMore,
+        refreshing: mangaView.refreshing,
+        pages: mangaView.pagination,
+        currentChapterNum: mangaView.currentChapterNum,
+        currentRoast: mangaView.currentRoast,
+        chapterList: brief.chapterList,
+        bookInfo: brief.bookInfo,
+        loading: loading.effects["mangaView/fetchEpisodeList"]
+    };
+};
+
+const connector = connect(mapStateToProps);
+
+type ModelState = ConnectedProps<typeof connector>;
+
+interface IProps extends ModelState {
+    route: RouteProp<RootStackParamList, "MangaView">;
+    navigation: RootStackNavigation;
+    data: IChapter[];
 }
 
-export default MangaView;
+
+function MangaView({
+                       navigation, dispatch, isLogin, chapterList, bookInfo,
+                       book_id, headerHeight, roast, episodeList, hasMore, loading,
+                       currentChapterNum, currentRoast
+                   }: IProps) {
+
+    const [endReached, setEndReached] = useState<boolean>(false);
+
+    let flatListRef: FlatList<IEpisode> | null = null;
+    const topPanelValue = useRef(new Animated.Value(0)).current;
+    const bottomPanelValue = useRef(new Animated.Value(0)).current;
+    const drawerX = useRef(new Animated.Value(-viewportWidth)).current;
+    let panelEnable: boolean = true;
+
+    useEffect(() => {
+        loadData(true);
+        return () => {
+            StatusBar.setHidden(false);
+            if (isLogin) {
+                dispatch({
+                    type: "mangaView/addHistory",
+                    payload: {
+                        book_id
+                    }
+                });
+                dispatch({
+                    type: "history/setScreenReload"
+                });
+            } else {
+                dispatch({
+                    type: "mangaView/setState",
+                    payload: {
+                        ...initialState
+                    }
+                });
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        dispatch({
+            type: "brief/setState",
+            payload: {
+                markChapterNum: currentChapterNum,
+                markRoast: currentRoast
+            }
+        });
+    }, [currentChapterNum, currentRoast]);
+
+    const loadData = (refreshing: boolean, callback?: () => void) => {
+        dispatch({
+            type: "mangaView/fetchEpisodeList",
+            payload: {
+                refreshing,
+                roast,
+                book_id
+            },
+            callback
+        });
+    };
+
+    const onEndReached = () => {
+        if (!hasMore || loading) {
+            return;
+        }
+
+        setEndReached(true);
+
+        loadData(false, () => {
+            setEndReached(false);
+        });
+    };
+
+    const renderItem = ({ item }: ListRenderItemInfo<IEpisode>) => {
+        return (
+            <Touchable onPress={panelHandle} activeOpacity={1}>
+                <Item data={item} />
+            </Touchable>
+        );
+    };
+
+    const renderFooter = () => {
+        if (endReached) {
+            return <More />;
+        }
+        if (!hasMore) {
+            return <End />;
+        }
+
+        return null;
+    };
+
+    const getItemLayout = (data: any, index: number) => {
+        if (data[index] === undefined) {
+            return { length: 0, offset: 0, index };
+        }
+
+        let offset = 0;
+        const length = viewportWidth * data[index].multiple;
+
+        for (let i = 0; i < index; i++) {
+            offset += viewportWidth * data[i].multiple;
+        }
+
+        return { length: length, offset, index };
+    };
+
+    const scrollToIndex = (index: number) => {
+        flatListRef?.scrollToIndex({ viewPosition: 0, index: index });
+    };
+
+    const lastChapter = () => {
+        if (!loading) {
+            dispatch({
+                type: "mangaView/fetchEpisodeList",
+                payload: {
+                    refreshing: true,
+                    chapter_num: currentChapterNum - 1,
+                    book_id
+                }
+            });
+        }
+    };
+
+    const nextChapter = () => {
+        if (!loading) {
+            dispatch({
+                type: "mangaView/fetchEpisodeList",
+                payload: {
+                    refreshing: true,
+                    chapter_num: currentChapterNum + 1,
+                    book_id
+                }
+            });
+        }
+    };
+
+    const showDrawer = () => {
+        Animated.timing(drawerX, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true
+        }).start();
+    };
+
+    const hideDrawer = () => {
+        Animated.timing(drawerX, {
+            toValue: -viewportWidth,
+            duration: 200,
+            useNativeDriver: true
+        }).start();
+    };
+
+    const hidePanel = () => {
+        if (panelEnable) {
+            Animated.parallel([
+                Animated.timing(
+                    topPanelValue,
+                    {
+                        toValue: -headerHeight - getStatusBarHeight(),
+                        duration: 200,
+                        easing: Easing.linear,
+                        useNativeDriver: true
+                    }
+                ),
+                Animated.timing(
+                    bottomPanelValue,
+                    {
+                        toValue: hp(25),
+                        duration: 200,
+                        easing: Easing.linear,
+                        useNativeDriver: true
+                    }
+                )
+            ]).start(() => {
+                StatusBar.setHidden(true);
+                panelEnable = !panelEnable;
+            });
+        }
+    };
+
+    const showPanel = () => {
+        if (!panelEnable) {
+            Animated.parallel([
+                Animated.timing(
+                    topPanelValue,
+                    {
+                        toValue: 0,
+                        duration: 200,
+                        easing: Easing.linear,
+                        useNativeDriver: true
+                    }
+                ),
+                Animated.timing(
+                    bottomPanelValue,
+                    {
+                        toValue: 0,
+                        duration: 200,
+                        easing: Easing.linear,
+                        useNativeDriver: true
+                    }
+                )
+            ]).start(() => {
+                StatusBar.setHidden(false);
+                panelEnable = !panelEnable;
+            });
+        }
+    };
+
+    const panelHandle = () => {
+        if (panelEnable) {
+            hidePanel();
+        } else {
+            showPanel();
+        }
+    };
+
+    const onScrollEndDrag = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+        let offset_total = episodeList[0].multiple * viewportWidth;
+        let current_episode_total = episodeList[0].episode_total;
+        let current_chapter_id = episodeList[0].chapter_id;
+        let current_chapter_num = episodeList[0].chapter_num;
+        let current_number = episodeList[0].number;
+        let current_roast = episodeList[0].roast;
+        let current_title = episodeList[0].title;
+        for (let i = 0; i < episodeList.length; i++) {
+            if (nativeEvent.contentOffset.y >= offset_total) {
+                current_episode_total = episodeList[i].episode_total;
+                current_chapter_id = episodeList[i].chapter_id;
+                current_chapter_num = episodeList[i].chapter_num;
+                current_number = episodeList[i].number;
+                current_roast = episodeList[i].roast;
+                current_title = episodeList[i].title;
+            } else {
+                break;
+            }
+            offset_total = offset_total + episodeList[i].multiple * viewportWidth;
+        }
+
+        dispatch({
+            type: "mangaView/setState",
+            payload: {
+                currentEpisodeTotal: current_episode_total,
+                currentChapterId: current_chapter_id,
+                currentChapterNum: current_chapter_num,
+                currentNumber: current_number,
+                currentRoast: current_roast,
+                currentTitle: current_title
+            }
+        });
+
+        hidePanel();
+    };
+
+    const goMangaChapter = (item: IChapter) => {
+        dispatch({
+            type: "mangaView/fetchEpisodeList",
+            payload: {
+                refreshing: true,
+                roast: item.roast,
+                book_id,
+                callback: hideDrawer()
+            }
+        });
+    };
+
+    return (
+        episodeList.length > 0 ? <View style={styles.container}>
+            <StatusBar barStyle="light-content" />
+            <TopCtrPanel
+                topPanelValue={topPanelValue}
+                navigation={navigation}
+            />
+            <BottomCtrPanel
+                bottomPanelValue={bottomPanelValue}
+                scrollToIndex={scrollToIndex}
+                showDrawer={showDrawer}
+                lastChapter={lastChapter}
+                nextChapter={nextChapter}
+            />
+            <FlatList
+                ref={ref => (flatListRef = ref)}
+                data={episodeList}
+                keyExtractor={(item, key) => `item-${item.id}-key-${key}`}
+                renderItem={renderItem}
+                ListFooterComponent={renderFooter}
+                getItemLayout={getItemLayout}
+                onScrollEndDrag={onScrollEndDrag}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.1}
+                extraData={endReached}
+            />
+            <DarkDrawer
+                chapterList={chapterList}
+                bookInfo={bookInfo}
+                headerHeight={headerHeight}
+                drawerX={drawerX}
+                hideDrawer={hideDrawer}
+                goMangaView={goMangaChapter}
+            />
+            <BottomStatusBar />
+        </View> : null
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    }
+});
+
+export default connector(MangaView);

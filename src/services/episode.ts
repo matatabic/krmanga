@@ -9,7 +9,9 @@ export async function getList(params: any) {
 }
 
 export async function saveMark(params: any) {
-    return axios.post(ADD_HISTORY, params);
+    return axios.post(ADD_HISTORY,
+        params
+    );
 }
 
 export default {

@@ -24,7 +24,7 @@ function ImageBlurBackground({ bookInfo, imageSize }: IProps) {
                 />
                 <BlurView
                     blurType="dark"
-                    blurAmount={25}
+                    blurAmount={30}
                     style={StyleSheet.absoluteFillObject}
                 />
             </View> : null

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { View, Animated, StyleSheet} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Animated, StyleSheet, Platform, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
 import { getStatusBarHeight, isIphoneX } from "react-native-iphone-x-helper";
 import { Color } from "@/utils/const";
 import { RootState } from "@/models/index";
@@ -22,6 +22,7 @@ const mapStateToProps = ({ user, brief, loading }: RootState, { route }: { route
     return {
         isLogin: user.isLogin,
         book_id: route.params.id,
+        headerHeight: brief.headerHeight,
         bookInfo: brief.bookInfo,
         markRoast: brief.markRoast,
         collection_id: brief.collection_id,
@@ -45,18 +46,31 @@ const imageWidth = wp(30);
 const imageHeight = ip(imageWidth);
 
 function Brief({
-                   navigation, dispatch, isLogin, loading, bookInfo, book_id, markRoast,
+                   navigation, dispatch, isLogin, headerHeight, loading, bookInfo, book_id, markRoast,
                    collection_id, refreshing, chapterList
                }: IProps) {
-    const headerHeight = useHeaderHeight();
+    const topHeight = useHeaderHeight();
+    const [showTop, setShowTop] = useState<boolean>(true);
     const scrollY = useRef(new Animated.Value(0)).current;
     const EndShowHeight = headerHeight + imageHeight;
-    const fixedHeight = isIphoneX() ?
-        headerHeight + imageHeight + 35 - getStatusBarHeight() :
-        headerHeight + imageHeight + 35;
+    let fixedHeight: number = 0;
+    if (Platform.OS === "android") {
+        fixedHeight = headerHeight + imageHeight + 30 - 11;
+    } else {
+        fixedHeight = isIphoneX() ?
+            headerHeight + imageHeight + 30 - 22 :
+            headerHeight + imageHeight + 30 - 11 + getStatusBarHeight();
+    }
+
     const drawerX = new Animated.Value(viewportWidth);
 
     useEffect(() => {
+        dispatch({
+            type: "brief/setState",
+            payload: {
+                headerHeight: topHeight
+            }
+        });
         loadData(true);
     }, []);
 
@@ -196,6 +210,14 @@ function Brief({
         }).start();
     };
 
+    const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        if (event.nativeEvent.contentOffset.y >= EndShowHeight) {
+            setShowTop(false);
+        } else {
+            setShowTop(true);
+        }
+    };
+
     const loadData = (refreshing: boolean, callback?: () => void) => {
         dispatch({
             type: "brief/fetchBrief",
@@ -225,6 +247,8 @@ function Brief({
                     imageSize={getBgImageSize()}
                 />
                 <TopBarWrapper
+                    headerHeight={headerHeight}
+                    showTop={showTop}
                     opacity={getOpacity()}
                 />
                 <Animated.ScrollView
@@ -235,7 +259,8 @@ function Brief({
                             }
                         ],
                         {
-                            useNativeDriver: true
+                            useNativeDriver: true,
+                            listener: onScroll
                         }
                     )}
                     overScrollMode="always"

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import {
-    createMaterialTopTabNavigator, MaterialTopTabBarProps,
+    createMaterialTopTabNavigator,
     MaterialTopTabNavigationProp
 } from "@react-navigation/material-top-tabs";
 import ViewPagerAdapter from "react-native-tab-view-viewpager-adapter";
@@ -11,7 +11,6 @@ import { Animated, StyleSheet, View } from "react-native";
 import TopBar from "@/pages/Category/TopBar/index";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import { Color } from "@/utils/const";
-import { IBook } from "@/models/home";
 import { useHeaderHeight } from "@react-navigation/stack";
 import { viewportHeight } from "@/utils/index";
 import { ICategory } from "@/models/categorySetting";
