@@ -1,22 +1,20 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { getBottomSpace } from "react-native-iphone-x-helper";
 import { Color } from "@/utils/const";
 import Icon from "@/assets/iconfont";
 import Touchable from "@/components/Touchable";
-import { ICollection } from "@/models/collection";
-import { IHistoryList } from "@/models/history";
 
 
 interface IProps {
-    data: ICollection[] | IHistoryList[];
-    ids: number[],
+    data_length: number;
+    ids: number[];
     isEdit: boolean;
     cancel: () => void;
     destroy: () => void;
 }
 
-function EditView({ data, isEdit, ids, cancel, destroy }: IProps) {
+function EditView({ data_length, isEdit, ids, cancel, destroy }: IProps) {
 
     const cancelHandle = () => {
         if (typeof cancel === "function") {
@@ -31,11 +29,11 @@ function EditView({ data, isEdit, ids, cancel, destroy }: IProps) {
     };
 
     return (
-        data.length > 0 && isEdit ?
+        data_length > 0 && isEdit ?
             <View>
                 <View style={styles.container}>
                     <Touchable style={styles.content} onPress={cancelHandle}>
-                        {ids.length === data.length ?
+                        {ids.length === data_length ?
                             <>
                                 <Icon name="icon-tianxie" size={18} color={Color.red} />
                                 <Text style={{ color: Color.red, marginLeft: 10 }}>取消全选</Text>
@@ -81,4 +79,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default EditView;
+export default memo(EditView);

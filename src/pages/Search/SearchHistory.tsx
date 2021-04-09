@@ -1,16 +1,15 @@
-import React from 'react'
-import {StyleSheet, View, Text} from 'react-native'
-import {RootState} from "@/models/index";
-import {connect, ConnectedProps} from "react-redux";
-import {Color} from "@/utils/const";
+import React, { useCallback } from "react";
+import { StyleSheet, View, Text } from "react-native";
+import { RootState } from "@/models/index";
+import { connect, ConnectedProps } from "react-redux";
+import { Color } from "@/utils/const";
 import DestroyView from "@/pages/Search/DestroyView";
 import HistoryItem from "@/pages/Search/Item/HistoryItem";
-import History from "@/pages/Search/History";
 
 
-const mapStateToProps = ({search}: RootState) => {
+const mapStateToProps = ({ search }: RootState) => {
     return {
-        searchHistoryList: search.searchHistoryList,
+        searchHistoryList: search.searchHistoryList
     };
 };
 
@@ -18,49 +17,47 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-interface IProps extends ModelState {
-}
 
-function SearchHistory({dispatch, searchHistoryList}: IProps) {
+function SearchHistory({ dispatch, searchHistoryList }: ModelState) {
 
-    const destroyHistory = () => {
+    const destroyHistory = useCallback(() => {
         dispatch({
-            type: 'search/destroyHistory'
-        })
-    }
+            type: "search/destroyHistory"
+        });
+    }, []);
 
-    const clearHistory = (index: number) => {
+    const clearHistory = useCallback((index: number) => {
         dispatch({
-            type: 'search/deleteHistory',
+            type: "search/deleteHistory",
             payload: {
                 index
             }
-        })
-    }
+        });
+    }, []);
 
-    const HistorySearch = (searchTitle: string) => {
+    const HistorySearch = useCallback((searchTitle: string) => {
         dispatch({
-            type: 'search/setState',
+            type: "search/setState",
             payload: {
                 searchTitle,
-                showBookView: true,
+                showBookView: true
             }
-        })
+        });
         dispatch({
-            type: 'search/fetchBookList',
+            type: "search/fetchBookList",
             payload: {
                 title: searchTitle,
-                refreshing: true,
+                refreshing: true
             }
-        })
-    }
+        });
+    }, []);
 
     if (searchHistoryList.length === 0) {
         return null;
     }
 
     if (searchHistoryList.length > 3) {
-        searchHistoryList = searchHistoryList.filter((item, index) => index < 3)
+        searchHistoryList = searchHistoryList.filter((item, index) => index < 3);
     }
 
     return (
@@ -80,48 +77,48 @@ function SearchHistory({dispatch, searchHistoryList}: IProps) {
                             />
                         </View>
 
-                    )
+                    );
                 })
             }
-            <DestroyView destroyHistory={destroyHistory}/>
+            <DestroyView destroyHistory={destroyHistory} />
         </>
 
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     header: {
         height: 50,
-        flexDirection: 'column-reverse',
+        flexDirection: "column-reverse",
         backgroundColor: Color.white,
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: Color.split_line,
-        paddingLeft: 20,
+        paddingLeft: 20
     },
     headerTitle: {
         color: Color.dark_title,
         marginBottom: 15,
-        fontSize: 12,
+        fontSize: 12
     },
     item: {
         height: 45,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         borderBottomWidth: StyleSheet.hairlineWidth,
         backgroundColor: Color.page_bg,
-        borderBottomColor: Color.split_line,
+        borderBottomColor: Color.split_line
     },
     itemLeft: {
         marginLeft: 20,
-        flexDirection: 'row',
+        flexDirection: "row"
     },
     itemRight: {
-        marginRight: 20,
+        marginRight: 20
     },
     title: {
         marginLeft: 5
-    },
-})
+    }
+});
 
 export default connector(SearchHistory);

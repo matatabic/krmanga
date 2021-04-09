@@ -1,8 +1,8 @@
-import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import React, { memo } from "react";
+import { Text, StyleSheet, View } from "react-native";
 import Touchable from "@/components/Touchable";
-import {IStatus} from "@/models/category";
-import {Color} from "@/utils/const";
+import { Color } from "@/utils/const";
+import { IStatus } from "@/models/categorySetting";
 
 interface IProps {
     data: IStatus;
@@ -10,13 +10,13 @@ interface IProps {
     onClickEdit: (data: IStatus) => void;
 }
 
-function Item({data, active, onClickEdit}: IProps) {
+function Item({ data, active, onClickEdit }: IProps) {
 
     const onPress = () => {
-        if (typeof onClickEdit === 'function') {
+        if (typeof onClickEdit === "function") {
             onClickEdit(data);
         }
-    }
+    };
 
     return (
         <Touchable key={data.id} onPress={onPress}>
@@ -24,23 +24,23 @@ function Item({data, active, onClickEdit}: IProps) {
                 <Text style={active ? styles.activeTitle : styles.title}>{data.title}</Text>
             </View>
         </Touchable>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     item: {
         width: 50,
         height: 35,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center"
     },
     title: {
-        fontSize: 12,
+        fontSize: 12
     },
     activeTitle: {
         fontSize: 12,
-        color: Color.theme,
-    },
-})
+        color: Color.theme
+    }
+});
 
-export default Item;
+export default memo(Item);

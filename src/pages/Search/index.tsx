@@ -1,13 +1,13 @@
-import React, {useEffect} from 'react'
-import {StyleSheet, View} from "react-native";
+import React, { useCallback, useEffect } from "react";
+import { View } from "react-native";
 import SearchBar from "@/pages/Search/SearchBar";
-import {RootStackNavigation} from "@/navigator/index";
-import {connect, ConnectedProps} from "react-redux";
-import {RootState} from "@/models/index";
-import {IBook} from "@/models/search";
+import { RootStackNavigation } from "@/navigator/index";
+import { connect, ConnectedProps } from "react-redux";
+import { RootState } from "@/models/index";
+import { IBook } from "@/models/search";
 import SearchMain from "@/pages/Search/SearchMain";
 
-const mapStateToProps = ({search}: RootState) => {
+const mapStateToProps = ({}: RootState) => {
     return {};
 };
 
@@ -19,39 +19,33 @@ interface IProps extends ModelState {
     navigation: RootStackNavigation;
 }
 
-function Search({dispatch, navigation}: IProps) {
+function Search({ dispatch, navigation }: IProps) {
 
     useEffect(() => {
         return () => {
             dispatch({
-                type: 'search/setState',
+                type: "search/setState",
                 payload: {
-                    searchTitle: '',
+                    searchTitle: "",
                     showSimpleView: false,
-                    showBookView: false,
+                    showBookView: false
                 }
-            })
-        }
-    })
+            });
+        };
+    });
 
-    const goBrief = (data: IBook) => {
-        navigation.navigate('Brief', {
+    const goBrief = useCallback((data: IBook) => {
+        navigation.navigate("Brief", {
             id: data.id
-        })
-    }
+        });
+    }, []);
 
     return (
-        <View style={styles.container}>
-            <SearchBar navigation={navigation}/>
-            <SearchMain goBrief={goBrief}/>
+        <View style={{ flex: 1 }}>
+            <SearchBar navigation={navigation} />
+            <SearchMain goBrief={goBrief} />
         </View>
-    )
+    );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    }
-})
 
 export default connector(Search);

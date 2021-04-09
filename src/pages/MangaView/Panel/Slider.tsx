@@ -34,6 +34,7 @@ function SliderView({ dispatch, currentEpisodeTotal, currentNumber, currentChapt
     let [time, setTime] = useState<NodeJS.Timeout | null>(null);
 
     const changeValue = (currentNumber: number) => {
+        console.log(currentNumber)
         dispatch({
             type: "mangaView/setCurrentIndex",
             payload: {

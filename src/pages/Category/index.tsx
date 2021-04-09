@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { FlatList, StyleSheet, ListRenderItemInfo, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
 import { RootState } from "@/models/index";
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
@@ -67,11 +67,11 @@ function Category({ dispatch, navigation, category_id, activeStatus, activeModel
         });
     };
 
-    const goBrief = (data: IBook) => {
+    const goBrief = useCallback((data: IBook) => {
         navigation.navigate("Brief", {
             id: data.id
         });
-    };
+    }, []);
 
     const renderItem = ({ item }: ListRenderItemInfo<IBook>) => {
         return <BookCover

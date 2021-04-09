@@ -101,17 +101,25 @@ const mangaViewModel: MangaViewModel = {
 
             const newList = refreshing ? data.list : [...list, ...data.list];
 
+            if (refreshing) {
+                yield put({
+                    type: "setState",
+                    payload: {
+                        currentEpisodeTotal: data.pages.episode_total,
+                        currentChapterNum: data.pages.current_chapter,
+                        currentChapterId: data.pages.current_chapter_id,
+                        currentNumber: data.pages.episode_offset,
+                        currentTitle: data.pages.current_title,
+                        currentRoast: payload.roast
+                    }
+                });
+            }
+
             yield put({
                 type: "setState",
                 payload: {
                     episodeList: newList,
                     hasMore: data.pages.current_chapter < data.pages.chapter_total,
-                    currentEpisodeTotal: data.pages.episode_total,
-                    currentChapterNum: data.pages.current_chapter,
-                    currentChapterId: data.pages.current_chapter_id,
-                    currentNumber: data.pages.episode_offset,
-                    currentTitle: data.pages.current_title,
-                    currentRoast: payload.roast,
                     pagination: data.pages
                 }
             });
@@ -145,12 +153,14 @@ const mangaViewModel: MangaViewModel = {
             let { episodeList: list, currentChapterNum } = yield select(
                 (state: RootState) => state["mangaView"]
             );
-            const index = list.findIndex((item: IEpisode) => item.chapter_num === currentChapterNum && item.number === payload.currentNumber);
+            const index = list.findIndex((item: IEpisode) =>
+                item.chapter_num === currentChapterNum && item.number === payload.currentNumber
+            );
 
             yield put({
                 type: "setState",
                 payload: {
-                    currentNumber: list[index].number
+                    currentNumber: list[index - 1].number
                 }
             });
 

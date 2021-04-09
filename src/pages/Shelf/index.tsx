@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { View, StyleSheet, Animated, FlatList, ListRenderItemInfo } from "react-native";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
@@ -80,7 +80,7 @@ function Shelf({
         });
     };
 
-    const onClickItem = (item: ICollection) => {
+    const onClickItem = useCallback((item: ICollection) => {
         if (isEdit) {
             const i = ids.indexOf(item.id);
             if (i > -1) {
@@ -104,7 +104,7 @@ function Shelf({
                 id: item.book_id
             });
         }
-    };
+    }, [isEdit, ids]);
 
     const cancel = () => {
         const newData = collectionList.map(item => item.id);
@@ -199,7 +199,7 @@ function Shelf({
                         onEndReachedThreshold={0.1}
                     />
                     <EditView
-                        data={collectionList}
+                        data_length={collectionList.length}
                         ids={ids}
                         isEdit={isEdit}
                         cancel={cancel}
@@ -215,7 +215,6 @@ const styles = StyleSheet.create({
         backgroundColor: Color.page_bg
     },
     totalView: {
-        ...StyleSheet.absoluteFillObject,
         alignItems: "center"
     }
 });

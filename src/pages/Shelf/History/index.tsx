@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Animated, SectionList, SectionListRenderItemInfo, StyleSheet, View, Text } from "react-native";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
@@ -22,6 +22,7 @@ const mapStateToProps = ({ user, history, loading }: RootState) => {
         ids: history.ids,
         refreshing: history.refreshing,
         hasMore: history.hasMore,
+        pages: history.pagination,
         loading: loading.effects["history/fetchHistoryList"]
     };
 };
@@ -34,7 +35,7 @@ interface IProps extends ModelState {
     navigation: RootStackNavigation & ModalStackNavigation;
 }
 
-function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, loading, refreshing, hasMore }: IProps) {
+function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, loading, refreshing, hasMore, pages }: IProps) {
 
     const translateX: Animated.Value = useRef(new Animated.Value(0)).current;
     const [endReached, setEndReached] = useState<boolean>(false);
@@ -94,7 +95,7 @@ function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, load
         ).start();
     };
 
-    const onClickItem = (item: IHistory[]) => {
+    const onClickItem = useCallback((item: IHistory[]) => {
         if (isEdit) {
             let i = ids.indexOf(item["book_id"]);
             if (i > -1) {
@@ -118,9 +119,9 @@ function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, load
                 id: item["book_id"]
             });
         }
-    };
+    }, [isEdit, ids]);
 
-    const goMangaView = (item: IHistory[]) => {
+    const goMangaView = useCallback((item: IHistory[]) => {
         navigation.navigate("Brief", {
             id: item["book_id"]
         });
@@ -128,15 +129,18 @@ function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, load
             roast: item["roast"],
             book_id: item["book_id"]
         });
-    };
+    }, []);
 
     const renderItem = ({ item }: SectionListRenderItemInfo<IHistory[]>) => {
         const selected = ids.indexOf(item["book_id"]) > -1;
-
         return (
-            <Touchable onPress={() => onClickItem(item)}>
+            <Touchable
+                key={item["id"]}
+                onPress={() => onClickItem(item)}
+            >
                 <Animated.View
-                    style={{ transform: [{ translateX: translateX }] }}>
+                    style={{ transform: [{ translateX: translateX }] }}
+                >
                     <Item
                         data={item}
                         isEdit={isEdit}
@@ -149,6 +153,9 @@ function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, load
     };
 
     const onRefresh = () => {
+        dispatch({
+            type: "history/setScreenReload"
+        });
         loadData(true);
     };
 
@@ -230,7 +237,8 @@ function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, load
                         ListFooterComponent={renderFooter}
                     />
                     <EditView
-                        data={historyList}
+                        data_length={pages.current_page * pages.page_size < pages.total ?
+                            pages.current_page * pages.page_size : pages.total}
                         isEdit={isEdit}
                         ids={ids}
                         cancel={cancel}

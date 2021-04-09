@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import {
     MaterialTopTabBar,
@@ -32,12 +32,7 @@ function TopBar({
                     ...restProps
                 }: IProps) {
 
-    const goCategorySetting = () => {
-        const { navigation } = restProps;
-        navigation.navigate("CategorySetting");
-    };
-
-    const onPress = (item: IStatus) => {
+    const onPress = useCallback((item: IStatus) => {
         dispatch({
             type: "category/setState",
             payload: {
@@ -52,7 +47,7 @@ function TopBar({
                 status: item.id
             }
         });
-    };
+    }, [activeCategory]);
 
     return (
         <View style={styles.container}>
@@ -65,7 +60,7 @@ function TopBar({
                 />
                 <Touchable
                     style={styles.categoryBtn}
-                    onPress={goCategorySetting}>
+                    onPress={() => restProps.navigation.navigate("CategorySetting")}>
                     <Text style={styles.text}>···</Text>
                 </Touchable>
             </View>

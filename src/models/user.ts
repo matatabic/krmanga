@@ -78,7 +78,6 @@ const userModel: UserModel = {
             const { payload } = action;
 
             const data = yield call(UserServices.Register, payload);
-            let isGoBack = false;
 
             Toast.show(data.msg, {
                 duration: Toast.durations.LONG,
@@ -88,7 +87,6 @@ const userModel: UserModel = {
             });
 
             if (data.code === StatusCode.SUCCESS) {
-                isGoBack = true;
                 const userInfo = {
                     mobile: data.data.mobile,
                     username: data.data.username,
@@ -114,15 +112,15 @@ const userModel: UserModel = {
                     data: userInfo
                 });
             }
+
             if (action.callback) {
-                action.callback(isGoBack);
+                action.callback();
             }
         },
         *login(action, { call, put }) {
             const { payload } = action;
 
             const data = yield call(UserServices.Login, payload);
-            let isGoBack = false;
 
             Toast.show(data.msg, {
                 duration: Toast.durations.LONG,
@@ -132,7 +130,6 @@ const userModel: UserModel = {
             });
 
             if (data.code === StatusCode.SUCCESS) {
-                isGoBack = true;
                 const userInfo = {
                     mobile: data.data.mobile,
                     username: data.data.username,
@@ -158,8 +155,9 @@ const userModel: UserModel = {
                     data: userInfo
                 });
             }
+
             if (action.callback) {
-                action.callback(isGoBack);
+                action.callback();
             }
         },
         *logout(_, { call, put }) {
@@ -194,7 +192,7 @@ const userModel: UserModel = {
     },
     subscriptions: {
         setup({ dispatch }) {
-            dispatch({type: 'loadData'});
+            dispatch({ type: "loadData" });
         },
         asyncStorage() {
             storage.sync.token = async () => {

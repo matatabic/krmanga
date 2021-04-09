@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import SnapCarousel, {
     ParallaxImage,
     Pagination,
@@ -33,31 +33,31 @@ interface IProps extends ModelState {
 
 function Carousel({ dispatch, carouselList, activeCarouselIndex }: IProps) {
 
-    const renderItem = (
-        {item}: { item: ICarousel },
-        parallaxProps?: AdditionalParallaxProps,
-    ) => {
-        return (
-            <ParallaxImage
-                source={{uri: item.image_url}}
-                style={styles.image}
-                containerStyle={styles.containerStyle}
-                parallaxFactor={0.8}
-                showSpinner
-                spinnerColor="rgba(0,0,0,0.25)"
-                {...parallaxProps}
-            />
-        );
-    }
-
     // const renderItem = (
-    //     { item }: { item: ICarousel }) => {
+    //     { item }: { item: ICarousel },
+    //     parallaxProps?: AdditionalParallaxProps
+    // ) => {
     //     return (
-    //         <View>
-    //             <FastImage source={{ uri: item.image_url }} style={styles.containerStyle} />
-    //         </View>
+    //         <ParallaxImage
+    //             source={{ uri: item.image_url }}
+    //             style={styles.image}
+    //             containerStyle={styles.containerStyle}
+    //             parallaxFactor={0.8}
+    //             showSpinner
+    //             spinnerColor="rgba(0,0,0,0.25)"
+    //             {...parallaxProps}
+    //         />
     //     );
     // };
+
+    const renderItem = (
+        { item }: { item: ICarousel }) => {
+        return (
+            <View>
+                <FastImage source={{ uri: item.image_url }} style={styles.containerStyle} />
+            </View>
+        );
+    };
 
     const onSnapToItem = (index: number) => {
         dispatch({
@@ -106,9 +106,9 @@ function Carousel({ dispatch, carouselList, activeCarouselIndex }: IProps) {
 
 const styles = StyleSheet.create({
     containerStyle: {
+        paddingTop: 10,
         width: itemWidth,
-        height: sideHeight,
-        paddingTop: 10
+        height: sideHeight
     },
     image: {
         ...StyleSheet.absoluteFillObject,
@@ -136,4 +136,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connector(React.memo(Carousel));
+export default connector(Carousel);

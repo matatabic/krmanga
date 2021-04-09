@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Color } from "@/utils/const";
 import FastImage from "react-native-fast-image";
@@ -32,7 +32,7 @@ function Item({ data, isEdit, selected, goMangaView }: IProps) {
         if (typeof goMangaView === "function") {
             goMangaView(data);
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -118,4 +118,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Item;
+export default memo(Item);

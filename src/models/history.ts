@@ -125,7 +125,7 @@ const historyModel: HistoryModel = {
                     return pre;
                 }, []);
             }
-
+            
             yield put({
                 type: "setState",
                 payload: {

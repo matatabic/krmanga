@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image } from "react-native";
 import { Color } from "@/utils/const";
 import { IChapter } from "@/models/brief";
 import Touchable from "@/components/Touchable";
-import Day from "@/assets/image/day.png";
+import Nolen from "@/assets/image/Nolen.png";
 
 
 interface IProps {
@@ -25,7 +25,7 @@ function Item({ data, goMangaView }: IProps) {
                 <Text style={styles.title}>{data.title}</Text>
                 <Text>{data.created_at}</Text>
             </View>
-            <Image source={Day} style={styles.avatar} />
+            <Image source={Nolen} style={styles.avatar} />
         </Touchable>
     );
 }

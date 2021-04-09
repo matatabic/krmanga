@@ -9,9 +9,9 @@ interface IProps {
 }
 
 function History({searchHistoryList, clearHistory, HistorySearch}: IProps) {
-    // if (searchHistoryList.length > 3) {
-    //     searchHistoryList = searchHistoryList.filter((item, index) => index < 3)
-    // }
+    if (searchHistoryList.length > 3) {
+        searchHistoryList = searchHistoryList.filter((item, index) => index < 3);
+    }
     return (
         searchHistoryList.length > 0 ?
             searchHistoryList.map((title, index) => {

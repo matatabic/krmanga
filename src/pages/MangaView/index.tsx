@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, StatusBar, FlatList, ListRenderItemInfo, StyleSheet, Animated, Easing, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
@@ -6,7 +6,6 @@ import { RouteProp } from "@react-navigation/native";
 import { RootStackNavigation, RootStackParamList } from "@/navigator/index";
 import { IChapter } from "@/models/brief";
 import { IEpisode, initialState } from "@/models/mangaView";
-import Touchable from "@/components/Touchable";
 import Item from "@/pages/MangaView/Item";
 import More from "@/components/More";
 import End from "@/components/End";
@@ -50,7 +49,7 @@ interface IProps extends ModelState {
 function MangaView({
                        navigation, dispatch, isLogin, chapterList, bookInfo,
                        book_id, headerHeight, roast, episodeList, hasMore, loading,
-                       currentChapterNum, currentRoast
+                       currentChapterNum, currentRoast, pages
                    }: IProps) {
 
     const [endReached, setEndReached] = useState<boolean>(false);
@@ -122,9 +121,7 @@ function MangaView({
 
     const renderItem = ({ item }: ListRenderItemInfo<IEpisode>) => {
         return (
-            <Touchable onPress={panelHandle} activeOpacity={1}>
-                <Item data={item} />
-            </Touchable>
+            <Item panelHandle={panelHandle} data={item} />
         );
     };
 
@@ -256,13 +253,13 @@ function MangaView({
         }
     };
 
-    const panelHandle = () => {
+    const panelHandle = useCallback(() => {
         if (panelEnable) {
             hidePanel();
         } else {
             showPanel();
         }
-    };
+    }, [panelEnable]);
 
     const onScrollEndDrag = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
         let offset_total = episodeList[0].multiple * viewportWidth;
@@ -301,7 +298,7 @@ function MangaView({
         hidePanel();
     };
 
-    const goMangaChapter = (item: IChapter) => {
+    const goMangaChapter = useCallback((item: IChapter) => {
         dispatch({
             type: "mangaView/fetchEpisodeList",
             payload: {
@@ -311,7 +308,7 @@ function MangaView({
                 callback: hideDrawer()
             }
         });
-    };
+    }, []);
 
     return (
         episodeList.length > 0 ? <View style={styles.container}>
@@ -335,6 +332,7 @@ function MangaView({
                 ListFooterComponent={renderFooter}
                 getItemLayout={getItemLayout}
                 onScrollEndDrag={onScrollEndDrag}
+                initialScrollIndex={pages.episode_offset - 1}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.1}
                 extraData={endReached}

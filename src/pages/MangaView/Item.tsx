@@ -1,20 +1,28 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Text, StyleSheet, View } from "react-native";
 import { viewportWidth } from "@/utils/index";
 import { IEpisode } from "@/models/mangaView";
 import FastImage, { OnProgressEvent } from "react-native-fast-image";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Color } from "@/utils/const";
+import Touchable from "@/components/Touchable";
 
 
 interface IProps {
     data: IEpisode;
+    panelHandle: () => void;
 }
 
-function Item({ data }: IProps) {
-    
+function Item({ data, panelHandle }: IProps) {
+
     const [loadNum, setLoadNum] = useState<number>(0);
     const [loadEnd, setLoadEnd] = useState<boolean>(true);
+
+    const onPress = () => {
+        if (typeof panelHandle === "function") {
+            panelHandle();
+        }
+    };
 
     const onError = () => {
         console.log("onError");
@@ -32,7 +40,7 @@ function Item({ data }: IProps) {
     };
 
     return (
-        <View style={styles.container}>
+        <Touchable onPress={onPress} activeOpacity={1} style={styles.container}>
             <FastImage source={{ uri: data.image }}
                        onError={onError}
                        onLoadEnd={onLoadEnd}
@@ -60,7 +68,7 @@ function Item({ data }: IProps) {
                   </AnimatedCircularProgress>
                 </View>
             }
-        </View>
+        </Touchable>
     );
 }
 
@@ -84,4 +92,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Item;
+export default memo(Item);

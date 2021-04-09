@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Animated, StyleSheet, SectionListRenderItemInfo } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { View, Text, Animated, StyleSheet, SectionList, SectionListRenderItemInfo } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
 import { RootStackNavigation } from "@/navigator/index";
 import { RootState } from "@/models/index";
@@ -96,11 +96,11 @@ function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore 
         return null;
     };
 
-    const goBrief = (data: IBook) => {
+    const goBrief = useCallback((data: IBook) => {
         navigation.navigate("Brief", {
             id: data.id
         });
-    };
+    }, []);
 
     const renderItem = ({ item }: SectionListRenderItemInfo<IBook[]>) => {
         return (
@@ -127,7 +127,7 @@ function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore 
             <View style={{ flex: 1 }}>
                 <CarouselBlurBackground />
                 <TopBarWrapper navigation={navigation} topBarColor={getTopBarColor()} />
-                <Animated.SectionList
+                <SectionList
                     keyExtractor={(item, index) => `item-${item["id"]}-key-${index}`}
                     ListHeaderComponent={() => <Carousel />}
                     renderSectionHeader={renderSectionHeader}
@@ -141,7 +141,7 @@ function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore 
                             nativeEvent: { contentOffset: { y: scrollY } }
                         }],
                         {
-                            useNativeDriver: true
+                            useNativeDriver: false
                         }
                     )}
                     onEndReached={onEndReached}

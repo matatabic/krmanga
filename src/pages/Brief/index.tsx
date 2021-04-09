@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Animated, StyleSheet, Platform, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
 import { getStatusBarHeight, isIphoneX } from "react-native-iphone-x-helper";
 import { Color } from "@/utils/const";
@@ -148,7 +148,7 @@ function Brief({
         });
     };
 
-    const onClickCollection = () => {
+    const onClickCollection = useCallback(() => {
         if (!isLogin) {
             navigation.navigate("Login");
         } else {
@@ -171,9 +171,9 @@ function Brief({
                 type: "collection/screenReload"
             });
         }
-    };
+    }, [isLogin, collection_id]);
 
-    const onClickRead = () => {
+    const onClickRead = useCallback(() => {
         if (markRoast > 0) {
             navigation.navigate("MangaView", {
                 book_id,
@@ -185,14 +185,14 @@ function Brief({
                 roast: 1
             });
         }
-    };
+    }, [markRoast]);
 
-    const goMangaView = (item: IChapter) => {
+    const goMangaView = useCallback((item: IChapter) => {
         navigation.navigate("MangaView", {
             book_id: book_id,
             roast: item.roast
         });
-    };
+    }, []);
 
     const showDrawer = () => {
         Animated.timing(drawerX, {

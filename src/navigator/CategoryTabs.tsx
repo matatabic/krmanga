@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import {
     createMaterialTopTabNavigator,
     MaterialTopTabNavigationProp
@@ -73,11 +73,11 @@ function CategoryTabs({ hideHeader, statusList, myCategoryList }: IProps) {
         }).start();
     };
 
-    const addModel = (id: number) => {
+    const addModel = useCallback((id: number) => {
         statusList.map(item => {
             createCategoryModel(`tab-category-${id}-status-${item.id}`);
         });
-    };
+    }, []);
 
     const renderScreen = (item: ICategory) => {
         addModel(item.id);

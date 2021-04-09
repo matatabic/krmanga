@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, ScrollView, View, StyleSheet } from "react-native";
 import { Formik, Field, FieldInputProps, FormikProps } from "formik";
 import * as Yup from "yup";
@@ -38,8 +38,9 @@ const initialValues: Values = {
     phone: ""
 };
 
-const mapStateToProps = ({ loading }: RootState) => {
+const mapStateToProps = ({ user, loading }: RootState) => {
     return {
+        isLogin: user.isLogin,
         loading: loading.effects["user/register"]
     };
 };
@@ -53,9 +54,17 @@ interface IProps extends ModelState {
 }
 
 
-function Register({ navigation, dispatch, loading }: IProps) {
+function Register({ navigation, dispatch, isLogin, loading }: IProps) {
 
     const [disabled, setDisabled] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (isLogin) {
+            setTimeout(() => {
+                navigation.goBack();
+            }, 100);
+        }
+    }, [isLogin]);
 
     const onSubmit = (values: Values) => {
 
@@ -68,15 +77,8 @@ function Register({ navigation, dispatch, loading }: IProps) {
         dispatch({
             type: "user/register",
             payload: values,
-            callback: (isGoBack: boolean) => {
-                if (isGoBack) {
-                    navigation.goBack();
-                    navigation.goBack();
-                } else {
-                    setTimeout(() => {
-                        setDisabled(false);
-                    }, 2000);
-                }
+            callback: () => {
+                setDisabled(false);
             }
         });
     };
@@ -92,10 +94,6 @@ function Register({ navigation, dispatch, loading }: IProps) {
         } else if (field.name === "phone") {
             form.setFieldValue("phone", "");
         }
-    };
-
-    const goLogin = () => {
-        navigation.navigate("Login");
     };
 
     return (
@@ -138,7 +136,7 @@ function Register({ navigation, dispatch, loading }: IProps) {
                         />
                         <View style={styles.jumpView}>
                             <Text style={styles.jumpTitle}>忘记密码?</Text>
-                            <Touchable onPress={goLogin}>
+                            <Touchable onPress={() => navigation.navigate("Login")}>
                                 <Text style={styles.jumpTitle}>立即登录</Text>
                             </Touchable>
                         </View>

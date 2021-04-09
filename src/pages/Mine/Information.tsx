@@ -31,10 +31,6 @@ function Information({ dispatch, navigation, isLogin, userInfo }: IProps) {
         });
     };
 
-    const goLogin = () => {
-        navigation.navigate("Login");
-    };
-
     return (
         <View style={styles.container}>
             <View style={styles.leftView}>
@@ -59,7 +55,7 @@ function Information({ dispatch, navigation, isLogin, userInfo }: IProps) {
                             <Text style={styles.loginTitle}>退出登录</Text>
                         </View>
                     </Touchable> :
-                    <Touchable onPress={goLogin} style={styles.rightView}>
+                    <Touchable onPress={() => navigation.navigate("Login")} style={styles.rightView}>
                         <View style={styles.login}>
                             <Text style={styles.loginTitle}>登录/注册</Text>
                         </View>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import { RootState } from "@/models/index";
@@ -94,7 +94,7 @@ function SearchBar({ navigation, dispatch, searchTitle }: IProps) {
         }
     };
 
-    const cleanTitle = () => {
+    const cleanTitle = useCallback(() => {
         dispatch({
             type: "search/setState",
             payload: {
@@ -103,7 +103,7 @@ function SearchBar({ navigation, dispatch, searchTitle }: IProps) {
                 showBookView: false
             }
         });
-    };
+    }, []);
 
     const loadData = (title: string) => {
         dispatch({

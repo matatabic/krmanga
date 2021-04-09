@@ -5,7 +5,8 @@ import { REGISTER_URL, LOGIN_URL, LOGOUT_URL } from "@/config/api";
 export async function Register(params: any) {
     return axios.post(REGISTER_URL, {
         "username": params.account,
-        "password": params.password
+        "password": params.password,
+        "mobile": params.phone ? params.phone : null
     });
 }
 

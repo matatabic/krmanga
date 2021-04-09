@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, ScrollView, View, StyleSheet } from "react-native";
 import { Formik, Field, FieldInputProps, FormikProps } from "formik";
 import * as Yup from "yup";
@@ -46,13 +46,13 @@ const Login = ({ navigation, dispatch, isLogin, loading }: IProps) => {
 
     const [disabled, setDisabled] = useState<boolean>(false);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            if (isLogin) {
+    useEffect(() => {
+        if (isLogin) {
+            setTimeout(() => {
                 navigation.goBack();
-            }
-        }, [])
-    );
+            }, 100);
+        }
+    }, [isLogin]);
 
     const onSubmit = (values: Values) => {
 
@@ -65,11 +65,8 @@ const Login = ({ navigation, dispatch, isLogin, loading }: IProps) => {
         dispatch({
             type: "user/login",
             payload: values,
-            callback: (isGoBack: boolean) => {
-                isGoBack ? navigation.goBack()
-                    : setTimeout(() => {
-                        setDisabled(false);
-                    }, 2000);
+            callback: () => {
+                setDisabled(false);
             }
         });
     };
@@ -80,10 +77,6 @@ const Login = ({ navigation, dispatch, isLogin, loading }: IProps) => {
         } else if (field.name === "password") {
             form.setFieldValue("password", "");
         }
-    };
-
-    const goRegister = () => {
-        navigation.navigate("Register");
     };
 
     return (
@@ -111,7 +104,7 @@ const Login = ({ navigation, dispatch, isLogin, loading }: IProps) => {
                         />
                         <View style={styles.jumpView}>
                             <Text style={styles.jumpTitle}>忘记密码?</Text>
-                            <Touchable onPress={goRegister}>
+                            <Touchable onPress={() => navigation.navigate("Register")}>
                                 <Text style={styles.jumpTitle}>注册账号</Text>
                             </Touchable>
                         </View>

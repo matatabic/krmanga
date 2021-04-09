@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ip, viewportWidth, wp } from "@/utils/index";
 import { Color } from "@/utils/const";
@@ -111,4 +111,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default BookCover;
+export default memo(BookCover);

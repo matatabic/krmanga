@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { ICategory } from "@/models/categorySetting";
 import { StyleSheet, Text, View } from "react-native";
 import { viewportWidth } from "@/utils/index";
@@ -64,5 +64,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Item;
+export default memo(Item);
 

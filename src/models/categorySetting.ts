@@ -92,7 +92,6 @@ const categorySettingModel: CategorySettingModel = {
                 }
             });
             if (categorySetting.isEdit) {
-                console.log(payload.myCategoryList);
                 storage.save({
                     key: "myCategoryList",
                     data: payload.myCategoryList
