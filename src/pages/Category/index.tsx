@@ -137,7 +137,7 @@ function Category({ dispatch, navigation, category_id, activeStatus, activeModel
     };
 
     return (
-        (loading && refreshing) ? <BookPlaceholder /> :
+        refreshing ? <BookPlaceholder /> :
             <FlatList
                 keyExtractor={(item, key) => `item-${item.id}-key-${key}`}
                 data={bookList}

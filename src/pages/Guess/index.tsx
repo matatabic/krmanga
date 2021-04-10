@@ -53,7 +53,7 @@ function Guess({ navigation, dispatch, headerTitle, bookList, refreshing, loadin
     }, []);
 
     return (
-        (loading && refreshing) ? <ListPlaceholder /> :
+        refreshing ? <ListPlaceholder /> :
             <BookList
                 data={bookList}
                 loading={loading}

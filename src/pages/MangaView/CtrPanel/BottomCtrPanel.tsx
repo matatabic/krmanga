@@ -28,7 +28,7 @@ function BottomCtrPanel({ bottomPanelValue, scrollToIndex, showDrawer, lastChapt
                 nextChapter={nextChapter}
             />
             <Bottom showDrawer={showDrawer} />
-            <View style={{ height: getBottomSpace(), backgroundColor: Color.black }} />
+            {/*<View style={{ height: getBottomSpace(), backgroundColor: Color.black }} />*/}
         </Animated.View>
     );
 }

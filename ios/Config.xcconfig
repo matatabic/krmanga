@@ -1,0 +1,10 @@
+//
+//  Config.xcconfig
+//  manga
+//
+//  Created by y on 2021/4/10.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+#include? "tmp.xcconfig"

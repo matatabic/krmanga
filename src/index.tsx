@@ -5,7 +5,9 @@ import Navigator from "@/navigator/index";
 import store from "@/config/dva";
 import { StatusBar } from "react-native";
 import "@/config/http";
+import {enableScreens} from 'react-native-screens';
 
+enableScreens();
 
 export default class extends React.Component {
     render() {

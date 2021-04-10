@@ -171,7 +171,7 @@ function Shelf({
 
     return (
         !isLogin ? null :
-            (loading && refreshing) ? <BookPlaceholder /> :
+            refreshing ? <BookPlaceholder /> :
                 <View style={styles.container}>
                     <View style={styles.totalView}>
                         <Animated.Text style={[{

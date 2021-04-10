@@ -64,3 +64,5 @@ buck-out/
 
 #env
 .env
+
+upload.json

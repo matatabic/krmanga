@@ -13,6 +13,7 @@ import End from "@/components/End";
 import BookCover from "@/components/BookCover";
 import Carousel from "@/pages/Home/Carousel";
 import HomePlaceholder from "@/components/Placeholder/HomePlaceholder";
+import SplashScreen from "react-native-splash-screen";
 
 const mapStateToProps = ({ home, loading }: RootState) => {
     return {
@@ -41,6 +42,7 @@ function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore 
     const [endReached, setEndReached] = useState<boolean>(false);
 
     useEffect(() => {
+        SplashScreen.hide();//关闭启动屏
         loadCarouselList();
         loadCommendList(true);
     }, []);
@@ -123,7 +125,7 @@ function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore 
     };
 
     return (
-        (loading && refreshing) ? <HomePlaceholder /> :
+        refreshing ? <HomePlaceholder /> :
             <View style={{ flex: 1 }}>
                 <CarouselBlurBackground />
                 <TopBarWrapper navigation={navigation} topBarColor={getTopBarColor()} />

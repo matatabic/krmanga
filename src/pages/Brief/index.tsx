@@ -7,7 +7,7 @@ import { ModalStackNavigation, RootStackNavigation, RootStackParamList } from "@
 import { RouteProp } from "@react-navigation/native";
 import { connect, ConnectedProps } from "react-redux";
 import { ip, viewportWidth, wp } from "@/utils/index";
-import { IChapter } from "@/models/brief";
+import { IChapter, initialState } from "@/models/brief";
 import BriefPlaceholder from "@/components/Placeholder/BriefPlaceholder";
 import ImageBlurBackground from "@/pages/Brief/ImageBlurBackground";
 import TopBarWrapper from "@/pages/Brief/TopBarWrapper";
@@ -72,6 +72,14 @@ function Brief({
             }
         });
         loadData(true);
+        return () => {
+            dispatch({
+                type: "brief/setState",
+                payload: {
+                    ...initialState
+                }
+            });
+        };
     }, []);
 
     const getOpacity = () => {
@@ -230,18 +238,16 @@ function Brief({
     };
 
     return (
-        (loading && refreshing) ? <BriefPlaceholder /> :
+        refreshing ? <BriefPlaceholder /> :
             <View style={styles.container}>
-                {
-                    chapterList.length > 0 ? <LightDrawer
-                        chapterList={chapterList}
-                        bookInfo={bookInfo}
-                        headerHeight={headerHeight}
-                        drawerX={drawerX}
-                        goMangaView={goMangaView}
-                        hideDrawer={hideDrawer}
-                    /> : null
-                }
+                <LightDrawer
+                    chapterList={chapterList}
+                    bookInfo={bookInfo}
+                    headerHeight={headerHeight}
+                    drawerX={drawerX}
+                    goMangaView={goMangaView}
+                    hideDrawer={hideDrawer}
+                />
                 <ImageBlurBackground
                     bookInfo={bookInfo}
                     imageSize={getBgImageSize()}

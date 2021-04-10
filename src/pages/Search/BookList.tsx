@@ -37,7 +37,7 @@ function BookList({dispatch, bookList, loading, refreshing, hasMore, searchTitle
     }
 
     return (
-        (loading && refreshing) ? <ListPlaceholder/> :
+        (bookList.length === 0) ? <ListPlaceholder/> :
             <List
                 data={bookList}
                 loading={loading}
