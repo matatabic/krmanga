@@ -329,6 +329,8 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.8)
     - SDWebImageWebPCoder (~> 0.6.1)
+  - RNFS (2.17.0):
+    - React
   - RNGestureHandler (1.10.0):
     - React-Core
   - RNReanimated (1.13.2):
@@ -404,6 +406,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -499,6 +502,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -558,6 +563,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNDeviceInfo: 921a809eaf9de79645a24de1c6ca90db6cb91786
   RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
+  RNFS: 93d5b5535eb39d98e6b19009faa8fe717f7ea45d
   RNGestureHandler: 03f587ba19a7e2d9fe48fb9aa6e33ace5fd07dd5
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: b6c9607e6fe47c1b6e2f1910d2acd46dd7ecea3a

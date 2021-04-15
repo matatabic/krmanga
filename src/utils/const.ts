@@ -10,6 +10,7 @@ export const Color = { //App通用颜色
     text: "#000000",    //默认字体颜色
     light: "#F3F6F6",     //按钮颜色
     purple: "#874EFD",
+    green: "#3EB595",
     night: "#696969",
     dark: "#1C1C1C",
     yellow_btn: "#FDC841",

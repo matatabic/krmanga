@@ -9,8 +9,8 @@ import {
     CardStyleInterpolators,
     TransitionPresets
 } from "@react-navigation/stack";
-import Register from "@/pages/account/Register";
-import Login from "@/pages/account/Login";
+import Register from "@/pages/Account/Register";
+import Login from "@/pages/Account/Login";
 import Brief from "@/pages/Brief";
 import { Platform, StyleSheet } from "react-native";
 import BottomTabs from "@/navigator/BottomTabs";
@@ -19,7 +19,8 @@ import CategorySetting from "@/pages/CategorySetting";
 import Search from "@/pages/Search";
 import MangaView from "@/pages/MangaView";
 import Guess from "@/pages/Guess";
-
+import DownloadManage from "@/pages/Shelf/Download";
+import Download from "@/pages/Download";
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -37,8 +38,13 @@ export type RootStackParamList = {
     CategoryTabs: undefined;
     MangaView: {
         roast: number,
+        chapter_num: number,
         book_id: number
     };
+    Download: {
+        book_id: number
+    };
+    DownloadManage: undefined;
 }
 
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
@@ -176,6 +182,20 @@ function RootStackScreen() {
             <RootStack.Screen
                 name="Guess"
                 component={Guess}
+            />
+            <RootStack.Screen
+                name={"Download"}
+                component={Download}
+                options={{
+                    headerTitle: "下载"
+                }}
+            />
+            <RootStack.Screen
+                name={"DownloadManage"}
+                component={DownloadManage}
+                options={{
+                    headerTitle: "下载管理"
+                }}
             />
         </RootStack.Navigator>
     );

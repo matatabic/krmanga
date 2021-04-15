@@ -21,6 +21,7 @@ const mapStateToProps = ({ mangaView, brief, user, loading }: RootState, { route
     return {
         book_id: route.params.book_id,
         roast: route.params.roast,
+        chapter_num: route.params.chapter_num,
         isLogin: user.isLogin,
         headerHeight: brief.headerHeight,
         episodeList: mangaView.episodeList,
@@ -53,6 +54,7 @@ function MangaView({
                    }: IProps) {
 
     const [endReached, setEndReached] = useState<boolean>(false);
+    let [time, setTime] = useState<NodeJS.Timeout | null>(null);
 
     let flatListRef: FlatList<IEpisode> | null = null;
     const topPanelValue = useRef(new Animated.Value(0)).current;
@@ -261,6 +263,19 @@ function MangaView({
         }
     }, [panelEnable]);
 
+    const debounce = (cb: any, wait = 1000) => {
+        if (time !== null) {
+            clearTimeout(time);
+        }
+
+        let tempTime = setTimeout(() => {
+            time = null;
+            cb && cb();
+        }, wait);
+
+        setTime(tempTime);
+    };
+
     const onScrollEndDrag = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
         let offset_total = episodeList[0].multiple * viewportWidth;
         let current_episode_total = episodeList[0].episode_total;
@@ -283,16 +298,18 @@ function MangaView({
             offset_total = offset_total + episodeList[i].multiple * viewportWidth;
         }
 
-        dispatch({
-            type: "mangaView/setState",
-            payload: {
-                currentEpisodeTotal: current_episode_total,
-                currentChapterId: current_chapter_id,
-                currentChapterNum: current_chapter_num,
-                currentNumber: current_number,
-                currentRoast: current_roast,
-                currentTitle: current_title
-            }
+        debounce(() => {
+            dispatch({
+                type: "mangaView/setState",
+                payload: {
+                    currentEpisodeTotal: current_episode_total,
+                    currentChapterId: current_chapter_id,
+                    currentChapterNum: current_chapter_num,
+                    currentNumber: current_number,
+                    currentRoast: current_roast,
+                    currentTitle: current_title
+                }
+            });
         });
 
         hidePanel();

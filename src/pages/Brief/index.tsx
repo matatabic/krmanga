@@ -25,6 +25,7 @@ const mapStateToProps = ({ user, brief, loading }: RootState, { route }: { route
         headerHeight: brief.headerHeight,
         bookInfo: brief.bookInfo,
         markRoast: brief.markRoast,
+        markChapterNum: brief.markChapterNum,
         collection_id: brief.collection_id,
         refreshing: brief.refreshing,
         chapterList: brief.chapterList,
@@ -46,7 +47,7 @@ const imageWidth = wp(30);
 const imageHeight = ip(imageWidth);
 
 function Brief({
-                   navigation, dispatch, isLogin, headerHeight, loading, bookInfo, book_id, markRoast,
+                   navigation, dispatch, isLogin, headerHeight, bookInfo, book_id, markRoast, markChapterNum,
                    collection_id, refreshing, chapterList
                }: IProps) {
     const topHeight = useHeaderHeight();
@@ -185,11 +186,13 @@ function Brief({
         if (markRoast > 0) {
             navigation.navigate("MangaView", {
                 book_id,
+                chapter_num: markChapterNum,
                 roast: markRoast
             });
         } else {
             navigation.navigate("MangaView", {
                 book_id,
+                chapter_num: 1,
                 roast: 1
             });
         }
@@ -198,6 +201,7 @@ function Brief({
     const goMangaView = useCallback((item: IChapter) => {
         navigation.navigate("MangaView", {
             book_id: book_id,
+            chapter_num: item.chapter_num,
             roast: item.roast
         });
     }, []);
@@ -253,6 +257,7 @@ function Brief({
                     imageSize={getBgImageSize()}
                 />
                 <TopBarWrapper
+                    book_id={book_id}
                     headerHeight={headerHeight}
                     showTop={showTop}
                     opacity={getOpacity()}

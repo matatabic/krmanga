@@ -1,20 +1,21 @@
 import React from "react";
 import { Animated, StyleSheet, View } from "react-native";
-import { RootStackNavigation } from "@/navigator/index";
+import { ModalStackNavigation, RootStackNavigation } from "@/navigator/index";
 import Touchable from "@/components/Touchable";
 import Icon from "@/assets/iconfont";
 import { Color } from "@/utils/const";
 import { useNavigation } from "@react-navigation/native";
 
 interface IProps {
-    headerHeight: number
-    showTop: boolean
+    book_id: number;
+    headerHeight: number;
+    showTop: boolean;
     opacity: Animated.AnimatedInterpolation;
 }
 
-function TopBarWrapper({ headerHeight, showTop, opacity }: IProps) {
+function TopBarWrapper({ book_id, headerHeight, showTop, opacity }: IProps) {
 
-    const navigation = useNavigation<RootStackNavigation>();
+    const navigation = useNavigation<RootStackNavigation & ModalStackNavigation>();
 
     return (
         <View style={[styles.wrapper, {
@@ -39,7 +40,9 @@ function TopBarWrapper({ headerHeight, showTop, opacity }: IProps) {
                             <Icon style={styles.rightIcon} name="icon-shangbian" color={Color.white} size={22} />
                           </Touchable>
                           <Touchable onPress={() => {
-                              console.log("xiabian");
+                              navigation.navigate("Download", {
+                                  book_id
+                              });
                           }}>
                             <Icon style={styles.rightIcon} name="icon-xiabian" color={Color.white} size={22} />
                           </Touchable>

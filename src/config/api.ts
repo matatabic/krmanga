@@ -25,6 +25,8 @@ const RANDOM_URL = "/book/getRandomList";
 const REGISTER_URL = "/passport/register";
 const LOGIN_URL = "/passport/login";
 const LOGOUT_URL = "/passport/logout";
+//chapter
+const CHAPTER_URL = "chapter/getList";
 
 
 export {
@@ -46,5 +48,6 @@ export {
     RANDOM_URL,
     REGISTER_URL,
     LOGIN_URL,
-    LOGOUT_URL
+    LOGOUT_URL,
+    CHAPTER_URL
 };

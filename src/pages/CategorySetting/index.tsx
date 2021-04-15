@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         padding: 5
     }
-
 });
 
 export default connector(CategorySetting);

@@ -12,36 +12,24 @@ import { ModalStackNavigation } from "@/navigator/index";
 
 const customerValidation = Yup.object().shape({
     account: Yup.string().required("请输入账号"),
-    password: Yup.string().required("请输入密码"),
-    repeat_password: Yup.string().required("请二次输入密码").test("repeat_password", "密码错误", function(value) {
-        return this.parent.password === value;
-    }),
-    phone: Yup.string().notRequired().test("phone", "手机号码格式错误", function(value) {
-        if (value === undefined || value?.length === 0) {
-            return true;
-        }
-        return /^[1][3,4,5,7,8][0-9]{9}$/.test(value as string);
-    })
+    password: Yup.string().required("请输入密码")
 });
 
 interface Values {
     account: string;
     password: string;
-    repeat_password: string;
-    phone: string;
+
 }
 
 const initialValues: Values = {
     account: "",
-    password: "",
-    repeat_password: "",
-    phone: ""
+    password: ""
 };
 
 const mapStateToProps = ({ user, loading }: RootState) => {
     return {
         isLogin: user.isLogin,
-        loading: loading.effects["user/register"]
+        loading: loading.effects["user/login"]
     };
 };
 
@@ -54,7 +42,7 @@ interface IProps extends ModelState {
 }
 
 
-function Register({ navigation, dispatch, isLogin, loading }: IProps) {
+const Login = ({ navigation, dispatch, isLogin, loading }: IProps) => {
 
     const [disabled, setDisabled] = useState<boolean>(false);
 
@@ -75,7 +63,7 @@ function Register({ navigation, dispatch, isLogin, loading }: IProps) {
         setDisabled(true);
 
         dispatch({
-            type: "user/register",
+            type: "user/login",
             payload: values,
             callback: () => {
                 setDisabled(false);
@@ -83,16 +71,11 @@ function Register({ navigation, dispatch, isLogin, loading }: IProps) {
         });
     };
 
-
     const cancel = (form: FormikProps<string>, field: FieldInputProps<string>) => {
         if (field.name === "account") {
             form.setFieldValue("account", "");
         } else if (field.name === "password") {
             form.setFieldValue("password", "");
-        } else if (field.name === "repeat_password") {
-            form.setFieldValue("repeat_password", "");
-        } else if (field.name === "phone") {
-            form.setFieldValue("phone", "");
         }
     };
 
@@ -108,7 +91,7 @@ function Register({ navigation, dispatch, isLogin, loading }: IProps) {
                             name="account"
                             placeholder="请输入用户名"
                             component={Input}
-                            iconName={"icon-account"}
+                            iconName={"icon-Account"}
                             cancel={cancel}
                         />
                         <Field
@@ -119,36 +102,22 @@ function Register({ navigation, dispatch, isLogin, loading }: IProps) {
                             secureTextEntry
                             cancel={cancel}
                         />
-                        <Field
-                            name="repeat_password"
-                            placeholder="请再输入密码"
-                            component={Input}
-                            iconName={"icon-mima"}
-                            secureTextEntry
-                            cancel={cancel}
-                        />
-                        <Field
-                            name="phone"
-                            placeholder="请输入手机号(选填)"
-                            component={Input}
-                            iconName={"icon-mobile-phone"}
-                            cancel={cancel}
-                        />
                         <View style={styles.jumpView}>
                             <Text style={styles.jumpTitle}>忘记密码?</Text>
-                            <Touchable onPress={() => navigation.navigate("Login")}>
-                                <Text style={styles.jumpTitle}>立即登录</Text>
+                            <Touchable onPress={() => navigation.navigate("Register")}>
+                                <Text style={styles.jumpTitle}>注册账号</Text>
                             </Touchable>
                         </View>
                         <Touchable disabled={disabled} onPress={handleSubmit} style={styles.login}>
-                            <Text style={styles.loginText}>注册</Text>
+                            <Text style={styles.loginText}>登录</Text>
                         </Touchable>
                     </View>
                 )}
             </Formik>
         </ScrollView>
     );
-}
+};
+
 
 const styles = StyleSheet.create({
     container: {
@@ -180,4 +149,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connector(Register);
+export default connector(Login);
