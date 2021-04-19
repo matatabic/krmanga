@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Animated, View } from "react-native";
+import { StyleSheet, Animated } from "react-native";
 import { Color } from "@/utils/const";
 import { viewportWidth } from "@/utils/index";
 import { getBottomSpace } from "react-native-iphone-x-helper";

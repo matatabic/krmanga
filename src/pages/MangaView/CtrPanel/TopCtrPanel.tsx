@@ -7,6 +7,7 @@ import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
 import Touchable from "@/components/Touchable";
 import { RootStackNavigation } from "@/navigator/index";
+import Toast from "react-native-root-toast";
 
 
 const mapStateToProps = ({ brief, mangaView }: RootState) => {
@@ -21,11 +22,12 @@ const connector = connect(mapStateToProps);
 type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
+    book_id: number;
     topPanelValue: Animated.Value;
     navigation: RootStackNavigation;
 }
 
-function TopCtrPanel({ headerHeight, topPanelValue, currentTitle, navigation }: IProps) {
+function TopCtrPanel({ book_id, headerHeight, topPanelValue, currentTitle, navigation }: IProps) {
 
     return (
         <Animated.View style={[styles.wrapper, {
@@ -42,8 +44,23 @@ function TopCtrPanel({ headerHeight, topPanelValue, currentTitle, navigation }: 
                     <Text style={styles.title}>第{currentTitle}话</Text>
                 </View>
                 <View style={styles.rightView}>
-                    <Icon name="icon-xiabian" color={Color.white} style={styles.rightIcon} size={22} />
-                    <Icon name="icon-elipsis" color={Color.white} style={styles.rightIcon} size={22} />
+                    <Touchable onPress={() => {
+                        navigation.navigate("Download", {
+                            book_id
+                        });
+                    }}>
+                        <Icon name="icon-xiabian" color={Color.white} style={styles.rightIcon} size={22} />
+                    </Touchable>
+                    <Touchable onPress={() => {
+                        Toast.show("未做", {
+                            duration: Toast.durations.LONG,
+                            position: Toast.positions.CENTER,
+                            shadow: true,
+                            animation: true
+                        });
+                    }}>
+                        <Icon name="icon-elipsis" color={Color.white} style={styles.rightIcon} size={22} />
+                    </Touchable>
                 </View>
             </View>
         </Animated.View>

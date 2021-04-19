@@ -8,7 +8,7 @@ import { connect, ConnectedProps } from "react-redux";
 
 const mapStateToProps = ({ mangaView }: RootState) => {
     return {
-        currentNumber: mangaView.currentNumber,
+        showCurrentNumber: mangaView.showCurrentNumber,
         currentEpisodeTotal: mangaView.currentEpisodeTotal,
         pages: mangaView.pagination
     };
@@ -18,10 +18,10 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-function Current({ currentNumber, currentEpisodeTotal }: ModelState) {
+function Current({ showCurrentNumber, currentEpisodeTotal }: ModelState) {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{currentNumber}/{currentEpisodeTotal}</Text>
+            <Text style={styles.title}>{showCurrentNumber}/{currentEpisodeTotal}</Text>
         </View>
     );
 }

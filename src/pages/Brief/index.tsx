@@ -186,23 +186,21 @@ function Brief({
         if (markRoast > 0) {
             navigation.navigate("MangaView", {
                 book_id,
+                markRoast,
                 chapter_num: markChapterNum,
-                roast: markRoast
             });
         } else {
             navigation.navigate("MangaView", {
                 book_id,
-                chapter_num: 1,
-                roast: 1
+                chapter_num: 1
             });
         }
     }, [markRoast]);
 
     const goMangaView = useCallback((item: IChapter) => {
         navigation.navigate("MangaView", {
-            book_id: book_id,
-            chapter_num: item.chapter_num,
-            roast: item.roast
+            book_id,
+            chapter_num: item.chapter_num
         });
     }, []);
 

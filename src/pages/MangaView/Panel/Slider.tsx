@@ -35,13 +35,18 @@ function SliderView({ dispatch, currentEpisodeTotal, currentNumber, currentChapt
 
     const changeValue = (currentNumber: number) => {
         dispatch({
-            type: "mangaView/setCurrentIndex",
+            type: "mangaView/setState",
+            payload: {
+                showCurrentNumber: currentNumber
+            }
+        });
+        debounce(() => dispatch({
+            type: "mangaView/changeCurrentNumber",
             payload: {
                 currentNumber
             },
-            debounce,
             callback: scrollToIndex
-        });
+        }));
     };
 
     const debounce = (cb: any, wait = 500) => {

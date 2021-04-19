@@ -40,6 +40,15 @@ function getCurrentDate() {
     return `${hour}:${min}`;
 }
 
+function getFileType(filePath: string) {
+    const startIndex = filePath.lastIndexOf(".");
+    if (startIndex != -1) {
+        return filePath.substring(startIndex + 1, filePath.length).toLowerCase();
+    } else {
+        return "";
+    }
+}
+
 
 export {
     wp,
@@ -48,5 +57,6 @@ export {
     getActiveRouteName,
     getCurrentDate,
     viewportWidth,
-    viewportHeight
+    viewportHeight,
+    getFileType
 };

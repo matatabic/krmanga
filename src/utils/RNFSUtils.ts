@@ -51,10 +51,10 @@ export const _downloadFile = (formUrl: string, targetName: string, callback?: ()
         toFile: toLoadPath,
         progressDivider: 5,
         begin: (res) => {
-            console.log("begin", res)
+            // console.log("begin", res)
         },
         progress: (res) => {
-            console.log("progress", res)
+            // console.log("progress", res)
         }
     })
         .promise.then(res => res)
@@ -130,9 +130,11 @@ export const _appendFile = (fileName: string, content: string, callback: () => v
  * @Param: targetName 要删除的文件名称   callback:回调函数   1：成功  0/其它:失败
  *
  */
-export const _deleteFile = (targetName: string, callback: () => void) => {
+export const _deleteFile = (targetName: string) => {
     RNFS.unlink(`${ExternalDirectoryPath}/${targetName}`)
-        .then(() => callback());
+        .then(res =>{
+            console.log(res)
+        });
 };
 
 /**

@@ -20,7 +20,7 @@ import BottomStatusBar from "@/pages/MangaView/BottomStatusBar";
 const mapStateToProps = ({ mangaView, brief, user, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "MangaView"> }) => {
     return {
         book_id: route.params.book_id,
-        roast: route.params.roast,
+        markRoast: route.params.markRoast,
         chapter_num: route.params.chapter_num,
         isLogin: user.isLogin,
         headerHeight: brief.headerHeight,
@@ -49,7 +49,7 @@ interface IProps extends ModelState {
 
 function MangaView({
                        navigation, dispatch, isLogin, chapterList, bookInfo,
-                       book_id, headerHeight, roast, episodeList, hasMore, loading,
+                       book_id, headerHeight, markRoast, chapter_num, episodeList, hasMore, loading,
                        currentChapterNum, currentRoast, pages
                    }: IProps) {
 
@@ -102,7 +102,8 @@ function MangaView({
             type: "mangaView/fetchEpisodeList",
             payload: {
                 refreshing,
-                roast,
+                roast: markRoast,
+                chapter_num,
                 book_id
             },
             callback
@@ -116,8 +117,15 @@ function MangaView({
 
         setEndReached(true);
 
-        loadData(false, () => {
-            setEndReached(false);
+        dispatch({
+            type: "mangaView/fetchEpisodeList",
+            payload: {
+                book_id,
+                chapter_num: currentChapterNum + 1
+            },
+            callback: () => {
+                setEndReached(false);
+            }
         });
     };
 
@@ -163,8 +171,8 @@ function MangaView({
                 type: "mangaView/fetchEpisodeList",
                 payload: {
                     refreshing: true,
-                    chapter_num: currentChapterNum - 1,
-                    book_id
+                    book_id,
+                    chapter_num: currentChapterNum - 1
                 }
             });
         }
@@ -176,8 +184,8 @@ function MangaView({
                 type: "mangaView/fetchEpisodeList",
                 payload: {
                     refreshing: true,
-                    chapter_num: currentChapterNum + 1,
-                    book_id
+                    book_id,
+                    chapter_num: currentChapterNum + 1
                 }
             });
         }
@@ -263,7 +271,7 @@ function MangaView({
         }
     }, [panelEnable]);
 
-    const debounce = (cb: any, wait = 1000) => {
+    const debounce = (cb: any, wait = 500) => {
         if (time !== null) {
             clearTimeout(time);
         }
@@ -277,7 +285,7 @@ function MangaView({
     };
 
     const onScrollEndDrag = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-        let offset_total = episodeList[0].multiple * viewportWidth;
+        let offset_total = 0;
         let current_episode_total = episodeList[0].episode_total;
         let current_chapter_id = episodeList[0].chapter_id;
         let current_chapter_num = episodeList[0].chapter_num;
@@ -306,6 +314,7 @@ function MangaView({
                     currentChapterId: current_chapter_id,
                     currentChapterNum: current_chapter_num,
                     currentNumber: current_number,
+                    showCurrentNumber: current_number,
                     currentRoast: current_roast,
                     currentTitle: current_title
                 }
@@ -320,8 +329,8 @@ function MangaView({
             type: "mangaView/fetchEpisodeList",
             payload: {
                 refreshing: true,
-                roast: item.roast,
                 book_id,
+                chapter_num: item.chapter_num,
                 callback: hideDrawer()
             }
         });
@@ -331,6 +340,7 @@ function MangaView({
         episodeList.length > 0 ? <View style={styles.container}>
             <StatusBar barStyle="light-content" />
             <TopCtrPanel
+                book_id={book_id}
                 topPanelValue={topPanelValue}
                 navigation={navigation}
             />

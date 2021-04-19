@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import { RootState } from "@/models/index";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackNavigation, RootStackParamList } from "@/navigator/index";
@@ -8,7 +8,7 @@ import DownloadPlaceholder from "@/components/Placeholder/DownloadPlaceholder";
 import EditView from "@/pages/Download/EditView";
 import { ScrollView } from "react-native-gesture-handler";
 import Item from "@/pages/Download/Item";
-import { IChapter } from "@/models/download";
+import { IChapter, initialState } from "@/models/download";
 import Touchable from "@/components/Touchable";
 
 
@@ -33,10 +33,27 @@ interface IProps extends ModelState {
 function Download({ dispatch, book_id, chapterList }: IProps) {
 
     const [downloadList, setDownloadList] = useState<number[]>([]);
+    let [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         loadData(true);
+        return () => {
+            dispatch({
+                type: "download/setState",
+                payload: {
+                    ...initialState
+                }
+            });
+        };
     }, []);
+
+    useEffect(() => {
+        return () => {
+            if (timer !== null) {
+                clearTimeout(timer);
+            }
+        };
+    }, [timer]);
 
     const loadData = (refreshing: boolean, callback?: () => void) => {
         dispatch({
@@ -50,10 +67,10 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
 
     const renderItem = (item: IChapter, index: number) => {
         const selected = downloadList.indexOf(item.chapter_num) > -1;
-        // console.log(item.disabled)
+
         return (
             <Touchable
-                key={item.id}
+                key={`item-${item.id}key-${index}`}
                 onPress={() => onPress(item)}
             >
                 <Item
@@ -65,7 +82,7 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
         );
     };
 
-    const onPress = (item: IChapter) => {
+    const onPress = useCallback((item: IChapter) => {
         if (item.disabled) {
             return false;
         }
@@ -78,7 +95,7 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
         setDownloadList([...downloadList, item.chapter_num].sort((a, b) => {
             return a - b;
         }));
-    };
+    }, [downloadList]);
 
     const downTask = () => {
         dispatch({
@@ -94,6 +111,12 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
                         chapterList: data
                     }
                 });
+            },
+            callback: () => {
+                const time = setTimeout(() => {
+                    setDownloadList([]);
+                }, 1250);
+                setTimer(time);
             }
         });
     };

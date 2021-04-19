@@ -37,9 +37,9 @@ export type RootStackParamList = {
     };
     CategoryTabs: undefined;
     MangaView: {
-        roast: number,
-        chapter_num: number,
         book_id: number
+        markRoast?: number,
+        chapter_num?: number,
     };
     Download: {
         book_id: number

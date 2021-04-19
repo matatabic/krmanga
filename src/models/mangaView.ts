@@ -1,8 +1,9 @@
-import { Model, Effect } from "dva-core-ts";
+import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
 import { Reducer } from "redux";
 import EpisodeServices from "@/services/episode";
 import { RootState } from "@/models/index";
-
+import storage, { storageLoad } from "@/config/storage";
+import _ from "lodash";
 
 export interface IEpisode {
     id: number;
@@ -35,6 +36,7 @@ export interface MangaViewState {
     currentNumber: number;
     currentRoast: number;
     currentTitle: string;
+    showCurrentNumber: number;
     panelEnable: boolean;
     pagination: IPagination;
 }
@@ -48,8 +50,9 @@ interface MangaViewModel extends Model {
     effects: {
         fetchEpisodeList: Effect;
         addHistory: Effect;
-        setCurrentIndex: Effect;
+        changeCurrentNumber: Effect;
     };
+    subscriptions: SubscriptionsMapObject;
 }
 
 export const initialState = {
@@ -62,6 +65,7 @@ export const initialState = {
     currentNumber: 0,
     currentRoast: 0,
     currentTitle: "",
+    showCurrentNumber: 0,
     panelEnable: true,
     pagination: {
         current_chapter_id: 0,
@@ -87,20 +91,45 @@ const mangaViewModel: MangaViewModel = {
     effects: {
         *fetchEpisodeList(action, { call, put, select }) {
             const { payload } = action;
+            const { book_id, chapter_num, roast } = payload;
             const { refreshing } = payload;
+
+            let data: any = {};
 
             let { episodeList: list } = yield select(
                 (state: RootState) => state["mangaView"]
             );
 
-            const { data } = yield call(EpisodeServices.getList, {
-                book_id: payload.book_id,
-                chapter_num: payload.chapter_num,
-                roast: refreshing ? payload.roast : list[list.length - 1].roast + 1
-            });
+            let cacheList = yield call(storageLoad, { key: "cacheList" });
 
+            if (cacheList[`book-${book_id}`]) {
+                let bookCache = yield call(storageLoad, { key: "bookCache" });
+                if (bookCache[`book-${book_id}`][`chapter-${chapter_num}`]) {
+                    data = bookCache[`book-${book_id}`][`chapter-${chapter_num}`];
+                    if (roast) {
+                        const record = _.find(data.list, ["roast", roast]);
+                        data.pages.current_chapter_id = record.chapter_id;
+                        data.pages.episode_offset = record.number;
+                    }
+                } else {
+                    const restData = yield call(EpisodeServices.getList, {
+                        book_id,
+                        chapter_num,
+                        roast
+                    });
+                    data = restData.data;
+                }
+            } else {
+                const restData = yield call(EpisodeServices.getList, {
+                    book_id,
+                    chapter_num,
+                    roast
+                });
+                data = restData.data;
+            }
+            console.log(data);
             const newList = refreshing ? data.list : [...list, ...data.list];
-
+            console.log(newList)
             if (refreshing) {
                 yield put({
                     type: "setState",
@@ -109,6 +138,7 @@ const mangaViewModel: MangaViewModel = {
                         currentChapterNum: data.pages.current_chapter,
                         currentChapterId: data.pages.current_chapter_id,
                         currentNumber: data.pages.episode_offset,
+                        showCurrentNumber: data.pages.episode_offset,
                         currentTitle: data.pages.current_title,
                         currentRoast: payload.roast
                     }
@@ -147,28 +177,35 @@ const mangaViewModel: MangaViewModel = {
                 }
             });
         },
-        *setCurrentIndex(action, { _, put, select }) {
+        *changeCurrentNumber(action, { _, put, select }) {
             const { payload } = action;
 
             let { episodeList: list, currentChapterNum } = yield select(
                 (state: RootState) => state["mangaView"]
             );
-            const index = list.findIndex((item: IEpisode) =>
-                item.chapter_num === currentChapterNum && item.number === payload.currentNumber
-            );
+
+            const index = list.findIndex((item: IEpisode) => item.chapter_num === currentChapterNum && item.number === payload.currentNumber);
 
             yield put({
                 type: "setState",
                 payload: {
-                    currentNumber: list[index - 1].number
+                    currentNumber: list[index].number
                 }
             });
 
             if (action.callback) {
-                action.debounce(() => {
-                    action.callback(index);
-                });
+                action.callback(index);
             }
+        }
+    },
+    subscriptions: {
+        asyncStorage() {
+            storage.sync.cacheList = async () => {
+                return {};
+            };
+            storage.sync.bookCache = async () => {
+                return {};
+            };
         }
     }
 };

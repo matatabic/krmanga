@@ -4,8 +4,8 @@ import { viewportWidth } from "@/utils/index";
 import { Color } from "@/utils/const";
 import { IChapter } from "@/models/download";
 
+
 interface IProps {
-    // isEdit: boolean;
     data: IChapter;
     disabled?: boolean;
     selected: boolean;
@@ -17,7 +17,6 @@ const itemHeight = 48;
 const margin = 5;
 
 const Item = ({ data, disabled, selected }: IProps) => {
-    console.log(disabled)
     return (
         <View style={styles.itemWrapper}>
             <View style={[styles.item, disabled ? styles.disabled : selected && styles.selected]}>

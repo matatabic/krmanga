@@ -5,6 +5,8 @@ import Touchable from "@/components/Touchable";
 import Icon from "@/assets/iconfont";
 import { Color } from "@/utils/const";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-root-toast";
+
 
 interface IProps {
     book_id: number;
@@ -35,7 +37,12 @@ function TopBarWrapper({ book_id, headerHeight, showTop, opacity }: IProps) {
                         showTop &&
                         <>
                           <Touchable onPress={() => {
-                              console.log("shangbian");
+                              Toast.show("未做", {
+                                  duration: Toast.durations.LONG,
+                                  position: Toast.positions.CENTER,
+                                  shadow: true,
+                                  animation: true
+                              });
                           }}>
                             <Icon style={styles.rightIcon} name="icon-shangbian" color={Color.white} size={22} />
                           </Touchable>
@@ -47,7 +54,12 @@ function TopBarWrapper({ book_id, headerHeight, showTop, opacity }: IProps) {
                             <Icon style={styles.rightIcon} name="icon-xiabian" color={Color.white} size={22} />
                           </Touchable>
                           <Touchable onPress={() => {
-                              console.log("more");
+                              Toast.show("未做", {
+                                  duration: Toast.durations.LONG,
+                                  position: Toast.positions.CENTER,
+                                  shadow: true,
+                                  animation: true
+                              });
                           }}>
                             <Icon style={styles.rightIcon} name="icon-more" color={Color.white} size={22} />
                           </Touchable></>
