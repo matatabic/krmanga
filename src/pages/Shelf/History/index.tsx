@@ -52,7 +52,7 @@ function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, load
                     }
                 });
             };
-        }, [])
+        }, [isLogin])
     );
 
     const loadData = (refreshing: boolean, callback?: () => void) => {
@@ -126,7 +126,8 @@ function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, load
             id: item["book_id"]
         });
         navigation.navigate("MangaView", {
-            roast: item["roast"],
+            chapter_num: item["chapter_num"],
+            markRoast: item["roast"],
             book_id: item["book_id"]
         });
     }, []);

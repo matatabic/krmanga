@@ -10,14 +10,14 @@ import { RootState } from "@/models/index";
 import Toast from "react-native-root-toast";
 import { getFileType } from "@/utils/index";
 
-let ExternalDirectoryPath = "";
-
-if (Platform.OS === "android") {
-    ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
-} else {
-    ExternalDirectoryPath = RNFS.CachesDirectoryPath;
-}
-
+// let ExternalDirectoryPath = "";
+//
+// if (Platform.OS === "android") {
+//     ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
+// } else {
+//     ExternalDirectoryPath = RNFS.CachesDirectoryPath;
+// }
+const ExternalDirectoryPath = RNFS.DocumentDirectoryPath;
 
 export interface IChapter {
     id: number;
@@ -77,7 +77,7 @@ const downloadModel: DownloadModel = {
                     refreshing
                 }
             });
-            let cacheList = yield call(storageLoad, { key: "cacheList" });
+            const cacheList = yield call(storageLoad, { key: "cacheList" });
 
             const { data } = yield call(DownloadServices.getList, {
                 book_id: payload.book_id
@@ -131,10 +131,11 @@ const downloadModel: DownloadModel = {
 
                 let cacheList = yield call(storageLoad, { key: "cacheList" });
                 let bookCache = yield call(storageLoad, { key: "bookCache" });
-
+                let book = {};
                 const { data } = yield call(EpisodeServices.getList, {
                     book_id: payload.book_id,
-                    chapter_num: downloadList[i]
+                    chapter_num: downloadList[i],
+                    mark: 0
                 });
 
                 yield _fileEx(`book-${book_id}/${downloadList[i]}`).then(res => {
@@ -158,14 +159,15 @@ const downloadModel: DownloadModel = {
                                                 action.reload([...list]);
                                             }
                                             if (cacheList[bookName]) {
-                                                cacheList = {
+                                                book = {
                                                     [bookName]: Array.from(new Set([...cacheList[bookName], downloadList[i]]))
                                                 };
                                             } else {
-                                                cacheList = {
+                                                book = {
                                                     [bookName]: [downloadList[i]]
                                                 };
                                             }
+                                            Object.assign(cacheList, book);
                                             storage.save({
                                                 key: "cacheList",
                                                 data: cacheList
@@ -182,14 +184,15 @@ const downloadModel: DownloadModel = {
                                         action.reload([...list]);
                                     }
                                     if (cacheList[bookName]) {
-                                        cacheList = {
+                                        book = {
                                             [bookName]: Array.from(new Set([...cacheList[bookName], downloadList[i]]))
                                         };
                                     } else {
-                                        cacheList = {
+                                        book = {
                                             [bookName]: [downloadList[i]]
                                         };
                                     }
+                                    Object.assign(cacheList, book);
                                     storage.save({
                                         key: "cacheList",
                                         data: cacheList

@@ -22,14 +22,14 @@ import { Platform } from "react-native";
  * RNFS.ExternalStorageDirectoryPath
 
  */
-let ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
-
-if (Platform.OS === "android") {
-    ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
-} else {
-    ExternalDirectoryPath = RNFS.CachesDirectoryPath;
-}
-
+// let ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
+//
+// if (Platform.OS === "android") {
+//     ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
+// } else {
+//     ExternalDirectoryPath = RNFS.CachesDirectoryPath;
+// }
+const ExternalDirectoryPath = RNFS.DocumentDirectoryPath;
 
 /**
  * 功能描述: <br>
@@ -132,8 +132,8 @@ export const _appendFile = (fileName: string, content: string, callback: () => v
  */
 export const _deleteFile = (targetName: string) => {
     RNFS.unlink(`${ExternalDirectoryPath}/${targetName}`)
-        .then(res =>{
-            console.log(res)
+        .then(res => {
+            console.log(res);
         });
 };
 

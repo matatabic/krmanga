@@ -11,7 +11,8 @@ const DEL_COLLECTION_URL = "collection/delUserCollection";
 const COLLECTION_URL = "collection/getList";
 const DEL_HISTORY_URL = "mark/delUserMark";
 //mark
-const HISTORY_URL = "mark/getList";
+const DOWNLOAD_URL = "mark/getDownload";
+const HISTORY_URL = "mark/getMark";
 const ADD_HISTORY = "mark/saveMark";
 //category
 const CATEGORY_URL = "/category/getList";
@@ -38,6 +39,7 @@ export {
     ADD_COLLECTION_URL,
     DEL_COLLECTION_URL,
     COLLECTION_URL,
+    DOWNLOAD_URL,
     HISTORY_URL,
     ADD_HISTORY,
     DEL_HISTORY_URL,

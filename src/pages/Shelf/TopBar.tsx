@@ -33,9 +33,11 @@ function TopBar({
     if (rest.state.index === 0) {
         isEdit = isCollectionEdit;
         activeScreen = "collection";
-    } else {
+    } else if (rest.state.index === 1) {
         isEdit = isHistoryEdit;
         activeScreen = "history";
+    } else if (rest.state.index === 2) {
+        activeScreen = "downloadManga";
     }
     const onPress = () => {
         if (!isLogin) {
@@ -68,7 +70,6 @@ function TopBar({
                       <Text style={styles.text}>{isEdit ? "取消" : "编辑"}</Text>
                     </Touchable>
                 }
-
             </View>
             {!isLogin && <LoginPending />}
         </View>

@@ -54,7 +54,7 @@ function Shelf({
                     }
                 });
             };
-        }, [])
+        }, [isLogin])
     );
 
     const loadData = (refreshing: boolean, callback?: () => void) => {
