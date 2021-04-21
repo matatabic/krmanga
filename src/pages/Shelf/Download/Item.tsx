@@ -51,16 +51,15 @@ function Item({ data, isEdit, selected, goMangaView }: IProps) {
             />
             <View style={styles.mainView}>
                 <Text numberOfLines={2} style={styles.titleText}>{data.title}</Text>
-                <View>
-                    <Text style={styles.infoText}>{data["author"]}</Text>
-                    <Text style={styles.infoText}>{`更新至第${data.chapter_total}话`}</Text>
-                </View>
+                <Text style={styles.infoText}>{`已下载${data.cacheLength}话`}</Text>
             </View>
             {
                 !isEdit &&
                 <View style={styles.rightView}>
                   <Touchable onPress={onPress} style={styles.read}>
-                    <Text style={styles.readTitle}>{`续看第${data.chapter_num}话`}</Text>
+                    <Text style={styles.readTitle}>
+                        {data.chapter_num ? `续看第${data.chapter_num}话` : "开始阅读"}
+                    </Text>
                   </Touchable>
                 </View>
             }
@@ -73,7 +72,9 @@ const styles = StyleSheet.create({
         height: itemHeight,
         paddingTop: 5,
         paddingHorizontal: 15,
-        flexDirection: "row"
+        flexDirection: "row",
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: Color.split_line
     },
     image: {
         borderRadius: 10,

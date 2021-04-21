@@ -22,13 +22,7 @@ import { Platform } from "react-native";
  * RNFS.ExternalStorageDirectoryPath
 
  */
-// let ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
-//
-// if (Platform.OS === "android") {
-//     ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
-// } else {
-//     ExternalDirectoryPath = RNFS.CachesDirectoryPath;
-// }
+
 const ExternalDirectoryPath = RNFS.DocumentDirectoryPath;
 
 /**
@@ -51,10 +45,11 @@ export const _downloadFile = (formUrl: string, targetName: string, callback?: ()
         toFile: toLoadPath,
         progressDivider: 5,
         begin: (res) => {
-            // console.log("begin", res)
+            console.log("begin", res)
+            return res
         },
         progress: (res) => {
-            // console.log("progress", res)
+            console.log("progress", res)
         }
     })
         .promise.then(res => res)
@@ -98,9 +93,11 @@ export const _readDir = (targetName?: string) => {
  * @Param: [fileName 文件名称，callback 回调函数获得读取的文件内容]
  *
  */
-export const _readFile = (fileName: string, callback: () => void) => {
+export const _readFile = (fileName: string, callback?: () => void) => {
     RNFS.readFile(`${ExternalDirectoryPath}/${fileName}`)
-        .then(result => callback());
+        .then(result =>
+            console.log(result)
+        );
 };
 
 /**
@@ -132,9 +129,7 @@ export const _appendFile = (fileName: string, content: string, callback: () => v
  */
 export const _deleteFile = (targetName: string) => {
     RNFS.unlink(`${ExternalDirectoryPath}/${targetName}`)
-        .then(res => {
-            console.log(res);
-        });
+        .then(res => res);
 };
 
 /**

@@ -1,32 +1,19 @@
 import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
 import { Reducer } from "redux";
-import DownloadServices from "@/services/download";
-import { _downloadFile, _fileEx, _mkdir, _readDir } from "@/utils/RNFSUtils";
-import EpisodeServices from "@/services/episode";
+import { _downloadFile, _fileEx, _mkdir, _readDir, _deleteFile } from "@/utils/RNFSUtils";
 import storage, { storageLoad } from "@/config/storage";
-import RNFS from "react-native-fs";
-import { Platform } from "react-native";
 import { RootState } from "@/models/index";
-import Toast from "react-native-root-toast";
-import { getFileType } from "@/utils/index";
 import ShelfServices from "@/services/shelf";
 
-// let ExternalDirectoryPath = "";
-//
-// if (Platform.OS === "android") {
-//     ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
-// } else {
-//     ExternalDirectoryPath = RNFS.CachesDirectoryPath;
-// }
-const ExternalDirectoryPath = RNFS.DocumentDirectoryPath;
 
 export interface IDownList {
     book_id: number;
     title: string;
     image: string;
-    roast: number;
+    roast?: number;
     author: string;
-    chapter_num: number;
+    cacheLength: string;
+    chapter_num?: number;
     chapter_total: number;
     created_at: string;
 }
@@ -52,9 +39,11 @@ interface DownloadManageModel extends Model {
     state: DownloadManageState;
     reducers: {
         setState: Reducer<DownloadManageState>;
+        setScreenReload: Reducer<DownloadManageState>;
     };
     effects: {
         fetchDownloadList: Effect;
+        delBookCache: Effect;
     };
     subscriptions: SubscriptionsMapObject;
 }
@@ -83,6 +72,12 @@ const downloadManageModel: DownloadManageModel = {
                 ...state,
                 ...payload
             };
+        },
+        setScreenReload(state = initialState) {
+            return {
+                ...state,
+                screenReload: true
+            };
         }
     },
     effects: {
@@ -90,17 +85,15 @@ const downloadManageModel: DownloadManageModel = {
             const { payload, type } = action;
             const { refreshing } = payload;
 
-            let cache = [];
-            let cacheList = yield call(storageLoad, { key: "cacheList" });
-
-            for (let key in cacheList) {
-                cache.push(key.slice(5));
-            }
             const namespace = type.split("/")[0];
 
-            const { downloadList: list, pagination } = yield select(
+            const { downloadList: list, pagination, screenReload } = yield select(
                 (state: RootState) => state[namespace]
             );
+
+            if (refreshing && !screenReload) {
+                return false;
+            }
 
             yield put({
                 type: "setState",
@@ -109,11 +102,24 @@ const downloadManageModel: DownloadManageModel = {
                 }
             });
 
+            let cache = [];
+            let cacheList = yield call(storageLoad, { key: "cacheList" });
+
+            for (let key in cacheList) {
+                cache.push(key.slice(5));
+            }
+
             const { data } = yield call(ShelfServices.getDownload, {
                 ids: cache,
                 page_size: 6,
                 current_page: refreshing ? 1 : pagination.current_page + 1
             });
+
+            for (let key in data.list) {
+                yield _readDir(`book-${data.list[key].book_id}`).then(res => {
+                    data.list[key].cacheLength = res.length;
+                });
+            }
 
             const newList = refreshing ? data.list : [...list, ...data.list];
 
@@ -135,6 +141,45 @@ const downloadManageModel: DownloadManageModel = {
             if (action.callback) {
                 action.callback();
             }
+        },
+        *delBookCache(action, { call, put, select }) {
+            const { payload, type } = action;
+            const { ids } = payload;
+            const namespace = type.split("/")[0];
+
+            const { downloadList: list } = yield select(
+                (state: RootState) => state[namespace]
+            );
+
+            let cacheList = yield call(storageLoad, { key: "cacheList" });
+            let bookCache = yield call(storageLoad, { key: "bookCache" });
+
+            for (let book_id of ids) {
+                _deleteFile(`book-${book_id}`);
+                delete cacheList[`book-${book_id}`];
+                delete bookCache[`book-${book_id}`];
+            }
+
+            const newList = list.filter((item: IDownList) => {
+                return payload.ids.indexOf(item.book_id) === -1;
+            });
+
+            yield put({
+                type: "setState",
+                payload: {
+                    downloadList: newList,
+                    isEdit: false
+                }
+            });
+
+            storage.save({
+                key: "cacheList",
+                data: cacheList
+            });
+            storage.save({
+                key: "bookCache",
+                data: bookCache
+            });
         }
     },
     subscriptions: {

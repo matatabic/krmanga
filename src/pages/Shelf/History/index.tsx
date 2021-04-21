@@ -214,11 +214,13 @@ function History({ dispatch, navigation, isLogin, isEdit, historyList, ids, load
             }
         });
     };
+
     if (isEdit) {
         getBeforeX();
     } else {
         getAfterX();
     }
+
     return (
         !isLogin ? null :
             (loading && refreshing) ? <ListPlaceholder /> :

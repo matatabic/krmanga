@@ -10,11 +10,12 @@ import LoginPending from "@/pages/Shelf/LoginPending";
 import { ModalStackNavigation } from "@/navigator/index";
 import { useNavigation } from "@react-navigation/native";
 
-const mapStateToProps = ({ user, collection, history }: RootState) => {
+const mapStateToProps = ({ user, collection, history, downloadManage }: RootState) => {
     return {
         isLogin: user.isLogin,
         isCollectionEdit: collection.isEdit,
-        isHistoryEdit: history.isEdit
+        isHistoryEdit: history.isEdit,
+        isDownloadEdit: downloadManage.isEdit
     };
 };
 
@@ -24,7 +25,7 @@ type ModelState = ConnectedProps<typeof connector> & MaterialTopTabBarProps;
 
 function TopBar({
                     dispatch, isLogin, indicatorStyle, activeTintColor,
-                    isCollectionEdit, isHistoryEdit, ...rest
+                    isCollectionEdit, isHistoryEdit, isDownloadEdit, ...rest
                 }: ModelState) {
 
     const navigation = useNavigation<ModalStackNavigation>();
@@ -37,7 +38,8 @@ function TopBar({
         isEdit = isHistoryEdit;
         activeScreen = "history";
     } else if (rest.state.index === 2) {
-        activeScreen = "downloadManga";
+        isEdit = isDownloadEdit;
+        activeScreen = "downloadManage";
     }
     const onPress = () => {
         if (!isLogin) {

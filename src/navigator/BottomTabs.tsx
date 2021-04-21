@@ -23,9 +23,9 @@ export type BottomTabNavigation = BottomTabNavigationProp<BottomTabParamList>;
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const mapStateToProps = ({ collection, history }: RootState) => {
+const mapStateToProps = ({ collection, history, downloadManage }: RootState) => {
     return {
-        isEdit: collection.isEdit || history.isEdit
+        isEdit: collection.isEdit || history.isEdit || downloadManage.isEdit
     };
 };
 
@@ -33,7 +33,7 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-function BottomTabs({isEdit}:ModelState) {
+function BottomTabs({ isEdit }: ModelState) {
     return (
         <Tab.Navigator
             tabBarOptions={{

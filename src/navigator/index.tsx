@@ -21,6 +21,8 @@ import MangaView from "@/pages/MangaView";
 import Guess from "@/pages/Guess";
 import DownloadManage from "@/pages/Shelf/Download";
 import Download from "@/pages/Download";
+import ChapterManage from "@/pages/Shelf/ChapterManage";
+
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -45,6 +47,10 @@ export type RootStackParamList = {
         book_id: number
     };
     DownloadManage: undefined;
+    ChapterManage: {
+        book_id: number;
+        headerTitle: string;
+    };
 }
 
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
@@ -196,6 +202,10 @@ function RootStackScreen() {
                 options={{
                     headerTitle: "下载管理"
                 }}
+            />
+            <RootStack.Screen
+                name={"ChapterManage"}
+                component={ChapterManage}
             />
         </RootStack.Navigator>
     );

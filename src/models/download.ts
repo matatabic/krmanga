@@ -5,18 +5,11 @@ import { _downloadFile, _fileEx, _mkdir, _readDir } from "@/utils/RNFSUtils";
 import EpisodeServices from "@/services/episode";
 import storage, { storageLoad } from "@/config/storage";
 import RNFS from "react-native-fs";
-import { Platform } from "react-native";
 import { RootState } from "@/models/index";
 import Toast from "react-native-root-toast";
 import { getFileType } from "@/utils/index";
 
-// let ExternalDirectoryPath = "";
-//
-// if (Platform.OS === "android") {
-//     ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
-// } else {
-//     ExternalDirectoryPath = RNFS.CachesDirectoryPath;
-// }
+
 const ExternalDirectoryPath = RNFS.DocumentDirectoryPath;
 
 export interface IChapter {
@@ -173,6 +166,23 @@ const downloadModel: DownloadModel = {
                                                 data: cacheList
                                             });
                                         }
+                                    });
+                                }
+                                if (res.statusCode == 404) {
+                                    if (cacheList[bookName]) {
+                                        book = {
+                                            [bookName]: Array.from(new Set([...cacheList[bookName], downloadList[i]]))
+                                        };
+                                    } else {
+                                        book = {
+                                            [bookName]: [downloadList[i]]
+                                        };
+                                    }
+                                    Object.assign(cacheList, book);
+                                    console.log(cacheList);
+                                    storage.save({
+                                        key: "cacheList",
+                                        data: cacheList
                                     });
                                 }
                             });

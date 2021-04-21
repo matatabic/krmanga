@@ -74,7 +74,6 @@ function Shelf({
             return;
         }
         setEndReached(true);
-
         loadData(false, () => {
             setEndReached(false);
         });

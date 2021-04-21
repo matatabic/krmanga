@@ -108,7 +108,6 @@ const historyModel: HistoryModel = {
                 current_page: refreshing ? 1 : pagination.current_page + 1
             });
 
-
             let newList = [];
 
             if (refreshing) {
@@ -125,7 +124,7 @@ const historyModel: HistoryModel = {
                     return pre;
                 }, []);
             }
-            
+
             yield put({
                 type: "setState",
                 payload: {

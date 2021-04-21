@@ -113,12 +113,16 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
                 });
             },
             callback: () => {
-                const time = setTimeout(() => {
-                    setDownloadList([]);
-                }, 1250);
-                setTimer(time);
+                // const time = setTimeout(() => {
+                setDownloadList([]);
+                // }, 1250);
+                // setTimer(time);
             }
         });
+        dispatch({
+            type: "downloadManage/setScreenReload"
+        });
+
     };
 
     return (

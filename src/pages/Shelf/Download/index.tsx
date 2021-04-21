@@ -1,17 +1,18 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, SectionListRenderItemInfo, Animated, FlatList, ListRenderItemInfo } from "react-native";
+import React, { useCallback, useRef, useState } from "react";
+import { View, StyleSheet, Animated, FlatList, ListRenderItemInfo } from "react-native";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
 import { ModalStackNavigation, RootStackNavigation } from "@/navigator/index";
 import { useFocusEffect } from "@react-navigation/native";
 import { Color } from "@/utils/const";
-import { IHistory } from "@/models/history";
 import Touchable from "@/components/Touchable";
 import Item from "@/pages/Shelf/Download/Item";
 import { wp } from "@/utils/index";
 import { IDownList } from "@/models/downloadManage";
 import More from "@/components/More";
 import End from "@/components/End";
+import ListPlaceholder from "@/components/Placeholder/ListPlaceholder";
+import EditView from "@/pages/Shelf/EditView";
 
 
 const mapStateToProps = ({ user, downloadManage, loading }: RootState) => {
@@ -32,7 +33,7 @@ const connector = connect(mapStateToProps);
 type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
-    navigation: RootStackNavigation & ModalStackNavigation;
+    navigation: RootStackNavigation;
 }
 
 function Download({
@@ -46,6 +47,15 @@ function Download({
     useFocusEffect(
         React.useCallback(() => {
             loadData(true);
+            return () => {
+                dispatch({
+                    type: "downloadManage/setState",
+                    payload: {
+                        isEdit: false,
+                        ids: []
+                    }
+                });
+            };
         }, [isLogin])
     );
 
@@ -59,6 +69,13 @@ function Download({
                 callback
             });
         }
+    };
+
+    const onRefresh = () => {
+        dispatch({
+            type: "downloadManage/setScreenReload"
+        });
+        loadData(true);
     };
 
     const onEndReached = () => {
@@ -93,18 +110,41 @@ function Download({
     };
 
     const onClickItem = useCallback((item: IDownList) => {
-
+        if (isEdit) {
+            let i = ids.indexOf(item.book_id);
+            if (i > -1) {
+                ids.splice(i, 1);
+                dispatch({
+                    type: "downloadManage/setState",
+                    payload: {
+                        ids: [...ids]
+                    }
+                });
+            } else {
+                dispatch({
+                    type: "downloadManage/setState",
+                    payload: {
+                        ids: [...ids, item.book_id]
+                    }
+                });
+            }
+        } else {
+            navigation.navigate("ChapterManage", {
+                book_id: item.book_id,
+                headerTitle: item.title
+            });
+        }
     }, [isEdit, ids]);
 
     const goMangaView = useCallback((item: IDownList) => {
-        // navigation.navigate("Brief", {
-        //     id: item["book_id"]
-        // });
-        // navigation.navigate("MangaView", {
-        //     chapter_num: item["chapter_num"],
-        //     markRoast: item["roast"],
-        //     book_id: item["book_id"]
-        // });
+        navigation.navigate("Brief", {
+            id: item.book_id
+        });
+        navigation.navigate("MangaView", {
+            chapter_num: item.chapter_num,
+            markRoast: item.roast,
+            book_id: item.book_id
+        });
     }, []);
 
     const renderFooter = () => {
@@ -139,19 +179,64 @@ function Download({
         );
     };
 
+    const cancel = () => {
+        const newData = downloadList.map(item => item.book_id);
+        if (downloadList.length === ids.length) {
+            dispatch({
+                type: "downloadManage/setState",
+                payload: {
+                    ids: []
+                }
+            });
+        } else {
+            dispatch({
+                type: "downloadManage/setState",
+                payload: {
+                    ids: newData
+                }
+            });
+        }
+    };
+
+    const destroy = () => {
+        dispatch({
+            type: "downloadManage/delBookCache",
+            payload: {
+                ids
+            }
+        });
+    };
+
+    if (isEdit) {
+        getBeforeX();
+    } else {
+        getAfterX();
+    }
+
     return (
-        <View style={styles.container}>
-            <FlatList
-                keyExtractor={(item, key) => `item-${item.book_id}-key-${key}`}
-                numColumns={1}
-                data={downloadList}
-                renderItem={renderItem}
-                extraData={endReached}
-                ListFooterComponent={renderFooter}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.1}
-            />
-        </View>
+        !isLogin ? null :
+            (loading && refreshing) ? <ListPlaceholder /> :
+                <View style={styles.container}>
+                    <FlatList
+                        keyExtractor={(item, key) => `item-${item.book_id}-key-${key}`}
+                        numColumns={1}
+                        onRefresh={onRefresh}
+                        refreshing={refreshing}
+                        data={downloadList}
+                        renderItem={renderItem}
+                        extraData={endReached}
+                        ListFooterComponent={renderFooter}
+                        onEndReached={onEndReached}
+                        onEndReachedThreshold={0.1}
+                    />
+                    <EditView
+                        data_length={downloadList.length}
+                        isEdit={isEdit}
+                        ids={ids}
+                        cancel={cancel}
+                        destroy={destroy}
+                    />
+                </View>
     );
 }
 

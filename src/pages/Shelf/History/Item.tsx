@@ -72,7 +72,9 @@ const styles = StyleSheet.create({
         height: itemHeight,
         paddingTop: 5,
         paddingHorizontal: 15,
-        flexDirection: "row"
+        flexDirection: "row",
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: Color.split_line
     },
     image: {
         borderRadius: 10,
