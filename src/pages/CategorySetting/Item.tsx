@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         width: 16,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: Color.icon,
+        backgroundColor: Color.orange,
         borderRadius: 8
     },
     iconText: {

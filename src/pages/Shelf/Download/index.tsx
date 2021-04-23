@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { View, StyleSheet, Animated, FlatList, ListRenderItemInfo } from "react-native";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
-import { ModalStackNavigation, RootStackNavigation } from "@/navigator/index";
+import { RootStackNavigation } from "@/navigator/index";
 import { useFocusEffect } from "@react-navigation/native";
 import { Color } from "@/utils/const";
 import Touchable from "@/components/Touchable";

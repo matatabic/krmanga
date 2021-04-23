@@ -4,7 +4,6 @@ import Touchable from "@/components/Touchable";
 import { ip, viewportWidth, wp } from "@/utils/index";
 import { IBook } from "@/models/home";
 import { Color } from "@/utils/const";
-import FastImage from "react-native-fast-image";
 import SandGlass from "@/assets/image/sandglass.png";
 import ErrorImage from "@/assets/image/error.png";
 
@@ -22,14 +21,9 @@ const itemMargin = (viewportWidth - wp(90)) / 4;
 function BookCover({ data, goBrief }: IProps) {
 
     const [errorLoad, setErrorLoad] = useState<boolean>(false);
-    const [placeholder, setPlaceholder] = useState<boolean>(true);
 
     const onError = () => {
         setErrorLoad(true);
-    };
-
-    const onLoadEnd = () => {
-        setPlaceholder(false);
     };
 
     const onPress = () => {
@@ -39,15 +33,14 @@ function BookCover({ data, goBrief }: IProps) {
     };
 
     return (
-        <Touchable style={styles.item} onPress={onPress}>
-            <FastImage
-                source={errorLoad ? ErrorImage : { uri: data.image, cache: FastImage.cacheControl.immutable }}
+        <Touchable style={styles.container} onPress={onPress}>
+            <Image
+                defaultSource={SandGlass}
+                source={errorLoad ? ErrorImage : { uri: data.image }}
                 onError={onError}
-                onLoadEnd={onLoadEnd}
                 style={styles.image}
-                resizeMode={FastImage.resizeMode.stretch}
+                resizeMode={"stretch"}
             />
-            {placeholder && <Image source={SandGlass} style={styles.placeholder} />}
             <View style={styles.titleView}>
                 <Text style={styles.title} numberOfLines={1}>{data.title}</Text>
                 <Text style={styles.category} numberOfLines={1}>{data.category}</Text>
@@ -57,7 +50,7 @@ function BookCover({ data, goBrief }: IProps) {
 }
 
 const styles = StyleSheet.create({
-    item: {
+    container: {
         width: itemWidth,
         marginTop: itemMargin,
         marginLeft: itemMargin,

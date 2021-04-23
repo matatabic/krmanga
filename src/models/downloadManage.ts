@@ -1,6 +1,6 @@
 import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
 import { Reducer } from "redux";
-import { _downloadFile, _fileEx, _mkdir, _readDir, _deleteFile } from "@/utils/RNFSUtils";
+import { _readDir, _deleteFile } from "@/utils/RNFSUtils";
 import storage, { storageLoad } from "@/config/storage";
 import { RootState } from "@/models/index";
 import ShelfServices from "@/services/shelf";
@@ -104,6 +104,17 @@ const downloadManageModel: DownloadManageModel = {
 
             let cache = [];
             let cacheList = yield call(storageLoad, { key: "cacheList" });
+
+            if (Object.keys(cacheList).length === 0) {
+                yield put({
+                    type: "setState",
+                    payload: {
+                        refreshing: false,
+                        screenReload: false
+                    }
+                });
+                return false;
+            }
 
             for (let key in cacheList) {
                 cache.push(key.slice(5));

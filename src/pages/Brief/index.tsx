@@ -48,7 +48,7 @@ const imageHeight = ip(imageWidth);
 
 function Brief({
                    navigation, dispatch, isLogin, headerHeight, bookInfo, book_id, markRoast, markChapterNum,
-                   collection_id, refreshing, chapterList
+                   loading, collection_id, refreshing, chapterList
                }: IProps) {
     const topHeight = useHeaderHeight();
     const [showTop, setShowTop] = useState<boolean>(true);
@@ -187,7 +187,7 @@ function Brief({
             navigation.navigate("MangaView", {
                 book_id,
                 markRoast,
-                chapter_num: markChapterNum,
+                chapter_num: markChapterNum
             });
         } else {
             navigation.navigate("MangaView", {
@@ -240,7 +240,7 @@ function Brief({
     };
 
     return (
-        refreshing ? <BriefPlaceholder /> :
+        (loading && refreshing) ? <BriefPlaceholder /> :
             <View style={styles.container}>
                 <LightDrawer
                     chapterList={chapterList}

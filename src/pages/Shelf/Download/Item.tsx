@@ -6,7 +6,6 @@ import Touchable from "@/components/Touchable";
 import { ip, wp } from "@/utils/index";
 import Icon from "@/assets/iconfont";
 import ErrorImage from "@/assets/image/error.png";
-import { IHistory } from "@/models/history";
 import { IDownList } from "@/models/downloadManage";
 
 

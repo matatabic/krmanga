@@ -8,6 +8,7 @@ import { IChapter } from "@/models/download";
 interface IProps {
     data: IChapter;
     disabled?: boolean;
+    downloading?: boolean;
     selected: boolean;
 }
 
@@ -16,17 +17,20 @@ const itemWidth = parentWidth / 4;
 const itemHeight = 48;
 const margin = 5;
 
-const Item = ({ data, disabled, selected }: IProps) => {
+const Item = memo(({ data, disabled, downloading, selected }: IProps) => {
     return (
         <View style={styles.itemWrapper}>
-            <View style={[styles.item, disabled ? styles.disabled : selected && styles.selected]}>
+            <View style={[styles.item, downloading ? styles.loading : (disabled ? styles.disabled : selected && styles.selected)]}>
                 <Text>{data.chapter_num}</Text>
             </View>
         </View>
     );
-};
+});
 
 const styles = StyleSheet.create({
+    loading: {
+        backgroundColor: Color.orange
+    },
     disabled: {
         backgroundColor: Color.disable
     },
@@ -49,5 +53,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default memo(Item);
+export default Item;
 

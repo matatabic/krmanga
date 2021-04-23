@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { hp, ip, viewportWidth } from "@/utils/index";
 import { IBookInfo } from "@/models/brief";
-import FastImage from "react-native-fast-image";
-import { BlurView } from "@react-native-community/blur";
+import ErrorImage from "@/assets/image/error.png";
 
 
 interface IProps {
@@ -12,20 +11,24 @@ interface IProps {
 }
 
 function ImageBlurBackground({ bookInfo, imageSize }: IProps) {
+
+    const [errorLoad, setErrorLoad] = useState<boolean>(false);
+
+    const onError = () => {
+        setErrorLoad(true);
+    };
+
     return (
         bookInfo.image.length > 0 ?
             <View style={styles.container}>
                 <Animated.Image
-                    source={{ uri: bookInfo.image }}
+                    source={errorLoad ? ErrorImage : { uri: bookInfo.image }}
+                    onError={onError}
+                    blurRadius={20}
                     style={[styles.image, {
                         transform: [{ scale: imageSize }]
                     }]}
-                    resizeMode={FastImage.resizeMode.stretch}
-                />
-                <BlurView
-                    blurType="dark"
-                    blurAmount={30}
-                    style={StyleSheet.absoluteFillObject}
+                    resizeMode={"stretch"}
                 />
             </View> : null
     );

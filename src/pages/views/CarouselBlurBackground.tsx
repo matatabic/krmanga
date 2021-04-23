@@ -1,10 +1,9 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/models/index";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { hp } from "@/utils/index";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
-import { BlurView } from "@react-native-community/blur";
 import FastImage from "react-native-fast-image";
 import { Color } from "@/utils/const";
 
@@ -25,17 +24,12 @@ function CarouselBlurBackground({ carouselList, activeCarouselIndex }: ModelStat
     return (
         (carouselList && carouselList.length > 0) ?
             <View style={styles.container}>
-                <FastImage
+                <Image
                     source={{ uri: carouselList[activeCarouselIndex].image_url }}
                     resizeMode={FastImage.resizeMode.cover}
+                    blurRadius={10}
                     style={styles.image}
                 />
-                {/*<View style={styles.blur} />*/}
-                {/*<BlurView*/}
-                {/*    blurType="dark"*/}
-                {/*    blurAmount={10}*/}
-                {/*    style={StyleSheet.absoluteFillObject}*/}
-                {/*/>*/}
             </View> : null
     );
 }
@@ -47,7 +41,6 @@ const styles = StyleSheet.create({
     },
     image: {
         height: getStatusBarHeight() + sideHeight + 60,
-        opacity: 0.3
     },
     blur: {
         ...StyleSheet.absoluteFillObject,

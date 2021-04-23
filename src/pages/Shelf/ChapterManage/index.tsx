@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, ListRenderItemInfo, View } from "react-native";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
@@ -8,6 +8,8 @@ import More from "@/components/More";
 import End from "@/components/End";
 import { IChapter } from "@/models/ChapterManage";
 import Item from "@/pages/Shelf/ChapterManage/Item";
+import HeaderRightBtn from "@/pages/Shelf/ChapterManage/HeaderRightBtn";
+import EditView from "@/pages/Shelf/ChapterManage/EditView";
 
 
 const mapStateToProps = ({ user, chapterManage, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "ChapterManage"> }) => {
@@ -15,10 +17,12 @@ const mapStateToProps = ({ user, chapterManage, loading }: RootState, { route }:
         book_id: route.params.book_id,
         headerTitle: route.params.headerTitle,
         chapterList: chapterManage.chapterList,
+        ids: chapterManage.ids,
+        isEdit: chapterManage.isEdit,
         refreshing: chapterManage.refreshing,
         hasMore: chapterManage.hasMore,
         pages: chapterManage.pagination,
-        loading: loading.effects["downloadManage/fetchChapterList"]
+        loading: loading.effects["chapterManage/fetchChapterList"]
     };
 };
 
@@ -32,7 +36,7 @@ interface IProps extends ModelState {
 
 function ChapterManage({
                            navigation, dispatch, book_id, headerTitle, hasMore, loading,
-                           refreshing, chapterList
+                           ids, isEdit, refreshing, chapterList
                        }: IProps) {
 
     const [endReached, setEndReached] = useState<boolean>(false);
@@ -43,6 +47,22 @@ function ChapterManage({
         });
         loadData(true);
     }, []);
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => <HeaderRightBtn isEdit={isEdit} onSubmit={onSubmit} />
+        });
+    }, [isEdit]);
+
+    const onSubmit = useCallback(() => {
+        dispatch({
+            type: "chapterManage/setState",
+            payload: {
+                isEdit: !isEdit,
+                ids: []
+            }
+        });
+    }, [isEdit]);
 
     const loadData = (refreshing: boolean, callback?: () => void) => {
         dispatch({
@@ -60,18 +80,54 @@ function ChapterManage({
     };
 
     const renderItem = ({ item }: ListRenderItemInfo<IChapter>) => {
+        const selected = ids.indexOf(item.chapter_num) > -1;
         return (
-            <Item data={item} goMangaView={goMangaView} />
+            <Item
+                data={item}
+                isEdit={isEdit}
+                selected={selected}
+                onClickItem={onClickItem}
+            />
         );
     };
 
-    const goMangaView = (item: IChapter) => {
-        navigation.navigate("Brief", {
-            id: book_id
-        });
-        navigation.navigate("MangaView", {
-            book_id,
-            chapter_num: item.chapter_num
+    const onClickItem = useCallback((item: IChapter) => {
+        if (isEdit) {
+            const i = ids.indexOf(item.chapter_num);
+            if (i > -1) {
+                ids.splice(i, 1);
+                dispatch({
+                    type: "chapterManage/setState",
+                    payload: {
+                        ids: [...ids]
+                    }
+                });
+            } else {
+                dispatch({
+                    type: "chapterManage/setState",
+                    payload: {
+                        ids: [...ids, item.chapter_num]
+                    }
+                });
+            }
+        } else {
+            navigation.navigate("Brief", {
+                id: book_id
+            });
+            navigation.navigate("MangaView", {
+                book_id,
+                chapter_num: item.chapter_num
+            });
+        }
+    }, [isEdit, ids]);
+
+    const destroy = () => {
+        dispatch({
+            type: "chapterManage/delChapter",
+            payload: {
+                book_id,
+                ids
+            }
         });
     };
 
@@ -96,8 +152,9 @@ function ChapterManage({
         return null;
     };
 
+
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <FlatList
                 keyExtractor={(item, key) => `key-${key}`}
                 numColumns={3}
@@ -110,8 +167,14 @@ function ChapterManage({
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.1}
             />
+            <EditView
+                ids={ids}
+                isEdit={isEdit}
+                destroy={destroy}
+            />
         </View>
     );
 }
+
 
 export default connector(ChapterManage);

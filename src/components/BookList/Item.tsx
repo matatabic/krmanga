@@ -1,10 +1,9 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
-import FastImage from 'react-native-fast-image';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 import Touchable from "@/components/Touchable";
-import {ip, wp} from "@/utils/index";
-import {IBook} from "@/models/search";
-import {Color} from "@/utils/const";
+import { ip, wp } from "@/utils/index";
+import { IBook } from "@/models/search";
+import { Color } from "@/utils/const";
 import ErrorImage from "@/assets/image/error.png";
 import SandGlass from "@/assets/image/sandglass.png";
 
@@ -17,37 +16,29 @@ interface IProps {
     goBrief: (data: IBook) => void;
 }
 
-function Item({data, goBrief}:IProps){
+function Item({ data, goBrief }: IProps) {
 
-    const [errorLoad,setErrorLoad] = useState<boolean>(false)
-    const [placeholder,setPlaceholder] = useState<boolean>(true)
+    const [errorLoad, setErrorLoad] = useState<boolean>(false);
 
-    const showError = () => {
-        setErrorLoad(true)
+    const onError = () => {
+        setErrorLoad(true);
     };
 
-    const onLoadEnd = () => {
-        setPlaceholder(false)
-    }
-
     const onPress = () => {
-        if (typeof goBrief === 'function') {
-            goBrief(data)
+        if (typeof goBrief === "function") {
+            goBrief(data);
         }
-    }
+    };
 
     return (
         <Touchable style={styles.container} onPress={onPress}>
-            <View>
-                <FastImage
-                    source={errorLoad ? ErrorImage : {uri: data.image, cache: FastImage.cacheControl.immutable}}
-                    onError={showError}
-                    onLoadEnd={onLoadEnd}
-                    style={styles.image}
-                    resizeMode={FastImage.resizeMode.stretch}
-                />
-                {placeholder && <Image source={SandGlass} style={styles.placeholder}/>}
-            </View>
+            <Image
+                defaultSource={SandGlass}
+                source={errorLoad ? ErrorImage : { uri: data.image }}
+                onError={onError}
+                style={styles.image}
+                resizeMode={"stretch"}
+            />
             <View style={styles.mainView}>
                 <Text numberOfLines={2} style={styles.titleText}>{data.title}</Text>
                 <View>
@@ -56,50 +47,50 @@ function Item({data, goBrief}:IProps){
                 </View>
             </View>
             <View style={styles.rightView}>
-                <Text style={{color: data.statusColor}}>{data.status}</Text>
+                <Text style={{ color: data.statusColor }}>{data.status}</Text>
             </View>
         </Touchable>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         height: itemHeight,
         paddingTop: 5,
-        flexDirection: 'row',
+        flexDirection: "row",
         backgroundColor: Color.white,
-        paddingHorizontal: 20,
+        paddingHorizontal: 20
     },
     image: {
         borderRadius: 10,
         width: imageWidth,
-        height: imageHeight,
+        height: imageHeight
     },
     placeholder: {
         width: imageWidth,
         height: imageHeight,
         position: "absolute",
         top: 0,
-        left: 0,
+        left: 0
     },
     mainView: {
         flex: 1,
         justifyContent: "space-between",
-        padding: 10,
+        padding: 10
     },
     titleText: {
-        fontSize: 15,
+        fontSize: 15
     },
     infoTitle: {
         paddingVertical: 5,
-        color: Color.dark_title,
+        color: Color.dark_title
     },
     rightView: {
         width: imageWidth,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+        justifyContent: "center",
+        alignItems: "center"
+    }
 
-})
+});
 
 export default Item;

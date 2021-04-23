@@ -1,12 +1,12 @@
 import React, { memo, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { Color } from "@/utils/const";
-import FastImage from "react-native-fast-image";
 import Touchable from "@/components/Touchable";
 import { ip, wp } from "@/utils/index";
 import Icon from "@/assets/iconfont";
 import ErrorImage from "@/assets/image/error.png";
 import { IHistory } from "@/models/history";
+import SandGlass from "@/assets/image/sandglass.png";
 
 
 const imageWidth = wp(25);
@@ -24,7 +24,7 @@ function Item({ data, isEdit, selected, goMangaView }: IProps) {
 
     const [errorLoad, setErrorLoad] = useState<boolean>(false);
 
-    const showError = () => {
+    const onError = () => {
         setErrorLoad(true);
     };
 
@@ -42,11 +42,12 @@ function Item({ data, isEdit, selected, goMangaView }: IProps) {
                   <Icon name="icon-gouxuan" size={18} color={selected ? Color.red : Color.grey} />
                 </View>
             }
-            <FastImage
-                source={errorLoad ? ErrorImage : { uri: data["image"], cache: FastImage.cacheControl.immutable }}
-                onError={showError}
+            <Image
+                defaultSource={SandGlass}
+                source={errorLoad ? ErrorImage : { uri: data["image"] }}
+                onError={onError}
                 style={styles.image}
-                resizeMode={FastImage.resizeMode.stretch}
+                resizeMode={"stretch"}
             />
             <View style={styles.mainView}>
                 <Text numberOfLines={2} style={styles.titleText}>{data["title"]}</Text>

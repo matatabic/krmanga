@@ -127,9 +127,9 @@ const mangaViewModel: MangaViewModel = {
                 });
                 data = restData.data;
             }
-            console.log(data);
+
             const newList = refreshing ? data.list : [...list, ...data.list];
-            console.log(newList)
+
             if (refreshing) {
                 yield put({
                     type: "setState",

@@ -6,7 +6,7 @@
  *
  */
 import RNFS from "react-native-fs";
-import { Platform } from "react-native";
+
 
 
 /** @namespace RNFS.ExternalDirectoryPath */

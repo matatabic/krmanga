@@ -1,17 +1,19 @@
 import React, { memo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { ip, viewportWidth, wp } from "@/utils/index";
 import { Color } from "@/utils/const";
-import FastImage from "react-native-fast-image";
 import Icon from "@/assets/iconfont";
 import ErrorImage from "@/assets/image/error.png";
 import { ICollection } from "@/models/collection";
+import Touchable from "@/components/Touchable";
+import SandGlass from "@/assets/image/sandglass.png";
 
 
 interface IProps {
     data: ICollection;
     isEdit: boolean;
     selected: boolean;
+    onClickItem: (data: ICollection) => void
 }
 
 
@@ -20,21 +22,28 @@ const imageHeight = ip(itemWidth);
 const itemMargin = (viewportWidth - wp(90)) / 4;
 
 
-function BookCover({ data, isEdit, selected }: IProps) {
+function Item({ data, isEdit, selected, onClickItem }: IProps) {
 
     const [errorLoad, setErrorLoad] = useState<boolean>(false);
 
-    const showError = () => {
+    const onError = () => {
         setErrorLoad(true);
     };
 
+    const onPress = () => {
+        if (typeof onClickItem === "function") {
+            onClickItem(data);
+        }
+    };
+
     return (
-        <View style={styles.item}>
-            <FastImage
-                source={errorLoad ? ErrorImage : { uri: data.image, cache: FastImage.cacheControl.immutable }}
-                onError={showError}
+        <Touchable onPress={onPress} style={styles.container}>
+            <Image
+                defaultSource={SandGlass}
+                source={errorLoad ? ErrorImage : { uri: data.image }}
+                onError={onError}
                 style={styles.image}
-                resizeMode={FastImage.resizeMode.stretch}
+                resizeMode={"stretch"}
             />
             {isEdit &&
             <>
@@ -57,13 +66,13 @@ function BookCover({ data, isEdit, selected }: IProps) {
                 <Text style={styles.title} numberOfLines={1}>{data.title}</Text>
                 <Text style={styles.chapter_info} numberOfLines={1}>{data.chapter_info}</Text>
             </View>
-        </View>
+        </Touchable>
     );
 }
 
 
 const styles = StyleSheet.create({
-    item: {
+    container: {
         width: itemWidth,
         marginTop: itemMargin,
         marginLeft: itemMargin,
@@ -111,4 +120,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default memo(BookCover);
+export default memo(Item);

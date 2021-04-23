@@ -10,6 +10,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Item from "@/pages/Download/Item";
 import { IChapter, initialState } from "@/models/download";
 import Touchable from "@/components/Touchable";
+import Toast from "react-native-root-toast";
 
 
 const mapStateToProps = ({ download, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "Download"> }) => {
@@ -18,7 +19,7 @@ const mapStateToProps = ({ download, loading }: RootState, { route }: { route: R
         chapterList: download.chapterList,
         refreshing: download.refreshing,
         hasMore: download.hasMore,
-        loading: loading.effects["guess/fetchGuessList"]
+        loading: loading.effects["download/fetchChapterList"]
     };
 };
 
@@ -30,10 +31,9 @@ interface IProps extends ModelState {
     navigation: RootStackNavigation;
 }
 
-function Download({ dispatch, book_id, chapterList }: IProps) {
+function Download({ dispatch, book_id, chapterList, loading, refreshing }: IProps) {
 
     const [downloadList, setDownloadList] = useState<number[]>([]);
-    let [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         loadData(true);
@@ -46,14 +46,6 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
             });
         };
     }, []);
-
-    useEffect(() => {
-        return () => {
-            if (timer !== null) {
-                clearTimeout(timer);
-            }
-        };
-    }, [timer]);
 
     const loadData = (refreshing: boolean, callback?: () => void) => {
         dispatch({
@@ -75,6 +67,7 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
             >
                 <Item
                     data={item}
+                    downloading={item.downloading}
                     disabled={item.disabled}
                     selected={selected}
                 />
@@ -90,11 +83,20 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
         if (index > -1) {
             downloadList.splice(index, 1);
             setDownloadList([...downloadList]);
-            return false;
+        } else {
+            if (downloadList.length == 5) {
+                Toast.show("最多同时下载五个任务", {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.CENTER,
+                    shadow: true,
+                    animation: true
+                });
+                return false;
+            }
+            setDownloadList([...downloadList, item.chapter_num].sort((a, b) => {
+                return a - b;
+            }));
         }
-        setDownloadList([...downloadList, item.chapter_num].sort((a, b) => {
-            return a - b;
-        }));
     }, [downloadList]);
 
     const downTask = () => {
@@ -113,34 +115,31 @@ function Download({ dispatch, book_id, chapterList }: IProps) {
                 });
             },
             callback: () => {
-                // const time = setTimeout(() => {
                 setDownloadList([]);
-                // }, 1250);
-                // setTimer(time);
             }
         });
         dispatch({
             type: "downloadManage/setScreenReload"
         });
-
     };
 
     return (
-        chapterList.length > 0 ? <View style={styles.container}>
-            <ScrollView>
-                <View style={styles.main}>
-                    {
-                        chapterList.map((item: IChapter, index: number) => {
-                            return renderItem(item, index);
-                        })
-                    }
-                </View>
-            </ScrollView>
-            <EditView
-                downTask={downTask}
-                downloadList={downloadList}
-            />
-        </View> : <DownloadPlaceholder />
+        (loading && refreshing) ? <DownloadPlaceholder /> :
+            <View style={styles.container}>
+                <ScrollView>
+                    <View style={styles.main}>
+                        {
+                            chapterList.map((item: IChapter, index: number) => {
+                                return renderItem(item, index);
+                            })
+                        }
+                    </View>
+                </ScrollView>
+                <EditView
+                    downTask={downTask}
+                    downloadList={downloadList}
+                />
+            </View>
     );
 }
 

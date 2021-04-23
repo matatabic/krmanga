@@ -5,11 +5,10 @@ import { connect, ConnectedProps } from "react-redux";
 import { ModalStackNavigation, RootStackNavigation } from "@/navigator/index";
 import { useFocusEffect } from "@react-navigation/native";
 import BookPlaceholder from "@/components/Placeholder/BookPlaceholder";
-import Touchable from "@/components/Touchable";
 import More from "@/components/More";
 import End from "@/components/End";
 import EditView from "@/pages/Shelf/EditView";
-import BookCover from "@/pages/Shelf/BookCover";
+import Item from "@/pages/Shelf/Item";
 import { Color } from "@/utils/const";
 import { ICollection } from "@/models/collection";
 
@@ -136,16 +135,13 @@ function Shelf({
     const renderItem = ({ item }: ListRenderItemInfo<ICollection>) => {
         const selected = ids.indexOf(item.id) > -1;
         return (
-            <Touchable
+            <Item
                 key={item.id}
-                onPress={() => onClickItem(item)}
-            >
-                <BookCover
-                    data={item}
-                    isEdit={isEdit}
-                    selected={selected}
-                />
-            </Touchable>
+                data={item}
+                isEdit={isEdit}
+                selected={selected}
+                onClickItem={onClickItem}
+            />
         );
     };
 

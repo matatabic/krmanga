@@ -938,13 +938,6 @@
   dependencies:
     deep-assign "^3.0.0"
 
-"@react-native-community/blur@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.npm.taobao.org/@react-native-community/blur/download/@react-native-community/blur-3.6.0.tgz#31c9e0f2770519c9b5c4f99418f192246f0d4db8"
-  integrity sha1-Mcng8ncFGcm1xPmUGPGSJG8NTbg=
-  dependencies:
-    prop-types "^15.5.10"
-
 "@react-native-community/cli-debugger-ui@^4.13.1":
   version "4.13.1"
   resolved "https://registry.npm.taobao.org/@react-native-community/cli-debugger-ui/download/@react-native-community/cli-debugger-ui-4.13.1.tgz#07de6d4dab80ec49231de1f1fbf658b4ad39b32c"

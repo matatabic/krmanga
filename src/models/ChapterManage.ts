@@ -1,12 +1,10 @@
 import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
 import { Reducer } from "redux";
-import { _downloadFile, _fileEx, _mkdir, _readDir, _deleteFile } from "@/utils/RNFSUtils";
+import { _deleteFile, _fileEx } from "@/utils/RNFSUtils";
 import storage, { storageLoad } from "@/config/storage";
-import RNFS from "react-native-fs";
 import { RootState } from "@/models/index";
 import _ from "lodash";
 
-const ExternalDirectoryPath = RNFS.DocumentDirectoryPath;
 
 export interface IChapter {
     chapter_num: number;
@@ -22,6 +20,8 @@ interface IPagination {
 
 interface ChapterManageState {
     chapterList: IChapter[];
+    ids: number[];
+    isEdit: boolean;
     hasMore: boolean;
     pagination: IPagination;
     refreshing: boolean;
@@ -35,7 +35,7 @@ interface ChapterManageModel extends Model {
     };
     effects: {
         fetchChapterList: Effect;
-        delBookCache: Effect;
+        delChapter: Effect;
     };
     subscriptions: SubscriptionsMapObject;
 }
@@ -43,6 +43,8 @@ interface ChapterManageModel extends Model {
 
 export const initialState = {
     chapterList: [],
+    ids: [],
+    isEdit: false,
     hasMore: false,
     pagination: {
         current_page: 0,
@@ -64,15 +66,9 @@ const chapterManageModel: ChapterManageModel = {
         }
     },
     effects: {
-        *fetchChapterList(action, { call, put, select }) {
-            const { payload, type } = action;
+        *fetchChapterList(action, { call, put }) {
+            const { payload } = action;
             const { book_id, refreshing } = payload;
-
-            const namespace = type.split("/")[0];
-
-            const { chapterList: list, pagination, screenReload } = yield select(
-                (state: RootState) => state[namespace]
-            );
 
             yield put({
                 type: "setState",
@@ -85,14 +81,9 @@ const chapterManageModel: ChapterManageModel = {
             let i = 0;
 
             let bookCache = yield call(storageLoad, { key: "bookCache" });
-
+            console.log(bookCache);
             for (let chapter in bookCache[`book-${book_id}`]) {
-                // const n =
-                // console.log(bookCache[`book-${book_id}`][chapter])
-                // data[n] = {
-                //     "length": bookCache[`book-${book_id}`][chapter].list.length,
-                //     "image": bookCache[`book-${book_id}`][chapter].list[0].image
-                // };
+                _fileEx(bookCache[`book-${book_id}`][chapter].list[0].image);
                 data[i] = [];
                 data[i]["size"] = bookCache[`book-${book_id}`][chapter].list.length;
                 data[i]["image"] = bookCache[`book-${book_id}`][chapter].list[0].image;
@@ -109,19 +100,46 @@ const chapterManageModel: ChapterManageModel = {
                     refreshing: false
                 }
             });
-
         },
-        *delBookCache(action, { call, put, select }) {
+        *delChapter(action, { call, put, select }) {
             const { payload, type } = action;
-            const { ids } = payload;
+            const { ids, book_id } = payload;
             const namespace = type.split("/")[0];
-
-            const { downloadList: list } = yield select(
+            const { chapterList: list } = yield select(
                 (state: RootState) => state[namespace]
             );
 
+            const bookName = `book-${book_id}`;
+
             let cacheList = yield call(storageLoad, { key: "cacheList" });
             let bookCache = yield call(storageLoad, { key: "bookCache" });
+            const data = cacheList[bookName].filter((item: number) => ids.indexOf(item) == -1);
+            cacheList[bookName] = data;
+            const newData = list.filter((item: IChapter) => ids.indexOf(item.chapter_num) == -1);
+
+            for (let chapter_num of ids) {
+                yield delete bookCache[bookName][`chapter-${chapter_num}`];
+                yield _deleteFile(`${bookName}/${chapter_num}`);
+            }
+
+            yield put({
+                type: "setState",
+                payload: {
+                    chapterList: newData,
+                    ids: [],
+                    isEdit: false
+                }
+            });
+
+            storage.save({
+                key: "cacheList",
+                data: cacheList
+            });
+
+            storage.save({
+                key: "bookCache",
+                data: bookCache
+            });
         }
     },
     subscriptions: {

@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Animated, StyleSheet } from "react-native";
 import { ip, viewportWidth } from "@/utils/index";
-import FastImage from "react-native-fast-image";
-import { BlurView } from "@react-native-community/blur";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
+import ErrorImage from "@/assets/image/error.png";
 
 
 const mapStateToProps = ({ brief }: RootState) => {
@@ -22,21 +21,25 @@ interface IProps extends ModelState {
 }
 
 function ImageTopBar({ bookInfo, opacity }: IProps) {
+
+    const [errorLoad, setErrorLoad] = useState<boolean>(false);
+
+    const onError = () => {
+        setErrorLoad(true);
+    };
+
     return (
         bookInfo.image.length > 0 ?
             <Animated.View style={[styles.container, {
                 height: 130,
                 opacity: opacity
             }]}>
-                <FastImage
-                    source={{ uri: bookInfo.image }}
+                <Animated.Image
+                    source={errorLoad ? ErrorImage : { uri: bookInfo.image }}
+                    blurRadius={20}
+                    onError={onError}
                     style={styles.image}
-                    resizeMode={FastImage.resizeMode.cover}
-                />
-                <BlurView
-                    blurType="dark"
-                    blurAmount={30}
-                    style={StyleSheet.absoluteFillObject}
+                    resizeMode={"stretch"}
                 />
             </Animated.View> : null
     );

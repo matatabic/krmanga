@@ -74,11 +74,13 @@ function Category({ dispatch, navigation, category_id, activeStatus, activeModel
     }, []);
 
     const renderItem = ({ item }: ListRenderItemInfo<IBook>) => {
-        return <BookCover
-            data={item}
-            goBrief={goBrief}
-            key={item.id}
-        />;
+        return (
+            <BookCover
+                key={item.id}
+                data={item}
+                goBrief={goBrief}
+            />
+        );
     };
 
     const onRefresh = () => {
@@ -137,7 +139,7 @@ function Category({ dispatch, navigation, category_id, activeStatus, activeModel
     };
 
     return (
-        refreshing ? <BookPlaceholder /> :
+        (loading && refreshing) ? <BookPlaceholder /> :
             <FlatList
                 keyExtractor={(item, key) => `item-${item.id}-key-${key}`}
                 data={bookList}

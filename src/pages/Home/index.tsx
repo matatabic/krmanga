@@ -116,19 +116,21 @@ function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore 
         );
     };
 
-    const getTopBarColor = () => {
+    const getTopBarColor = useCallback(() => {
         return scrollY.interpolate({
             inputRange: [0, maxScroll],
             outputRange: [0, 1],
             extrapolate: "clamp"
         });
-    };
+    }, []);
+
+    const TopBarColor = getTopBarColor();
 
     return (
-        refreshing ? <HomePlaceholder /> :
+        (loading && refreshing) ? <HomePlaceholder /> :
             <View style={{ flex: 1 }}>
                 <CarouselBlurBackground />
-                <TopBarWrapper navigation={navigation} topBarColor={getTopBarColor()} />
+                <TopBarWrapper navigation={navigation} topBarColor={TopBarColor} />
                 <SectionList
                     keyExtractor={(item, index) => `item-${item["id"]}-key-${index}`}
                     ListHeaderComponent={() => <Carousel />}
