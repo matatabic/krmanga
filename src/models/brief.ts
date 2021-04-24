@@ -25,7 +25,6 @@ export interface IBookInfo {
 
 export interface BriefState {
     bookInfo: IBookInfo;
-    headerHeight: number;
     book_update_info: string;
     refreshing: boolean;
     collection_id: number;
@@ -58,7 +57,6 @@ export const initialState = {
         description: "",
         status: ""
     },
-    headerHeight: 0,
     refreshing: false,
     book_update_info: "",
     collection_id: 0,

@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     title: {
-        fontSize: 12
+        fontSize: 12,
+        color: Color.black
     },
     activeTitle: {
         fontSize: 12,

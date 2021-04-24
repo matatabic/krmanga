@@ -28,6 +28,7 @@ export interface IPagination {
 
 export interface MangaViewState {
     episodeList: IEpisode[];
+    headerHeight: number;
     refreshing: boolean;
     hasMore: boolean;
     currentEpisodeTotal: number;
@@ -57,6 +58,7 @@ interface MangaViewModel extends Model {
 
 export const initialState = {
     episodeList: [],
+    headerHeight: 0,
     refreshing: false,
     hasMore: false,
     currentEpisodeTotal: 0,

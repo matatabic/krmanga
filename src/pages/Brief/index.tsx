@@ -13,16 +13,15 @@ import ImageBlurBackground from "@/pages/Brief/ImageBlurBackground";
 import TopBarWrapper from "@/pages/Brief/TopBarWrapper";
 import Footer from "@/pages/Brief/Footer";
 import Header from "@/pages/Brief/Header";
-import { useHeaderHeight } from "@react-navigation/stack";
 import List from "@/pages/Brief/List";
 import LightDrawer from "@/components/LightDrawer";
 
 
-const mapStateToProps = ({ user, brief, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "Brief"> }) => {
+const mapStateToProps = ({ home,user, brief, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "Brief"> }) => {
     return {
         isLogin: user.isLogin,
         book_id: route.params.id,
-        headerHeight: brief.headerHeight,
+        headerHeight: home.headerHeight,
         bookInfo: brief.bookInfo,
         markRoast: brief.markRoast,
         markChapterNum: brief.markChapterNum,
@@ -50,7 +49,7 @@ function Brief({
                    navigation, dispatch, isLogin, headerHeight, bookInfo, book_id, markRoast, markChapterNum,
                    loading, collection_id, refreshing, chapterList
                }: IProps) {
-    const topHeight = useHeaderHeight();
+
     const [showTop, setShowTop] = useState<boolean>(true);
     const scrollY = useRef(new Animated.Value(0)).current;
     const EndShowHeight = headerHeight + imageHeight;
@@ -66,12 +65,6 @@ function Brief({
     const drawerX = new Animated.Value(viewportWidth);
 
     useEffect(() => {
-        dispatch({
-            type: "brief/setState",
-            payload: {
-                headerHeight: topHeight
-            }
-        });
         loadData(true);
         return () => {
             dispatch({

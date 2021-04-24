@@ -8,9 +8,9 @@ import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
 
 
-const mapStateToProps = ({ brief }: RootState) => {
+const mapStateToProps = ({ home, brief }: RootState) => {
     return {
-        headerHeight: brief.headerHeight,
+        headerHeight: home.headerHeight,
         bookInfo: brief.bookInfo
     };
 };

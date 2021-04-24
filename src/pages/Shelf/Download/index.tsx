@@ -141,7 +141,7 @@ function Download({
             id: item.book_id
         });
         navigation.navigate("MangaView", {
-            chapter_num: item.chapter_num,
+            chapter_num: item.chapter_num ? item.chapter_num : 1,
             markRoast: item.roast,
             book_id: item.book_id
         });

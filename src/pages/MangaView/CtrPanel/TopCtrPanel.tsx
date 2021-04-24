@@ -10,9 +10,9 @@ import { RootStackNavigation } from "@/navigator/index";
 import Toast from "react-native-root-toast";
 
 
-const mapStateToProps = ({ brief, mangaView }: RootState) => {
+const mapStateToProps = ({ home, mangaView }: RootState) => {
     return {
-        headerHeight: brief.headerHeight,
+        headerHeight: home.headerHeight,
         currentTitle: mangaView.currentTitle
     };
 };

@@ -77,7 +77,14 @@ const userModel: UserModel = {
         *register(action, { call, put }) {
             const { payload } = action;
 
-            const data = yield call(UserServices.Register, payload);
+            let reqParams = {};
+            reqParams["username"] = payload.account;
+            reqParams["password"] = payload.password;
+            if (payload.mobile) {
+                reqParams["mobile"] = payload.mobile;
+            }
+
+            const data = yield call(UserServices.Register, reqParams);
 
             Toast.show(data.msg, {
                 duration: Toast.durations.LONG,

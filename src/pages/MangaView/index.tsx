@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, StatusBar, FlatList, ListRenderItemInfo, StyleSheet, Animated, Easing, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
+import { View, StatusBar, FlatList, ListRenderItemInfo, Animated, Easing, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteProp } from "@react-navigation/native";
@@ -17,13 +17,13 @@ import DarkDrawer from "@/components/DarkDrawer";
 import BottomStatusBar from "@/pages/MangaView/BottomStatusBar";
 
 
-const mapStateToProps = ({ mangaView, brief, user, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "MangaView"> }) => {
+const mapStateToProps = ({home, mangaView, brief, user, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "MangaView"> }) => {
     return {
         book_id: route.params.book_id,
         markRoast: route.params.markRoast,
         chapter_num: route.params.chapter_num,
         isLogin: user.isLogin,
-        headerHeight: brief.headerHeight,
+        headerHeight: home.headerHeight,
         episodeList: mangaView.episodeList,
         hasMore: mangaView.hasMore,
         refreshing: mangaView.refreshing,
@@ -62,6 +62,7 @@ function MangaView({
     const drawerX = useRef(new Animated.Value(-viewportWidth)).current;
     let panelEnable: boolean = true;
 
+
     useEffect(() => {
         loadData(true);
         return () => {
@@ -75,6 +76,9 @@ function MangaView({
                 });
                 dispatch({
                     type: "history/setScreenReload"
+                });
+                dispatch({
+                    type: "downloadManage/setScreenReload"
                 });
             } else {
                 dispatch({
@@ -271,7 +275,7 @@ function MangaView({
         }
     }, [panelEnable]);
 
-    const debounce = (cb: any, wait = 500) => {
+    const debounce = (cb: any, wait = 350) => {
         if (time !== null) {
             clearTimeout(time);
         }
@@ -337,50 +341,46 @@ function MangaView({
     }, []);
 
     return (
-        episodeList.length > 0 ? <View style={styles.container}>
-            <StatusBar barStyle="light-content" />
-            <TopCtrPanel
-                book_id={book_id}
-                topPanelValue={topPanelValue}
-                navigation={navigation}
-            />
-            <BottomCtrPanel
-                bottomPanelValue={bottomPanelValue}
-                scrollToIndex={scrollToIndex}
-                showDrawer={showDrawer}
-                lastChapter={lastChapter}
-                nextChapter={nextChapter}
-            />
-            <FlatList
-                ref={ref => (flatListRef = ref)}
-                data={episodeList}
-                keyExtractor={(item, key) => `item-${item.id}-key-${key}`}
-                renderItem={renderItem}
-                ListFooterComponent={renderFooter}
-                getItemLayout={getItemLayout}
-                onScrollEndDrag={onScrollEndDrag}
-                initialScrollIndex={pages.episode_offset - 1}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.1}
-                extraData={endReached}
-            />
-            <DarkDrawer
-                chapterList={chapterList}
-                bookInfo={bookInfo}
-                headerHeight={headerHeight}
-                drawerX={drawerX}
-                hideDrawer={hideDrawer}
-                goMangaView={goMangaChapter}
-            />
-            <BottomStatusBar />
-        </View> : null
+        episodeList.length > 0 ?
+            <View style={{ flex: 1 }}>
+                <StatusBar barStyle="light-content" />
+                <TopCtrPanel
+                    book_id={book_id}
+                    topPanelValue={topPanelValue}
+                    navigation={navigation}
+                />
+                <BottomCtrPanel
+                    bottomPanelValue={bottomPanelValue}
+                    scrollToIndex={scrollToIndex}
+                    showDrawer={showDrawer}
+                    lastChapter={lastChapter}
+                    nextChapter={nextChapter}
+                />
+                <FlatList
+                    ref={ref => (flatListRef = ref)}
+                    data={episodeList}
+                    keyExtractor={(item, key) => `item-${item.id}-key-${key}`}
+                    renderItem={renderItem}
+                    ListFooterComponent={renderFooter}
+                    getItemLayout={getItemLayout}
+                    onScrollEndDrag={onScrollEndDrag}
+                    initialScrollIndex={pages.episode_offset - 1}
+                    onEndReached={onEndReached}
+                    onEndReachedThreshold={0.1}
+                    extraData={endReached}
+                />
+                <DarkDrawer
+                    chapterList={chapterList}
+                    bookInfo={bookInfo}
+                    headerHeight={headerHeight}
+                    drawerX={drawerX}
+                    hideDrawer={hideDrawer}
+                    goMangaView={goMangaChapter}
+                />
+                <BottomStatusBar />
+            </View> : null
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    }
-});
 
 export default connector(MangaView);

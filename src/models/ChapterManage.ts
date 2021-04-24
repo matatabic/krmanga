@@ -81,7 +81,7 @@ const chapterManageModel: ChapterManageModel = {
             let i = 0;
 
             let bookCache = yield call(storageLoad, { key: "bookCache" });
-            console.log(bookCache);
+
             for (let chapter in bookCache[`book-${book_id}`]) {
                 _fileEx(bookCache[`book-${book_id}`][chapter].list[0].image);
                 data[i] = [];

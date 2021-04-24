@@ -30,6 +30,7 @@ export interface HomeState {
     carouselList: ICarousel[];
     activeCarouselIndex: number;
     commendList: ICommendList[];
+    headerHeight: number;
     refreshing: boolean,
     hasMore: boolean,
     pagination: IPagination;
@@ -51,6 +52,7 @@ const initialState = {
     carouselList: [],
     activeCarouselIndex: 0,
     commendList: [],
+    headerHeight: 0,
     refreshing: false,
     hasMore: false,
     pagination: {

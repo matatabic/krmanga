@@ -14,6 +14,7 @@ import BookCover from "@/components/BookCover";
 import Carousel from "@/pages/Home/Carousel";
 import HomePlaceholder from "@/components/Placeholder/HomePlaceholder";
 import SplashScreen from "react-native-splash-screen";
+import { useHeaderHeight } from "@react-navigation/stack";
 
 const mapStateToProps = ({ home, loading }: RootState) => {
     return {
@@ -38,11 +39,18 @@ const maxScroll = sideHeight + 10;
 
 function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore }: IProps) {
 
+    const headerHeight = useHeaderHeight();
     const scrollY: Animated.Value = useRef(new Animated.Value(0)).current;
     const [endReached, setEndReached] = useState<boolean>(false);
 
     useEffect(() => {
         SplashScreen.hide();//关闭启动屏
+        dispatch({
+            type: "home/setState",
+            payload: {
+                headerHeight
+            }
+        });
         loadCarouselList();
         loadCommendList(true);
     }, []);
