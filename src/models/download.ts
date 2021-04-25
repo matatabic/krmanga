@@ -123,10 +123,13 @@ const downloadModel: DownloadModel = {
             yield put({
                 type: "setState",
                 payload: {
-                    chapterList: [...list],
-                    ids: []
+                    chapterList: [...list]
                 }
             });
+
+            if (action.changeVal) {
+                action.changeVal();
+            }
 
             yield _fileEx(`book-${book_id}`).then(res => {
                 if (!res) {
@@ -167,8 +170,8 @@ const downloadModel: DownloadModel = {
                                         if (res.length == data.list.length) {
                                             list[list.length - downloadList[i]].disabled = true;
                                             list[list.length - downloadList[i]].downloading = false;
-                                            if (action.reload) {
-                                                action.reload([...list]);
+                                            if (action.callBack) {
+                                                action.callBack([...list]);
                                             }
                                             if (cacheList[bookName]) {
                                                 book = {
@@ -188,31 +191,30 @@ const downloadModel: DownloadModel = {
                                     });
                                 }
                             });
+                        } else {
+                            _readDir(`book-${book_id}/${downloadList[i]}`).then(res => {
+                                if (res.length == data.list.length) {
+                                    list[list.length - downloadList[i]].disabled = true;
+                                    if (action.callBack) {
+                                        action.callBack([...list]);
+                                    }
+                                    if (cacheList[bookName]) {
+                                        book = {
+                                            [bookName]: Array.from(new Set([...cacheList[bookName], downloadList[i]]))
+                                        };
+                                    } else {
+                                        book = {
+                                            [bookName]: [downloadList[i]]
+                                        };
+                                    }
+                                    Object.assign(cacheList, book);
+                                    storage.save({
+                                        key: "cacheList",
+                                        data: cacheList
+                                    });
+                                }
+                            });
                         }
-                        // else {
-                        //     _readDir(`book-${book_id}/${downloadList[i]}`).then(res => {
-                        //         if (res.length == data.list.length) {
-                        //             list[list.length - downloadList[i]].disabled = true;
-                        //             if (action.reload) {
-                        //                 action.reload([...list]);
-                        //             }
-                        //             if (cacheList[bookName]) {
-                        //                 book = {
-                        //                     [bookName]: Array.from(new Set([...cacheList[bookName], downloadList[i]]))
-                        //                 };
-                        //             } else {
-                        //                 book = {
-                        //                     [bookName]: [downloadList[i]]
-                        //                 };
-                        //             }
-                        //             Object.assign(cacheList, book);
-                        //             storage.save({
-                        //                 key: "cacheList",
-                        //                 data: cacheList
-                        //             });
-                        //         }
-                        //     });
-                        // }
                     });
                     data.list[n].image = `file://${ExternalDirectoryPath}/${path}`;
                 }
@@ -228,10 +230,6 @@ const downloadModel: DownloadModel = {
                     key: "bookCache",
                     data: bookCache
                 });
-            }
-
-            if (action.callback) {
-                action.callback();
             }
         }
     },

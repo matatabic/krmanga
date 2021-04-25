@@ -76,7 +76,7 @@ function Download({ dispatch, book_id, chapterList, loading, refreshing }: IProp
     };
 
     const onPress = useCallback((item: IChapter) => {
-        if (item.disabled) {
+        if (item.disabled || item.downloading === true) {
             return false;
         }
         const index = downloadList.indexOf(item.chapter_num);
@@ -106,16 +106,16 @@ function Download({ dispatch, book_id, chapterList, loading, refreshing }: IProp
                 book_id,
                 downloadList
             },
-            reload: (data: IChapter[]) => {
+            changeVal: () => {
+                setDownloadList([]);
+            },
+            callBack: (data: IChapter[]) => {
                 dispatch({
                     type: "download/setState",
                     payload: {
                         chapterList: data
                     }
                 });
-            },
-            callback: () => {
-                setDownloadList([]);
             }
         });
         dispatch({

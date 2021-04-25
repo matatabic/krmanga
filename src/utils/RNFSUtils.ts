@@ -45,11 +45,11 @@ export const _downloadFile = (formUrl: string, targetName: string, callback?: ()
         toFile: toLoadPath,
         progressDivider: 5,
         begin: (res) => {
-            console.log("begin", res)
+            // console.log("begin", res)
             return res
         },
         progress: (res) => {
-            console.log("progress", res)
+            // console.log("progress", res)
         }
     })
         .promise.then(res => res)
