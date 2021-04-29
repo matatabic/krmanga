@@ -17,7 +17,7 @@ import List from "@/pages/Brief/List";
 import LightDrawer from "@/components/LightDrawer";
 
 
-const mapStateToProps = ({ home,user, brief, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "Brief"> }) => {
+const mapStateToProps = ({ home, user, brief, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "Brief"> }) => {
     return {
         isLogin: user.isLogin,
         book_id: route.params.id,
@@ -51,7 +51,8 @@ function Brief({
                }: IProps) {
 
     const [showTop, setShowTop] = useState<boolean>(true);
-    const scrollY = useRef(new Animated.Value(0)).current;
+    const scrollY: Animated.Value = useRef(new Animated.Value(0)).current;
+    const drawerX: Animated.Value = useRef(new Animated.Value(viewportWidth)).current;
     const EndShowHeight = headerHeight + imageHeight;
     let fixedHeight: number = 0;
     if (Platform.OS === "android") {
@@ -61,8 +62,6 @@ function Brief({
             headerHeight + imageHeight + 30 - 22 :
             headerHeight + imageHeight + 30 - 11 + getStatusBarHeight();
     }
-
-    const drawerX = new Animated.Value(viewportWidth);
 
     useEffect(() => {
         loadData(true);

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, Animated, StyleSheet, SectionList, SectionListRenderItemInfo } from "react-native";
+import { View, Text, Animated, StyleSheet, Platform, SectionList, SectionListRenderItemInfo } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
-import { RootStackNavigation } from "@/navigator/index";
+import { ModalStackNavigation, RootStackNavigation } from "@/navigator/index";
 import { RootState } from "@/models/index";
 import CarouselBlurBackground from "@/pages/views/CarouselBlurBackground";
 import { hp } from "@/utils/index";
@@ -15,6 +15,8 @@ import Carousel from "@/pages/Home/Carousel";
 import HomePlaceholder from "@/components/Placeholder/HomePlaceholder";
 import SplashScreen from "react-native-splash-screen";
 import { useHeaderHeight } from "@react-navigation/stack";
+import codePush from "react-native-code-push";
+
 
 const mapStateToProps = ({ home, loading }: RootState) => {
     return {
@@ -30,7 +32,7 @@ const connector = connect(mapStateToProps);
 type MadelState = ConnectedProps<typeof connector>;
 
 interface IProps extends MadelState {
-    navigation: RootStackNavigation;
+    navigation: RootStackNavigation & ModalStackNavigation;
 }
 
 const sideHeight = hp(30);
@@ -51,9 +53,20 @@ function Home({ dispatch, commendList, refreshing, navigation, loading, hasMore 
                 headerHeight
             }
         });
+        syncImmediate();
         loadCarouselList();
         loadCommendList(true);
     }, []);
+
+    const syncImmediate = () => {
+        if (Platform.OS === "android") {
+            codePush.checkForUpdate().then((update) => {
+                if (update) {
+                    navigation.navigate("AppUpdate");
+                }
+            });
+        }
+    };
 
     const loadCarouselList = () => {
         dispatch({

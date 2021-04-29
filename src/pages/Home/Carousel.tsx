@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React  from "react";
 import SnapCarousel, {
     ParallaxImage,
     Pagination,
@@ -9,7 +9,7 @@ import { StyleSheet, View } from "react-native";
 import { ICarousel } from "@/models/home";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
-import FastImage from "react-native-fast-image";
+
 
 const sliderWidth = viewportWidth;
 const sideWidth = wp(90);
@@ -33,29 +33,20 @@ interface IProps extends ModelState {
 
 function Carousel({ dispatch, carouselList, activeCarouselIndex }: IProps) {
 
-    // const renderItem = (
-    //     { item }: { item: ICarousel },
-    //     parallaxProps?: AdditionalParallaxProps
-    // ) => {
-    //     return (
-    //         <ParallaxImage
-    //             source={{ uri: item.image_url }}
-    //             style={styles.image}
-    //             containerStyle={styles.containerStyle}
-    //             parallaxFactor={0.8}
-    //             showSpinner
-    //             spinnerColor="rgba(0,0,0,0.25)"
-    //             {...parallaxProps}
-    //         />
-    //     );
-    // };
-
     const renderItem = (
-        { item }: { item: ICarousel }) => {
+        { item }: { item: ICarousel },
+        parallaxProps?: AdditionalParallaxProps
+    ) => {
         return (
-            <View>
-                <FastImage source={{ uri: item.image_url }} style={styles.containerStyle} />
-            </View>
+            <ParallaxImage
+                source={{ uri: item.image_url }}
+                style={styles.image}
+                containerStyle={styles.containerStyle}
+                parallaxFactor={0.8}
+                showSpinner
+                spinnerColor="rgba(0,0,0,0.25)"
+                {...parallaxProps}
+            />
         );
     };
 

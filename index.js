@@ -7,7 +7,7 @@ import 'react-native-gesture-handler';
 import App from './src';
 import {name as appName} from './app.json';
 
-console.disableYellowBox = true;
+// console.disableYellowBox = true;
 if (!__DEV__) {
     const emptyFunc = () => {};
     global.console.info = emptyFunc;

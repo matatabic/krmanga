@@ -11,6 +11,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import androidx.multidex.MultiDex;
+import com.microsoft.codepush.react.CodePush;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -29,6 +30,14 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new MyReactNativePackage());
           return packages;
         }
+
+		 // 2. Override the getJSBundleFile method in order to let
+		 // the CodePush runtime determine where to get the JS
+		 // bundle location from on each app start
+		@Override
+		protected String getJSBundleFile() {
+		 return CodePush.getJSBundleFile();
+		}
 
         @Override
         protected String getJSMainModuleName() {

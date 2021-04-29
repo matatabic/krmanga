@@ -168,11 +168,9 @@ function Shelf({
         !isLogin ? null :
             refreshing ? <BookPlaceholder /> :
                 <View style={styles.container}>
-                    <View style={styles.totalView}>
-                        <Animated.Text style={[{
+                        <Animated.Text style={[styles.total,{
                             opacity: getHeaderOpacity()
                         }]}>总收藏{collectionList.length}本</Animated.Text>
-                    </View>
                     <FlatList
                         keyExtractor={(item, key) => `item-${item.id}-key-${key}`}
                         scrollEventThrottle={1}
@@ -209,8 +207,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Color.page_bg
     },
-    totalView: {
-        alignItems: "center"
+    total: {
+        position:'absolute',
+        top:0,
+        zIndex:1,
+        alignSelf:"center"
     }
 });
 

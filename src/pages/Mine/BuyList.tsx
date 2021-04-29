@@ -29,8 +29,9 @@ function BuyList() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        flexDirection: "row"
+        height:60,
+        flexDirection: "row",
+        backgroundColor: Color.page_bg
     },
     iconView: {
         flex: 1,

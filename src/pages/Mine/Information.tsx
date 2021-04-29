@@ -67,11 +67,12 @@ function Information({ dispatch, navigation, isLogin, userInfo }: IProps) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height:80,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginHorizontal: 10
+        paddingHorizontal: 10,
+        backgroundColor: Color.page_bg
     },
     leftView: {
         flex: 7,

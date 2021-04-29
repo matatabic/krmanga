@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 import com.android.build.OutputFile
 
 /**
@@ -199,6 +200,8 @@ dependencies {
 	implementation 'com.android.support:multidex:1.0.3'
 
 	implementation project(':react-native-fs')
+
+	implementation project(':react-native-code-push')
 
 	implementation 'com.facebook.fresco:animated-gif:2.0.0'
 

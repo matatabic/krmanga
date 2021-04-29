@@ -1,4 +1,4 @@
-import React, { Component, useRef } from "react";
+import React, { useRef } from "react";
 import { StyleSheet, View, Animated } from "react-native";
 import ImageBackground from "./ImageBackground";
 import { Color } from "@/utils/const";
@@ -7,6 +7,8 @@ import BuyList from "./BuyList";
 import Balance from "./Balance";
 import { ModalStackNavigation } from "@/navigator/index";
 import { viewportHeight } from "@/utils/index";
+import Version from "@/pages/Mine/Version";
+import CheckUpdate from "@/pages/Mine/CheckUpdate";
 
 
 interface IProps {
@@ -47,8 +49,9 @@ function Mine({ navigation }: IProps) {
                         <Information navigation={navigation} />
                         <BuyList />
                         <Balance />
+                        <CheckUpdate navigation={navigation} />
+                        <Version />
                     </View>
-
                 </View>
             </Animated.ScrollView>
         </View>
@@ -62,10 +65,8 @@ const styles = StyleSheet.create({
     },
     detail: {
         ...StyleSheet.absoluteFillObject,
-        height: 200,
         marginHorizontal: 15,
-        marginBottom: 25,
-        backgroundColor: Color.page_bg
+        marginBottom: 25
     }
 
 });

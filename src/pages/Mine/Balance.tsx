@@ -28,9 +28,10 @@ function Balance(){
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height:60,
         flexDirection: 'row',
-        marginHorizontal: 10,
+        paddingHorizontal: 10,
+        backgroundColor: Color.page_bg
     },
     leftView: {
         flex: 7,

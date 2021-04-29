@@ -22,6 +22,7 @@ import Guess from "@/pages/Guess";
 import DownloadManage from "@/pages/Shelf/Download";
 import Download from "@/pages/Download";
 import ChapterManage from "@/pages/Shelf/ChapterManage";
+import AppUpdate from "@/pages/AppUpdate";
 
 
 export type RootStackParamList = {
@@ -61,6 +62,7 @@ export type ModalStackParamList = {
     Root: undefined;
     Login: undefined;
     Register: undefined;
+    AppUpdate: undefined;
 }
 
 export type ModalStackNavigation = StackNavigationProp<ModalStackParamList>;
@@ -68,6 +70,7 @@ export type ModalStackNavigation = StackNavigationProp<ModalStackParamList>;
 const ModalStack = createStackNavigator<ModalStackParamList>();
 
 function ModalStackScreen() {
+
     return (
         <ModalStack.Navigator
             mode="modal"
@@ -107,6 +110,17 @@ function ModalStackScreen() {
                 component={Register}
                 options={{
                     headerTitle: "注册"
+                }}
+            />
+            <ModalStack.Screen
+                name="AppUpdate"
+                component={AppUpdate}
+                options={{
+                    headerTransparent: true,
+                    headerTitle: "",
+                    headerLeft: () => {
+                        return null;
+                    }
                 }}
             />
         </ModalStack.Navigator>
@@ -211,6 +225,7 @@ function RootStackScreen() {
     );
 }
 
+
 function Navigator() {
     return (
         <NavigationContainer>
@@ -218,5 +233,6 @@ function Navigator() {
         </NavigationContainer>
     );
 }
+
 
 export default Navigator;

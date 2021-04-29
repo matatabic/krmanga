@@ -34,6 +34,7 @@ export interface HomeState {
     refreshing: boolean,
     hasMore: boolean,
     pagination: IPagination;
+    showUpdate: boolean,
 }
 
 interface HomeModel extends Model {
@@ -59,7 +60,8 @@ const initialState = {
         current_page: 0,
         page_size: 0,
         total: 0
-    }
+    },
+    showUpdate: false
 };
 
 const homeModel: HomeModel = {

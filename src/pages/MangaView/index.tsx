@@ -343,7 +343,7 @@ function MangaView({
     return (
         episodeList.length > 0 ?
             <View style={{ flex: 1 }}>
-                <StatusBar barStyle="light-content" />
+                {/*<StatusBar barStyle="light-content" />*/}
                 <TopCtrPanel
                     book_id={book_id}
                     topPanelValue={topPanelValue}

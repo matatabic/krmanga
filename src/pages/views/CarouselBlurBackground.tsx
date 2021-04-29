@@ -5,7 +5,7 @@ import { Image, StyleSheet, View } from "react-native";
 import { hp } from "@/utils/index";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import FastImage from "react-native-fast-image";
-import { Color } from "@/utils/const";
+
 
 const mapStateToProps = ({ home }: RootState) => {
     return {
@@ -40,14 +40,8 @@ const styles = StyleSheet.create({
         height: hp(55)
     },
     image: {
-        height: getStatusBarHeight() + sideHeight + 60,
-    },
-    blur: {
-        ...StyleSheet.absoluteFillObject,
-        opacity: 0.8,
-        backgroundColor: Color.dark
+        height: getStatusBarHeight() + sideHeight + 60
     }
-
 });
 
 export default connector(CarouselBlurBackground);
