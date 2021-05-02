@@ -30,9 +30,9 @@ function BottomStatusBar({ currentChapterNum, currentNumber, currentEpisodeTotal
     const [currentTime, setCurrentTime] = useState<string>("");
 
     useEffect(() => {
+        setCurrentTime(getCurrentDate());
         const timeout = setInterval(() => {
-            const currentTime: string = getCurrentDate();
-            setCurrentTime(currentTime);
+            setCurrentTime(getCurrentDate());
         }, 1000);
         return () => clearInterval(timeout);
     }, []);
