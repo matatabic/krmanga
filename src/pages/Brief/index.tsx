@@ -53,15 +53,14 @@ function Brief({
     const [showTop, setShowTop] = useState<boolean>(true);
     const scrollY: Animated.Value = useRef(new Animated.Value(0)).current;
     const drawerX: Animated.Value = useRef(new Animated.Value(viewportWidth)).current;
-    const EndShowHeight = headerHeight + imageHeight;
-    let fixedHeight: number = 0;
+    const fixedHeight = headerHeight + imageHeight;
+    let compHeight: number;
     if (Platform.OS === "android") {
-        fixedHeight = headerHeight + imageHeight + 30 - 11;
+        compHeight = 30 - 11;
     } else {
-        fixedHeight = isIphoneX() ?
-            headerHeight + imageHeight + 30 - 22 :
-            headerHeight + imageHeight + 30 - 11 + getStatusBarHeight();
+        compHeight = isIphoneX() ? 30 - 22 : 30 - 11 + getStatusBarHeight();
     }
+    const stickyHeader = fixedHeight + compHeight;
 
     useEffect(() => {
         loadData(true);
@@ -79,7 +78,7 @@ function Brief({
         return scrollY.interpolate({
             inputRange: [
                 headerHeight,
-                EndShowHeight
+                fixedHeight
             ],
             outputRange: [1, 0],
             extrapolate: "clamp"
@@ -89,8 +88,8 @@ function Brief({
     const getBlurOpacity = () => {
         return scrollY.interpolate({
             inputRange: [
-                fixedHeight - 1,
-                fixedHeight
+                stickyHeader - 1,
+                stickyHeader
             ],
             outputRange: [0, 1],
             extrapolate: "clamp"
@@ -101,7 +100,7 @@ function Brief({
         return scrollY.interpolate({
             inputRange: [
                 headerHeight,
-                EndShowHeight
+                fixedHeight
             ],
             outputRange: [0, wp(22)],
             extrapolate: "clamp"
@@ -112,7 +111,7 @@ function Brief({
         return scrollY.interpolate({
             inputRange: [
                 headerHeight,
-                EndShowHeight
+                fixedHeight
             ],
             outputRange: [0, wp(10)],
             extrapolate: "clamp"
@@ -123,7 +122,7 @@ function Brief({
         return scrollY.interpolate({
             inputRange: [
                 headerHeight,
-                EndShowHeight
+                fixedHeight
             ],
             outputRange: [1, 0.65],
             extrapolate: "clamp"
@@ -134,7 +133,7 @@ function Brief({
         return scrollY.interpolate({
             inputRange: [
                 headerHeight,
-                EndShowHeight
+                fixedHeight
             ],
             outputRange: [1, 1.5],
             extrapolate: "clamp"
@@ -213,7 +212,7 @@ function Brief({
     };
 
     const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        if (event.nativeEvent.contentOffset.y >= EndShowHeight) {
+        if (event.nativeEvent.contentOffset.y >= fixedHeight) {
             setShowTop(false);
         } else {
             setShowTop(true);
@@ -268,7 +267,8 @@ function Brief({
                     scrollEventThrottle={1}
                 >
                     <Header
-                        fixedHeight={fixedHeight}
+                        stickyHeader={stickyHeader}
+                        compHeight={compHeight}
                         scrollY={scrollY}
                         opacity={getOpacity()}
                         blurOpacity={getBlurOpacity()}

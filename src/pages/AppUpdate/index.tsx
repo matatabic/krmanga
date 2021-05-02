@@ -14,10 +14,8 @@ interface IProps {
 
 function AppUpdate({ navigation }: IProps) {
 
-    const [start, setStart] = useState<boolean>(true);
-    const [latest, setLatest] = useState<boolean>(false);
-    const [update, setUpdate] = useState<boolean>(false);
-    let [progress, setProgress] = useState<number>(0);
+    const [status, setStatus] = useState<number | null>(null);
+    const [progress, setProgress] = useState<number>(0);
 
     const onPress = () => {
         if (Platform.OS === "ios") {
@@ -29,19 +27,15 @@ function AppUpdate({ navigation }: IProps) {
             });
             return false;
         }
-        if (update) {
+
+        if (status == 0 || status == 1) {
             codePush.restartApp(true);
-            return false;
+            navigation.goBack();
         }
-        setStart(false);
+
         codePush.sync({},
             (status => {
-                if (status === 0) {
-                    setLatest(true);
-                }
-                if (status === 1) {
-                    setUpdate(true);
-                }
+                setStatus(status);
             }),
             ({ receivedBytes, totalBytes }) => {
                 setProgress(Math.round(receivedBytes / totalBytes * 100));
@@ -64,20 +58,20 @@ function AppUpdate({ navigation }: IProps) {
                         backgroundColor={Color.dark_title}
                     >
                         {(fill) => {
-                            return (
-                                start ?
-                                    <Text style={{ fontSize: 18 }}>检测更新</Text> :
-                                    (latest ?
-                                        <Touchable>
-                                            <Text style={{ fontSize: 18 }}>最新版</Text>
-                                        </Touchable>
-                                        : (update ?
-                                            <Text style={{ fontSize: 18 }}>点击重启</Text>
-                                            : (progress > 0 ?
-                                                    <Text style={styles.title}>{Math.round(fill)}</Text>
-                                                    : <Text style={{ fontSize: 18 }}>检测中</Text>
-                                            )))
-                            );
+                            switch (status) {
+                                case 0:
+                                    return (<Text style={{ fontSize: 18 }}>最新版</Text>);
+                                case 1:
+                                    return (<Text style={{ fontSize: 18, color: Color.black }}>更新完成</Text>);
+                                case 4:
+                                    return (<Text style={styles.title}>{Math.round(fill)}</Text>);
+                                case 5:
+                                    return (<Text style={{ fontSize: 18 }}>查询更新中</Text>);
+                                case 7:
+                                    return (<Text style={styles.title}>{Math.round(fill)}</Text>);
+                                default:
+                                    return (<Text style={{ fontSize: 18 }}>检测版本</Text>);
+                            }
                         }}
                     </AnimatedCircularProgress>
                 </Touchable>
@@ -87,7 +81,9 @@ function AppUpdate({ navigation }: IProps) {
                     codePush.restartApp(true);
                     navigation.goBack();
                 }} style={styles.back}>
-                    <Text style={{ color: Color.white }}>下次一定</Text>
+                    <Text style={{ color: Color.white }}>
+                        {(status == 0 || status == 1) ? "返回" : "下次一定"}
+                    </Text>
                 </Touchable>
             </View>
         </Animated.View>

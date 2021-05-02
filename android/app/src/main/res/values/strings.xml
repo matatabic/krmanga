@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">@string/APP_NAME</string>
-    <string moduleConfig="true" name="CodePushDeploymentKey">@string/CODE_PUSH_SECRET_STA</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">@string/CODE_PUSH_SECRET_PRO</string>
 </resources>

@@ -21,7 +21,6 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-
 function BottomStatusBar({ currentChapterNum, currentNumber, currentEpisodeTotal }: ModelState) {
 
     let batteryLevel: number | null = useBatteryLevel();
@@ -31,32 +30,35 @@ function BottomStatusBar({ currentChapterNum, currentNumber, currentEpisodeTotal
     const [currentTime, setCurrentTime] = useState<string>("");
 
     useEffect(() => {
-        const time: string = getCurrentDate();
-        setCurrentTime(time);
-        const intervalHandle = setInterval(() => {
+        const timeout = setInterval(() => {
             const currentTime: string = getCurrentDate();
             setCurrentTime(currentTime);
         }, 1000);
-        return () => clearInterval(intervalHandle);
+        return () => clearInterval(timeout);
     }, []);
 
+    let type: string;
+    switch (netInfo.type) {
+        case "wifi":
+            type = "wifi";
+            break;
+        case "cellular":
+            type = "4g";
+            break;
+        case "none":
+            type = "无网络";
+            break;
+        default :
+            type = "未知网络";
+            break;
+    }
     return (
         <View style={styles.container}>
-            <View>
-                <Text style={styles.title}>第{currentChapterNum}回</Text>
-            </View>
-            <View>
-                <Text style={styles.title}>{`${currentNumber}/${currentEpisodeTotal}`}</Text>
-            </View>
-            <View>
-                <Text style={styles.title}>{currentTime}</Text>
-            </View>
-            <View>
-                <Text style={styles.title}>{netInfo.type}</Text>
-            </View>
-            <View>
-                <Text style={styles.title}>电量:{batteryLevel}%</Text>
-            </View>
+            <Text style={styles.title}>第{currentChapterNum}回</Text>
+            <Text style={styles.title}>{`${currentNumber}/${currentEpisodeTotal}`}</Text>
+            <Text style={styles.title}>{currentTime}</Text>
+            <Text style={styles.title}>{type}</Text>
+            <Text style={styles.title}>电量:{batteryLevel}%</Text>
         </View>
 
     );

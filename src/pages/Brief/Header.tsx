@@ -7,7 +7,8 @@ import { Animated } from "react-native";
 
 
 interface IProps {
-    fixedHeight: number;
+    stickyHeader: number;
+    compHeight: number;
     scrollY: Animated.AnimatedInterpolation;
     opacity: Animated.AnimatedInterpolation;
     blurOpacity: Animated.AnimatedInterpolation;
@@ -21,8 +22,7 @@ interface IProps {
 }
 
 function Header({
-                    fixedHeight,
-                    scrollY, opacity, blurOpacity, leftViewX, rightViewX, rightViewScale, rightFontSize,
+                    stickyHeader, compHeight, scrollY, opacity, blurOpacity, leftViewX, rightViewX, rightViewScale, rightFontSize,
                     showDrawer, onClickRead, onClickCollection
                 }: IProps) {
     return (
@@ -31,10 +31,11 @@ function Header({
                 opacity={opacity}
             />
             <StickyHeader
-                stickyHeaderY={fixedHeight} // 滑动到多少悬浮
+                stickyHeaderY={stickyHeader} // 滑动到多少悬浮
                 stickyScrollY={scrollY}
             >
                 <Operate
+                    compHeight={compHeight}
                     opacity={opacity}
                     blurOpacity={blurOpacity}
                     leftViewX={leftViewX}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Animated, StyleSheet } from "react-native";
+import { Animated, Image, StyleSheet } from "react-native";
 import { ip, viewportWidth } from "@/utils/index";
 import { RootState } from "@/models/index";
 import { connect, ConnectedProps } from "react-redux";
@@ -17,10 +17,11 @@ const connector = connect(mapStateToProps);
 type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
+    compHeight: number,
     opacity: Animated.AnimatedInterpolation;
 }
 
-function ImageTopBar({ bookInfo, opacity }: IProps) {
+function ImageTopBar({ compHeight, bookInfo, opacity }: IProps) {
 
     const [errorLoad, setErrorLoad] = useState<boolean>(false);
 
@@ -34,11 +35,13 @@ function ImageTopBar({ bookInfo, opacity }: IProps) {
                 height: 130,
                 opacity: opacity
             }]}>
-                <Animated.Image
+                <Image
                     source={errorLoad ? ErrorImage : { uri: bookInfo.image }}
-                    blurRadius={20}
+                    blurRadius={5}
                     onError={onError}
-                    style={styles.image}
+                    style={[styles.image, {
+                        top: compHeight
+                    }]}
                     resizeMode={"stretch"}
                 />
             </Animated.View> : null

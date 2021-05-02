@@ -37,7 +37,7 @@ function CarouselBlurBackground({ carouselList, activeCarouselIndex }: ModelStat
 const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
-        height: hp(55)
+        height: hp(55),
     },
     image: {
         height: getStatusBarHeight() + sideHeight + 60

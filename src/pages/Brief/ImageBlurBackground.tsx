@@ -24,7 +24,7 @@ function ImageBlurBackground({ bookInfo, imageSize }: IProps) {
                 <Animated.Image
                     source={errorLoad ? ErrorImage : { uri: bookInfo.image }}
                     onError={onError}
-                    blurRadius={20}
+                    blurRadius={5}
                     style={[styles.image, {
                         transform: [{ scale: imageSize }]
                     }]}

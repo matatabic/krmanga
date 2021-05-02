@@ -25,6 +25,7 @@ const connector = connect(mapStateToProps);
 type ModelState = ConnectedProps<typeof connector>;
 
 interface IProps extends ModelState {
+    compHeight: number;
     opacity: Animated.AnimatedInterpolation;
     blurOpacity: Animated.AnimatedInterpolation;
     leftViewX: Animated.AnimatedInterpolation;
@@ -38,7 +39,7 @@ interface IProps extends ModelState {
 const imageWidth = wp(30);
 
 function Operate({
-                      markChapterNum, opacity, blurOpacity, leftViewX,
+                     compHeight, markChapterNum, opacity, blurOpacity, leftViewX,
                      rightViewX, rightViewScale, rightFontSize, collection_id,
                      onClickRead, onClickCollection
                  }: IProps) {
@@ -59,7 +60,7 @@ function Operate({
 
     return (
         <>
-            <ImageTopBar opacity={blurOpacity} />
+            <ImageTopBar compHeight={compHeight} opacity={blurOpacity} />
             <View style={{ height: headerHeight + 50 }}>
                 <Animated.View style={[styles.shadow, {
                     height: headerHeight + 50,
