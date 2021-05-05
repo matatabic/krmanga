@@ -17,7 +17,7 @@ import DarkDrawer from "@/components/DarkDrawer";
 import BottomStatusBar from "@/pages/MangaView/BottomStatusBar";
 
 
-const mapStateToProps = ({home, mangaView, brief, user, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "MangaView"> }) => {
+const mapStateToProps = ({ home, mangaView, brief, user, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "MangaView"> }) => {
     return {
         book_id: route.params.book_id,
         markRoast: route.params.markRoast,
@@ -50,7 +50,7 @@ interface IProps extends ModelState {
 function MangaView({
                        navigation, dispatch, isLogin, chapterList, bookInfo,
                        book_id, headerHeight, markRoast, chapter_num, episodeList, hasMore, loading,
-                       currentChapterNum, currentRoast, pages
+                       currentChapterNum, pages
                    }: IProps) {
 
     const [endReached, setEndReached] = useState<boolean>(false);
@@ -80,33 +80,22 @@ function MangaView({
                 dispatch({
                     type: "downloadManage/setScreenReload"
                 });
-            } else {
-                dispatch({
-                    type: "mangaView/setState",
-                    payload: {
-                        ...initialState
-                    }
-                });
             }
+            dispatch({
+                type: "mangaView/setState",
+                payload: {
+                    ...initialState
+                }
+            });
         };
     }, []);
-
-    useEffect(() => {
-        dispatch({
-            type: "brief/setState",
-            payload: {
-                markChapterNum: currentChapterNum,
-                markRoast: currentRoast
-            }
-        });
-    }, [currentChapterNum, currentRoast]);
 
     const loadData = (refreshing: boolean, callback?: () => void) => {
         dispatch({
             type: "mangaView/fetchEpisodeList",
             payload: {
                 refreshing,
-                roast: markRoast,
+                markRoast,
                 chapter_num,
                 book_id
             },
@@ -166,6 +155,13 @@ function MangaView({
     };
 
     const scrollToIndex = (index: number) => {
+        dispatch({
+            type: "brief/setState",
+            payload: {
+                markChapterNum: episodeList[index].chapter_num,
+                markRoast: episodeList[index].roast
+            }
+        });
         flatListRef?.scrollToIndex({ viewPosition: 0, index: index });
     };
 
@@ -275,7 +271,7 @@ function MangaView({
         }
     }, [panelEnable]);
 
-    const debounce = (cb: any, wait = 350) => {
+    const debounce = (cb: any, wait = 250) => {
         if (time !== null) {
             clearTimeout(time);
         }
@@ -323,6 +319,13 @@ function MangaView({
                     currentTitle: current_title
                 }
             });
+            dispatch({
+                type: "brief/setState",
+                payload: {
+                    markChapterNum: current_chapter_num,
+                    markRoast: current_roast
+                }
+            });
         });
 
         hidePanel();
@@ -335,7 +338,7 @@ function MangaView({
                 refreshing: true,
                 book_id,
                 chapter_num: item.chapter_num,
-                callback: hideDrawer()
+                callback: () => hideDrawer
             }
         });
     }, []);

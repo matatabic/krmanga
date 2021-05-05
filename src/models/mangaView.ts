@@ -93,9 +93,10 @@ const mangaViewModel: MangaViewModel = {
     effects: {
         *fetchEpisodeList(action, { call, put, select }) {
             const { payload } = action;
-            const { book_id, chapter_num, roast } = payload;
+            const { book_id, chapter_num, markRoast } = payload;
             const { refreshing } = payload;
-
+            console.log(payload);
+            // return false;
             let data: any = {
                 list: [],
                 pages: {}
@@ -106,12 +107,12 @@ const mangaViewModel: MangaViewModel = {
             );
 
             const episodeList = realm.objects<Ie>("Episode").filtered(`book_id=${book_id} AND chapter_num=${chapter_num}`)
-                .sorted("chapter_num");
+                .sorted("number");
 
             if (episodeList.length > 0) {
                 data.list = episodeList;
-                if (roast) {
-                    const record = episodeList.filter((item: Ie) => item.roast === roast);
+                if (markRoast) {
+                    const record = episodeList.filter((item: Ie) => item.roast === markRoast);
                     data.pages.current_title = record[0].title;
                     data.pages.current_chapter_id = record[0].chapter_id;
                     data.pages.current_chapter = record[0].chapter_num;
@@ -130,7 +131,7 @@ const mangaViewModel: MangaViewModel = {
                 const retData = yield call(EpisodeServices.getList, {
                     book_id,
                     chapter_num,
-                    roast
+                    roast: markRoast
                 });
                 data = retData.data;
             }
