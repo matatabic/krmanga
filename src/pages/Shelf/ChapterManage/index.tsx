@@ -131,6 +131,9 @@ function ChapterManage({
                 ids
             }
         });
+        dispatch({
+            type: "downloadManage/setScreenReload"
+        });
     };
 
     const onEndReached = () => {

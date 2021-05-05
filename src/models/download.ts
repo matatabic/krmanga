@@ -1,10 +1,10 @@
 import { Model, Effect } from "dva-core-ts";
 import { Reducer } from "redux";
 import { _downBookImage, _downEpisodeImage, _fileEx, _mkdir } from "@/utils/RNFSUtils";
-import DownloadServices  from "@/services/download";
+import DownloadServices from "@/services/download";
 import { RootState } from "@/models/index";
 import Toast from "react-native-root-toast";
-import realm, {  IChapter as Ic, saveData } from "@/config/realm";
+import realm, { IChapter as Ic, saveData } from "@/config/realm";
 
 
 export interface IChapter {
@@ -135,6 +135,12 @@ const downloadModel: DownloadModel = {
             yield _fileEx(`bookCover`).then(res => {
                 if (!res) {
                     _mkdir("bookCover");
+                }
+            });
+
+            yield _fileEx(`bookCover/book${book_id}`).then(res => {
+                if (!res) {
+                    _mkdir(`bookCover/book${book_id}`);
                 }
             });
 
