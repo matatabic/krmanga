@@ -28,7 +28,8 @@ const LOGIN_URL = "/passport/login";
 const LOGOUT_URL = "/passport/logout";
 //chapter
 const CHAPTER_URL = "chapter/getList";
-
+//download
+const DOWNLOAD_MIX_URL = "book/getDownloadList";
 
 export {
     BOOK_URL,
@@ -51,5 +52,6 @@ export {
     REGISTER_URL,
     LOGIN_URL,
     LOGOUT_URL,
-    CHAPTER_URL
+    CHAPTER_URL,
+    DOWNLOAD_MIX_URL
 };

@@ -79,7 +79,7 @@ function SearchBar({ navigation, dispatch, searchTitle }: IProps) {
         });
 
         if (title && title.length > 0) {
-            debounce(() => loadData(title), 1000);
+            debounce(() => loadData(title), 500);
         } else {
             dispatch({
                 type: "search/setState",

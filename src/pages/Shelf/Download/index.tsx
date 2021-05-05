@@ -131,6 +131,7 @@ function Download({
         } else {
             navigation.navigate("ChapterManage", {
                 book_id: item.book_id,
+                book_image: item.image,
                 headerTitle: item.title
             });
         }

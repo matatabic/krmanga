@@ -5,12 +5,13 @@ import { ip, viewportWidth, wp } from "@/utils/index";
 import { Color } from "@/utils/const";
 import SandGlass from "@/assets/image/sandglass.png";
 import ErrorImage from "@/assets/image/error.png";
-import { IChapter } from "@/models/ChapterManage";
 import Icon from "@/assets/iconfont";
+import { IChapter } from "@/config/realm";
 
 
 interface IProps {
     data: IChapter;
+    book_image: string;
     isEdit: Boolean;
     selected: Boolean;
     onClickItem: (data: IChapter) => void;
@@ -21,12 +22,11 @@ const itemWidth = wp(90) / 3;
 const imageHeight = ip(itemWidth);
 const itemMargin = (viewportWidth - wp(90)) / 4;
 
-function Item({ data, isEdit, selected, onClickItem }: IProps) {
+function Item({ data, book_image, isEdit, selected, onClickItem }: IProps) {
 
     const [errorLoad, setErrorLoad] = useState<boolean>(false);
 
     const onError = () => {
-        console.log("aaa");
         setErrorLoad(true);
     };
 
@@ -40,7 +40,7 @@ function Item({ data, isEdit, selected, onClickItem }: IProps) {
         <Touchable style={styles.item} onPress={onPress}>
             <Image
                 defaultSource={SandGlass}
-                source={errorLoad ? ErrorImage : { uri: data.image }}
+                source={errorLoad ? ErrorImage : { uri: book_image }}
                 onError={onError}
                 style={styles.image}
                 resizeMode={"stretch"}
@@ -63,8 +63,8 @@ function Item({ data, isEdit, selected, onClickItem }: IProps) {
             </>
             }
             <View style={styles.titleView}>
-                <Text style={styles.title} numberOfLines={1}>{`第${data.chapter_num}话`}</Text>
-                <Text style={styles.category} numberOfLines={1}>{`${data.size}页`}</Text>
+                <Text>{`第${data.chapter_num}话`}</Text>
+                <Text style={styles.category} numberOfLines={1}>{`(${data.episode_total}页)`}</Text>
             </View>
         </Touchable>
     );
@@ -80,7 +80,9 @@ const styles = StyleSheet.create({
     titleView: {
         width: itemWidth,
         height: 35,
-        marginTop: 5
+        marginTop: 5,
+        flexDirection: "row",
+        justifyContent: "center"
     },
     image: {
         width: itemWidth,
@@ -115,9 +117,6 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         borderWidth: 1,
         borderColor: Color.white
-    },
-    title: {
-        textAlign: "center"
     },
     category: {
         fontSize: 14,

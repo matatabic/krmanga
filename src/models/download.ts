@@ -1,16 +1,11 @@
-import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
+import { Model, Effect } from "dva-core-ts";
 import { Reducer } from "redux";
-import DownloadServices from "@/services/download";
-import { _downloadFile, _fileEx, _mkdir, _readDir } from "@/utils/RNFSUtils";
-import EpisodeServices from "@/services/episode";
-import storage, { storageLoad } from "@/config/storage";
-import RNFS from "react-native-fs";
+import { _downBookImage, _downEpisodeImage, _fileEx, _mkdir } from "@/utils/RNFSUtils";
+import DownloadServices  from "@/services/download";
 import { RootState } from "@/models/index";
 import Toast from "react-native-root-toast";
-import { getFileType } from "@/utils/index";
+import realm, {  IChapter as Ic, saveData } from "@/config/realm";
 
-
-const ExternalDirectoryPath = RNFS.DocumentDirectoryPath;
 
 export interface IChapter {
     id: number;
@@ -38,7 +33,6 @@ interface DownloadModel extends Model {
         fetchChapterList: Effect;
         downTask: Effect;
     };
-    subscriptions: SubscriptionsMapObject;
 }
 
 
@@ -72,15 +66,22 @@ const downloadModel: DownloadModel = {
                 }
             });
 
-            const cacheList = yield call(storageLoad, { key: "cacheList" });
 
-            const { data } = yield call(DownloadServices.getList, {
+            const { data } = yield call(DownloadServices.getChapterList, {
                 book_id: payload.book_id
             });
 
-            if (cacheList[`book-${payload.book_id}`]) {
+
+            const cacheList = realm.objects<Ic>("Chapter").filtered(`book_id=${payload.book_id} AND cache=1`);
+
+            let cache: number[] = [];
+            cacheList.forEach(item => {
+                cache.push(item.chapter_num);
+            });
+
+            if (cache.length > 0) {
                 for (let i = 0; i < data.list.length; i++) {
-                    if (cacheList[`book-${payload.book_id}`].indexOf(data.list[i].chapter_num) > -1) {
+                    if (cache.indexOf(data.list[i].chapter_num) > -1) {
                         data.list[i].disabled = true;
                     }
                 }
@@ -127,9 +128,15 @@ const downloadModel: DownloadModel = {
                 }
             });
 
-            if (action.changeVal) {
-                action.changeVal();
+            if (action.changeDownload) {
+                action.changeDownload();
             }
+
+            yield _fileEx(`bookCover`).then(res => {
+                if (!res) {
+                    _mkdir("bookCover");
+                }
+            });
 
             yield _fileEx(`book-${book_id}`).then(res => {
                 if (!res) {
@@ -138,109 +145,29 @@ const downloadModel: DownloadModel = {
             });
 
             for (let i = 0; i < downloadList.length; i++) {
-
-                const bookName = `book-${book_id}`;
-                const chapter = `chapter-${downloadList[i]}`;
-
-                let cacheList = yield call(storageLoad, { key: "cacheList" });
-                let bookCache = yield call(storageLoad, { key: "bookCache" });
-                let book = {};
-
-                const { data } = yield call(EpisodeServices.getList, {
-                    book_id: payload.book_id,
-                    chapter_num: downloadList[i],
-                    mark: 0
-                });
-
                 yield _fileEx(`book-${book_id}/${downloadList[i]}`).then(res => {
                     if (!res) {
                         _mkdir(`book-${book_id}/${downloadList[i]}`);
                     }
                 });
-
-                for (let n = 0; n < data.list.length; n++) {
-                    const type = getFileType(data.list[n].image);
-                    const path = `book-${book_id}/${downloadList[i]}/${n + 1}.${type}`;
-                    yield _fileEx(path).then(is_file => {
-                        if (!is_file) {
-                            //下载book图片
-                            _downloadFile(encodeURI(data.list[n].image), path).then(res => {
-                                if (res.statusCode == 200) {
-                                    _readDir(`book-${book_id}/${downloadList[i]}`).then(res => {
-                                        if (res.length == data.list.length) {
-                                            list[list.length - downloadList[i]].disabled = true;
-                                            list[list.length - downloadList[i]].downloading = false;
-                                            if (action.callBack) {
-                                                action.callBack([...list]);
-                                            }
-                                            if (cacheList[bookName]) {
-                                                book = {
-                                                    [bookName]: Array.from(new Set([...cacheList[bookName], downloadList[i]]))
-                                                };
-                                            } else {
-                                                book = {
-                                                    [bookName]: [downloadList[i]]
-                                                };
-                                            }
-                                            Object.assign(cacheList, book);
-                                            storage.save({
-                                                key: "cacheList",
-                                                data: cacheList
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            _readDir(`book-${book_id}/${downloadList[i]}`).then(res => {
-                                if (res.length == data.list.length) {
-                                    list[list.length - downloadList[i]].disabled = true;
-                                    if (action.callBack) {
-                                        action.callBack([...list]);
-                                    }
-                                    if (cacheList[bookName]) {
-                                        book = {
-                                            [bookName]: Array.from(new Set([...cacheList[bookName], downloadList[i]]))
-                                        };
-                                    } else {
-                                        book = {
-                                            [bookName]: [downloadList[i]]
-                                        };
-                                    }
-                                    Object.assign(cacheList, book);
-                                    storage.save({
-                                        key: "cacheList",
-                                        data: cacheList
-                                    });
-                                }
-                            });
-                        }
-                    });
-                    data.list[n].image = `file://${ExternalDirectoryPath}/${path}`;
-                }
-                if (bookCache[bookName] === undefined) {
-                    bookCache[bookName] = {};
-                }
-
-                //储存已下载的book数据
-                Object.assign(bookCache[bookName], {
-                    [chapter]: data
-                });
-                storage.save({
-                    key: "bookCache",
-                    data: bookCache
-                });
             }
-        }
-    },
-    subscriptions: {
-        asyncStorage() {
-            storage.sync.cacheList = async () => {
-                return {};
-            };
-            storage.sync.bookCache = async () => {
-                return {};
-            };
+
+            const { data } = yield call(DownloadServices.getList, {
+                book_id: payload.book_id,
+                chapter_num: downloadList
+            });
+
+            saveData("Book", data.book);
+            _downBookImage(data.book, data.book.image);
+
+            for (let chapter of data.chapter) {
+                saveData("Chapter", { ...chapter, book_id });
+            }
+
+            for (let episode of data.episode) {
+                saveData("Episode", { ...episode, book_id });
+                _downEpisodeImage(episode, book_id, list, action.callBack);
+            }
         }
     }
 };

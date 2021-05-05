@@ -64,14 +64,11 @@ function TopBar({
                     activeTintColor={activeTintColor}
                     style={styles.tabBar}
                 />
-                {
-                    isLogin &&
-                    <Touchable
-                      style={styles.editBtn}
-                      onPress={onPress}>
-                      <Text style={styles.text}>{isEdit ? "取消" : "编辑"}</Text>
-                    </Touchable>
-                }
+                <Touchable
+                    style={styles.editBtn}
+                    onPress={onPress}>
+                    <Text style={styles.text}>{isEdit ? "取消" : "编辑"}</Text>
+                </Touchable>
             </View>
             {!isLogin && <LoginPending />}
         </View>

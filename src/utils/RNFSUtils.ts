@@ -6,7 +6,8 @@
  *
  */
 import RNFS from "react-native-fs";
-
+import { getFileType } from "@/utils/index";
+import realm, { IBook, IChapter, IEpisode, saveData } from "@/config/realm";
 
 
 /** @namespace RNFS.ExternalDirectoryPath */
@@ -46,10 +47,10 @@ export const _downloadFile = (formUrl: string, targetName: string, callback?: ()
         progressDivider: 5,
         begin: (res) => {
             // console.log("begin", res)
-            return res
+            // return res;
         },
         progress: (res) => {
-            // console.log("progress", res)
+            // console.log("progress", res);
         }
     })
         .promise.then(res => res)
@@ -172,4 +173,52 @@ export function _mkdir(targetName: string) {
         .then(res => {
             return res;
         });
+}
+
+export function _downBookImage(data: IBook, image: string) {
+    const type = getFileType(image);
+    const imgPath = `bookCover/book${data.id}/cover.${type}`;
+    _fileEx(imgPath).then((is_file) => {
+        if (!is_file) {
+            _downloadFile(encodeURI(image), imgPath).then(res => {
+                if (res.statusCode == 200) {
+                    saveData("Book", { ...data, image: `file://${ExternalDirectoryPath}/${imgPath}` });
+                }
+            });
+        }
+    });
+}
+
+export function _downEpisodeImage(data: IEpisode, book_id: number, dataList: any, callBack?: (p: any[]) => void) {
+    const type = getFileType(data.image);
+    const path = `book-${book_id}/${data.chapter_num}`;
+    const imgPath = `${path}/${data.number}.${type}`;
+
+    _fileEx(imgPath).then((is_file) => {
+        if (!is_file) {
+            _downloadFile(encodeURI(data.image), imgPath).then(res => {
+                if (res.statusCode == 200) {
+                    saveData("Episode", { ...data, image: `file://${ExternalDirectoryPath}/${imgPath}` });
+                    _readDir(path).then(res => {
+                        if (res.length == data.episode_total) {
+                            const chapter = realm.objectForPrimaryKey<IChapter>("Chapter", data.chapter_id);
+                            saveData("Chapter", {
+                                id: chapter?.id,
+                                title: chapter?.title,
+                                book_id: chapter?.book_id,
+                                cache: 1,
+                                episode_total: chapter?.episode_total,
+                                chapter_num: chapter?.chapter_num
+                            });
+                            dataList[dataList.length - data.chapter_num].disabled = true;
+                            dataList[dataList.length - data.chapter_num].downloading = false;
+                            if (callBack) {
+                                callBack([...dataList]);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
 }

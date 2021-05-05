@@ -1,9 +1,9 @@
-import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
+import { Model, Effect } from "dva-core-ts";
 import { Reducer } from "redux";
 import { _readDir, _deleteFile } from "@/utils/RNFSUtils";
-import storage, { storageLoad } from "@/config/storage";
 import { RootState } from "@/models/index";
 import ShelfServices from "@/services/shelf";
+import realm, { IBook } from "@/config/realm";
 
 
 export interface IDownList {
@@ -45,7 +45,6 @@ interface DownloadManageModel extends Model {
         fetchDownloadList: Effect;
         delBookCache: Effect;
     };
-    subscriptions: SubscriptionsMapObject;
 }
 
 
@@ -102,10 +101,12 @@ const downloadManageModel: DownloadManageModel = {
                 }
             });
 
-            let cache = [];
-            let cacheList = yield call(storageLoad, { key: "cacheList" });
+            let cache: number[] = [];
+            let bookList = realm.objects<IBook>("Book");
 
-            if (Object.keys(cacheList).length === 0) {
+            bookList.forEach(item => cache.push(item.id));
+
+            if (cache.length === 0) {
                 yield put({
                     type: "setState",
                     payload: {
@@ -114,10 +115,6 @@ const downloadManageModel: DownloadManageModel = {
                     }
                 });
                 return false;
-            }
-
-            for (let key in cacheList) {
-                cache.push(key.slice(5));
             }
 
             const { data } = yield call(ShelfServices.getDownload, {
@@ -153,7 +150,7 @@ const downloadManageModel: DownloadManageModel = {
                 action.callback();
             }
         },
-        *delBookCache(action, { call, put, select }) {
+        *delBookCache(action, { _, put, select }) {
             const { payload, type } = action;
             const { ids } = payload;
             const namespace = type.split("/")[0];
@@ -162,13 +159,13 @@ const downloadManageModel: DownloadManageModel = {
                 (state: RootState) => state[namespace]
             );
 
-            let cacheList = yield call(storageLoad, { key: "cacheList" });
-            let bookCache = yield call(storageLoad, { key: "bookCache" });
-
             for (let book_id of ids) {
-                _deleteFile(`book-${book_id}`);
-                delete cacheList[`book-${book_id}`];
-                delete bookCache[`book-${book_id}`];
+                realm.write(() => {
+                    realm.delete(realm.objects("Book").filtered(`id=${book_id}`));
+                    realm.delete(realm.objects("Chapter").filtered(`book_id=${book_id}`));
+                    realm.delete(realm.objects("Episode").filtered(`book_id=${book_id}`));
+                });
+                yield _deleteFile(`book-${book_id}`);
             }
 
             const newList = list.filter((item: IDownList) => {
@@ -182,25 +179,6 @@ const downloadManageModel: DownloadManageModel = {
                     isEdit: false
                 }
             });
-
-            storage.save({
-                key: "cacheList",
-                data: cacheList
-            });
-            storage.save({
-                key: "bookCache",
-                data: bookCache
-            });
-        }
-    },
-    subscriptions: {
-        asyncStorage() {
-            storage.sync.cacheList = async () => {
-                return {};
-            };
-            storage.sync.bookCache = async () => {
-                return {};
-            };
         }
     }
 };

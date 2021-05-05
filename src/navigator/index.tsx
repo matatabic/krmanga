@@ -50,6 +50,7 @@ export type RootStackParamList = {
     DownloadManage: undefined;
     ChapterManage: {
         book_id: number;
+        book_image: string;
         headerTitle: string;
     };
 }

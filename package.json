@@ -50,6 +50,7 @@
     "react-native-tab-view-viewpager-adapter": "^1.1.0",
     "react-navigation-header-buttons": "^6.2.1",
     "react-redux": "^7.2.2",
+    "realm": "^10.4.0",
     "rn-placeholder": "^3.0.3",
     "yup": "^0.32.9"
   },

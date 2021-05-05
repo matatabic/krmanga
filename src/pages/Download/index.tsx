@@ -31,6 +31,8 @@ interface IProps extends ModelState {
     navigation: RootStackNavigation;
 }
 
+let tempTimeout: NodeJS.Timeout | null = null;
+
 function Download({ dispatch, book_id, chapterList, loading, refreshing }: IProps) {
 
     const [downloadList, setDownloadList] = useState<number[]>([]);
@@ -99,6 +101,17 @@ function Download({ dispatch, book_id, chapterList, loading, refreshing }: IProp
         }
     }, [downloadList]);
 
+    const debounce = (cb: any, wait: number) => {
+        let timeout = tempTimeout;
+        if (timeout !== null) {
+            clearTimeout(timeout);
+        }
+        tempTimeout = setTimeout(() => {
+            tempTimeout = null;
+            cb && cb();
+        }, wait);
+    };
+
     const downTask = () => {
         dispatch({
             type: "download/downTask",
@@ -106,16 +119,18 @@ function Download({ dispatch, book_id, chapterList, loading, refreshing }: IProp
                 book_id,
                 downloadList
             },
-            changeVal: () => {
+            changeDownload: () => {
                 setDownloadList([]);
             },
             callBack: (data: IChapter[]) => {
-                dispatch({
-                    type: "download/setState",
-                    payload: {
-                        chapterList: data
-                    }
-                });
+                debounce(() => {
+                    dispatch({
+                        type: "download/setState",
+                        payload: {
+                            chapterList: data
+                        }
+                    });
+                }, 750);
             }
         });
         dispatch({

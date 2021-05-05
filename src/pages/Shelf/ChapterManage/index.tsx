@@ -6,15 +6,16 @@ import { RootStackNavigation, RootStackParamList } from "@/navigator/index";
 import { RouteProp } from "@react-navigation/native";
 import More from "@/components/More";
 import End from "@/components/End";
-import { IChapter } from "@/models/ChapterManage";
 import Item from "@/pages/Shelf/ChapterManage/Item";
 import HeaderRightBtn from "@/pages/Shelf/ChapterManage/HeaderRightBtn";
 import EditView from "@/pages/Shelf/ChapterManage/EditView";
+import { IChapter } from "@/config/realm";
 
 
 const mapStateToProps = ({ user, chapterManage, loading }: RootState, { route }: { route: RouteProp<RootStackParamList, "ChapterManage"> }) => {
     return {
         book_id: route.params.book_id,
+        book_image: route.params.book_image,
         headerTitle: route.params.headerTitle,
         chapterList: chapterManage.chapterList,
         ids: chapterManage.ids,
@@ -35,7 +36,7 @@ interface IProps extends ModelState {
 }
 
 function ChapterManage({
-                           navigation, dispatch, book_id, headerTitle, hasMore, loading,
+                           navigation, dispatch, book_id, book_image, headerTitle, hasMore, loading,
                            ids, isEdit, refreshing, chapterList
                        }: IProps) {
 
@@ -84,6 +85,7 @@ function ChapterManage({
         return (
             <Item
                 data={item}
+                book_image={book_image}
                 isEdit={isEdit}
                 selected={selected}
                 onClickItem={onClickItem}

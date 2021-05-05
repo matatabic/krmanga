@@ -1,16 +1,9 @@
-import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
+import { Model, Effect } from "dva-core-ts";
 import { Reducer } from "redux";
-import { _deleteFile, _fileEx } from "@/utils/RNFSUtils";
-import storage, { storageLoad } from "@/config/storage";
+import { _deleteFile } from "@/utils/RNFSUtils";
 import { RootState } from "@/models/index";
-import _ from "lodash";
+import realm, { IChapter } from "@/config/realm";
 
-
-export interface IChapter {
-    chapter_num: number;
-    image: string;
-    size: number;
-}
 
 interface IPagination {
     current_page: number;
@@ -37,7 +30,6 @@ interface ChapterManageModel extends Model {
         fetchChapterList: Effect;
         delChapter: Effect;
     };
-    subscriptions: SubscriptionsMapObject;
 }
 
 
@@ -66,7 +58,7 @@ const chapterManageModel: ChapterManageModel = {
         }
     },
     effects: {
-        *fetchChapterList(action, { call, put }) {
+        *fetchChapterList(action, { _, put }) {
             const { payload } = action;
             const { book_id, refreshing } = payload;
 
@@ -77,31 +69,18 @@ const chapterManageModel: ChapterManageModel = {
                 }
             });
 
-            let data: any[] = [];
-            let i = 0;
-
-            let bookCache = yield call(storageLoad, { key: "bookCache" });
-
-            for (let chapter in bookCache[`book-${book_id}`]) {
-                _fileEx(bookCache[`book-${book_id}`][chapter].list[0].image);
-                data[i] = [];
-                data[i]["size"] = bookCache[`book-${book_id}`][chapter].list.length;
-                data[i]["image"] = bookCache[`book-${book_id}`][chapter].list[0].image;
-                data[i]["chapter_num"] = parseInt(chapter.slice(8));
-                i++;
-            }
-
-            data = _.sortBy(data, ["chapter_num"]);
+            const chapterList = realm.objects<IChapter>("Chapter").filtered(`book_id=${book_id}`)
+                .sorted("chapter_num", true);
 
             yield put({
                 type: "setState",
                 payload: {
-                    chapterList: data,
+                    chapterList: chapterList,
                     refreshing: false
                 }
             });
         },
-        *delChapter(action, { call, put, select }) {
+        *delChapter(action, { _, put, select }) {
             const { payload, type } = action;
             const { ids, book_id } = payload;
             const namespace = type.split("/")[0];
@@ -109,18 +88,15 @@ const chapterManageModel: ChapterManageModel = {
                 (state: RootState) => state[namespace]
             );
 
-            const bookName = `book-${book_id}`;
-
-            let cacheList = yield call(storageLoad, { key: "cacheList" });
-            let bookCache = yield call(storageLoad, { key: "bookCache" });
-            const data = cacheList[bookName].filter((item: number) => ids.indexOf(item) == -1);
-            cacheList[bookName] = data;
-            const newData = list.filter((item: IChapter) => ids.indexOf(item.chapter_num) == -1);
-
             for (let chapter_num of ids) {
-                yield delete bookCache[bookName][`chapter-${chapter_num}`];
-                yield _deleteFile(`${bookName}/${chapter_num}`);
+                realm.write(() => {
+                    realm.delete(realm.objects("Chapter").filtered(`book_id=${book_id} AND chapter_num=${chapter_num}`));
+                    realm.delete(realm.objects("Episode").filtered(`book_id=${book_id} AND chapter_num=${chapter_num}`));
+                });
+                yield _deleteFile(`book-${book_id}/${chapter_num}`);
             }
+
+            const newData = list.filter((item: IChapter) => ids.indexOf(item.chapter_num) == -1);
 
             yield put({
                 type: "setState",
@@ -131,25 +107,6 @@ const chapterManageModel: ChapterManageModel = {
                 }
             });
 
-            storage.save({
-                key: "cacheList",
-                data: cacheList
-            });
-
-            storage.save({
-                key: "bookCache",
-                data: bookCache
-            });
-        }
-    },
-    subscriptions: {
-        asyncStorage() {
-            storage.sync.cacheList = async () => {
-                return {};
-            };
-            storage.sync.bookCache = async () => {
-                return {};
-            };
         }
     }
 };

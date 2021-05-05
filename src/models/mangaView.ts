@@ -1,9 +1,9 @@
-import { Model, Effect, SubscriptionsMapObject } from "dva-core-ts";
+import { Model, Effect } from "dva-core-ts";
 import { Reducer } from "redux";
 import EpisodeServices from "@/services/episode";
 import { RootState } from "@/models/index";
-import storage, { storageLoad } from "@/config/storage";
-import _ from "lodash";
+import realm, { IEpisode as Ie } from "@/config/realm";
+
 
 export interface IEpisode {
     id: number;
@@ -13,6 +13,7 @@ export interface IEpisode {
     chapter_id: number;
     chapter_num: number;
     episode_total: number;
+    chapter_total: number;
     multiple: number;
     title: string;
 }
@@ -53,7 +54,6 @@ interface MangaViewModel extends Model {
         addHistory: Effect;
         changeCurrentNumber: Effect;
     };
-    subscriptions: SubscriptionsMapObject;
 }
 
 export const initialState = {
@@ -96,40 +96,44 @@ const mangaViewModel: MangaViewModel = {
             const { book_id, chapter_num, roast } = payload;
             const { refreshing } = payload;
 
-            let data: any = {};
+            let data: any = {
+                list: [],
+                pages: {}
+            };
 
             let { episodeList: list } = yield select(
                 (state: RootState) => state["mangaView"]
             );
 
-            let cacheList = yield call(storageLoad, { key: "cacheList" });
+            const episodeList = realm.objects<Ie>("Episode").filtered(`book_id=${book_id} AND chapter_num=${chapter_num}`)
+                .sorted("chapter_num");
 
-            if (cacheList[`book-${book_id}`]) {
-                let bookCache = yield call(storageLoad, { key: "bookCache" });
-                if (bookCache[`book-${book_id}`][`chapter-${chapter_num}`]) {
-                    data = bookCache[`book-${book_id}`][`chapter-${chapter_num}`];
-                    if (roast) {
-                        const record = _.find(data.list, ["roast", roast]);
-                        data.pages.current_chapter_id = record.chapter_id;
-                        data.pages.episode_offset = record.number;
-                    }
+            if (episodeList.length > 0) {
+                data.list = episodeList;
+                if (roast) {
+                    const record = episodeList.filter((item: Ie) => item.roast === roast);
+                    data.pages.current_title = record[0].title;
+                    data.pages.current_chapter_id = record[0].chapter_id;
+                    data.pages.current_chapter = record[0].chapter_num;
+                    data.pages.episode_offset = record[0].number;
+                    data.pages.episode_total = record[0].episode_total;
+                    data.pages.chapter_total = record[0].chapter_total;
                 } else {
-                    const restData = yield call(EpisodeServices.getList, {
-                        book_id,
-                        chapter_num,
-                        roast
-                    });
-                    data = restData.data;
+                    data.pages.current_title = episodeList[0].title;
+                    data.pages.current_chapter_id = episodeList[0].chapter_id;
+                    data.pages.current_chapter = episodeList[0].chapter_num;
+                    data.pages.episode_offset = episodeList[0].number;
+                    data.pages.episode_total = episodeList[0].episode_total;
+                    data.pages.chapter_total = episodeList[0].chapter_total;
                 }
             } else {
-                const restData = yield call(EpisodeServices.getList, {
+                const retData = yield call(EpisodeServices.getList, {
                     book_id,
                     chapter_num,
                     roast
                 });
-                data = restData.data;
+                data = retData.data;
             }
-
             const newList = refreshing ? data.list : [...list, ...data.list];
 
             if (refreshing) {
@@ -198,16 +202,6 @@ const mangaViewModel: MangaViewModel = {
             if (action.callback) {
                 action.callback(index);
             }
-        }
-    },
-    subscriptions: {
-        asyncStorage() {
-            storage.sync.cacheList = async () => {
-                return {};
-            };
-            storage.sync.bookCache = async () => {
-                return {};
-            };
         }
     }
 };
