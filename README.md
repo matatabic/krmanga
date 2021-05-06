@@ -1,6 +1,6 @@
 # krmanga
 
-安装教程
+文档
 https://reactnative.cn/docs/0.63/environment-setup
 
 
