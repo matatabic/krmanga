@@ -4,6 +4,8 @@
 https://reactnative.cn/docs/0.63/environment-setup
 
 
-android:http://www.267168.xyz/manga.apk
+android:
+https://wwr.lanzous.com/icUMOouw38h
+密码:f5u7
 
 ios:需要xcode安装
