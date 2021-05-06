@@ -8,4 +8,4 @@ android:
 https://wwr.lanzous.com/icUMOouw38h
 密码:f5u7
 
-ios:需要xcode安装
+ios:xcode安装
