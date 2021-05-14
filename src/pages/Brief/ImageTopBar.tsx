@@ -37,7 +37,7 @@ function ImageTopBar({ compHeight, bookInfo, opacity }: IProps) {
             }]}>
                 <Image
                     source={errorLoad ? ErrorImage : { uri: bookInfo.image }}
-                    blurRadius={5}
+                    blurRadius={10}
                     onError={onError}
                     style={[styles.image, {
                         top: compHeight

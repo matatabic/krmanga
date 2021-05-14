@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     cell: {
         width: 6,
         height: 15,
-        backgroundColor: Color.yellow_title
+        backgroundColor: Color.theme_title
     },
     classifyName: {
         marginLeft: 15,

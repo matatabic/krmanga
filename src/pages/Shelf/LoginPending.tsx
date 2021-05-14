@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         height: 70,
         paddingVertical: 8,
         paddingHorizontal: 10,
-        backgroundColor: Color.yellow
+        backgroundColor: Color.theme_btn
     },
     content: {
         flex: 1,

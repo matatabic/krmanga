@@ -19,7 +19,7 @@ function AppUpdate({ navigation }: IProps) {
 
     const onPress = () => {
         if (Platform.OS === "ios") {
-            Toast.show("ios没添加版本更新", {
+            Toast.show("ios没添加codepush热更新", {
                 duration: Toast.durations.LONG,
                 position: Toast.positions.CENTER,
                 shadow: true,

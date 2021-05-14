@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Animated, StyleSheet, View, Text } from "react-native";
-import FastImage from "react-native-fast-image";
+import { Animated, StyleSheet, View, Text, Image } from "react-native";
 import { Color } from "@/utils/const";
 import { ip, wp } from "@/utils/index";
 import ErrorImage from "@/assets/image/error.png";
@@ -41,11 +40,10 @@ function Information({ headerHeight, bookInfo, opacity }: IProps) {
                 opacity: opacity
             }]}>
                 <View style={styles.leftView}>
-                    <FastImage
-                        source={errorLoad ? ErrorImage : { uri: bookInfo.image, cache: FastImage.cacheControl.immutable }}
+                    <Image
+                        source={errorLoad ? ErrorImage : { uri: bookInfo.image }}
                         onError={showError}
                         style={styles.image}
-                        resizeMode={FastImage.resizeMode.stretch}
                     />
                 </View>
                 <View style={styles.rightView}>
