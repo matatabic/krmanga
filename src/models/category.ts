@@ -100,6 +100,10 @@ const categoryModel: CategoryModel = {
                 (state: RootState) => state[namespace]
             );
 
+            const { harmony } = yield select(
+                (state: RootState) => state["mine"]
+            );
+
             yield put({
                 type: "setState",
                 payload: {
@@ -111,7 +115,8 @@ const categoryModel: CategoryModel = {
                 page_size: 9,
                 current_page: refreshing ? 1 : pagination.current_page + 1,
                 "category_ids[]": activeCategory,
-                status_id: activeStatus
+                status_id: activeStatus,
+                is_show: harmony ? 0 : 1
             });
 
             const newList = refreshing ? data.list : [...list, ...data.list];

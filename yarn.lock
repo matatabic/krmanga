@@ -6688,6 +6688,11 @@ react-native-fast-image@^8.3.4:
   resolved "https://registry.npm.taobao.org/react-native-fast-image/download/react-native-fast-image-8.3.4.tgz#79edca177e30311b19d59ff335625bcbe22650d7"
   integrity sha1-ee3KF34wMRsZ1Z/zNWJby+ImUNc=
 
+react-native-fingerprint-scanner@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.nlark.com/react-native-fingerprint-scanner/download/react-native-fingerprint-scanner-6.0.0.tgz#ecb47ad0682d2a66a5e126d2b9e4d95e73c8dbf2"
+  integrity sha1-7LR60GgtKmal4SbSueTZXnPI2/I=
+
 react-native-fs@^2.17.0:
   version "2.17.0"
   resolved "https://registry.npm.taobao.org/react-native-fs/download/react-native-fs-2.17.0.tgz?cache=0&sync_timestamp=1617705160259&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-native-fs%2Fdownload%2Freact-native-fs-2.17.0.tgz#8bd7d57d5f3325ae2f511e3fb2391ca5802d7a88"

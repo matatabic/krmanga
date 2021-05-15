@@ -11,10 +11,12 @@ import user from "./user";
 import download from "./download";
 import downloadManage from "./downloadManage";
 import chapterManage from "./ChapterManage";
+import mine from "./mine";
 import { DvaLoadingState } from "dva-loading-ts";
 
 
-const models = [home, guess, category, categorySetting, brief, mangaView, search, collection, history, user, download, downloadManage, chapterManage];
+const models = [home, guess, category, categorySetting, brief, mangaView, search,
+    collection, history, user, download, downloadManage, chapterManage, mine];
 
 export type RootState = {
     home: typeof home.state;
@@ -29,6 +31,7 @@ export type RootState = {
     download: typeof download.state;
     downloadManage: typeof downloadManage.state;
     chapterManage: typeof chapterManage.state;
+    mine: typeof mine.state;
     user: typeof user.state;
     loading: DvaLoadingState;
 } & {

@@ -65,8 +65,13 @@ const GuessModel: GuessModel = {
                 }
             });
 
+            const { harmony } = yield select(
+                (state: RootState) => state["mine"]
+            );
 
-            const { data } = yield call(BookServices.getGuess);
+            const { data } = yield call(BookServices.getGuess, {
+                is_show: harmony ? 0 : 1
+            });
 
             const newList = refreshing ? data.list : [...list, ...data.list];
 

@@ -95,8 +95,7 @@ const mangaViewModel: MangaViewModel = {
             const { payload } = action;
             const { book_id, chapter_num, markRoast } = payload;
             const { refreshing } = payload;
-            console.log(payload);
-            // return false;
+
             let data: any = {
                 list: [],
                 pages: {}

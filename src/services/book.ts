@@ -22,8 +22,10 @@ async function getIntro() {
     return axios.get(INTRO_URL);
 }
 
-async function getGuess() {
-    return axios.get(RANDOM_URL);
+async function getGuess(params: any) {
+    return axios.get(RANDOM_URL,{
+        params
+    });
 }
 
 export default {

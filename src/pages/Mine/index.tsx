@@ -9,6 +9,7 @@ import { ModalStackNavigation } from "@/navigator/index";
 import { viewportHeight } from "@/utils/index";
 import Version from "@/pages/Mine/Version";
 import CheckUpdate from "@/pages/Mine/CheckUpdate";
+import Harmony from "@/pages/Mine/Harmony";
 
 
 interface IProps {
@@ -50,6 +51,7 @@ function Mine({ navigation }: IProps) {
                         <BuyList />
                         <Balance />
                         <CheckUpdate navigation={navigation} />
+                        <Harmony />
                         <Version />
                     </View>
                 </View>
