@@ -27,7 +27,7 @@ const App = () => {
 
 const MyApp = codePush({
     updateDialog: false,
-    checkFrequency:codePush.CheckFrequency.MANUAL,
+    checkFrequency: codePush.CheckFrequency.MANUAL,
     installMode: codePush.InstallMode.ON_NEXT_RESTART
 })(App);
 

@@ -1,19 +1,21 @@
 import React, { useRef } from "react";
-import { StyleSheet, View, Animated } from "react-native";
+import { StyleSheet, View, Animated, Platform } from "react-native";
 import ImageBackground from "./ImageBackground";
 import { Color } from "@/utils/const";
 import Information from "./Information";
 import BuyList from "./BuyList";
 import Balance from "./Balance";
-import { ModalStackNavigation } from "@/navigator/index";
+import { ModalStackNavigation, RootStackNavigation } from "@/navigator/index";
 import { viewportHeight } from "@/utils/index";
 import Version from "@/pages/Mine/Version";
 import CheckUpdate from "@/pages/Mine/CheckUpdate";
 import Harmony from "@/pages/Mine/Harmony";
+import Location from "@/pages/Mine/Location";
+import Native from "@/pages/Mine/Native";
 
 
 interface IProps {
-    navigation: ModalStackNavigation;
+    navigation: RootStackNavigation & ModalStackNavigation;
 }
 
 function Mine({ navigation }: IProps) {
@@ -53,7 +55,10 @@ function Mine({ navigation }: IProps) {
                         <CheckUpdate navigation={navigation} />
                         <Harmony />
                         <Version />
+                        <Location />
+                        {Platform.OS === "android" && <Native />}
                     </View>
+
                 </View>
             </Animated.ScrollView>
         </View>
@@ -70,7 +75,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         marginBottom: 25
     }
-
 });
 
 export default Mine;

@@ -6,6 +6,7 @@ import {AppRegistry} from 'react-native';
 import 'react-native-gesture-handler';
 import App from './src';
 import {name as appName} from './app.json';
+import Test from "@/pages/test";
 
 // console.disableYellowBox = true;
 if (!__DEV__) {
@@ -17,3 +18,4 @@ if (!__DEV__) {
 }
 
 AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent('test', () => Test);

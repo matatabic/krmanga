@@ -23,6 +23,7 @@ import DownloadManage from "@/pages/Shelf/Download";
 import Download from "@/pages/Download";
 import ChapterManage from "@/pages/Shelf/ChapterManage";
 import AppUpdate from "@/pages/AppUpdate";
+import AMap from "@/pages/AMap";
 
 
 export type RootStackParamList = {
@@ -53,6 +54,10 @@ export type RootStackParamList = {
         book_image: string;
         headerTitle: string;
     };
+    AMap: {
+        latitude: number;
+        longitude: number;
+    }
 }
 
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
@@ -221,6 +226,13 @@ function RootStackScreen() {
             <RootStack.Screen
                 name={"ChapterManage"}
                 component={ChapterManage}
+            />
+            <RootStack.Screen
+                name={"AMap"}
+                component={AMap}
+                options={{
+                    headerTitle: "定位地图"
+                }}
             />
         </RootStack.Navigator>
     );

@@ -1,12 +1,15 @@
 import React, { memo, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Touchable from "@/components/Touchable";
 import { ip, viewportWidth, wp } from "@/utils/index";
 import { IBook } from "@/models/home";
 import { Color } from "@/utils/const";
 import SandGlass from "@/assets/image/sandglass.png";
 import ErrorImage from "@/assets/image/error.png";
-
+import { State } from "react-native-gesture-handler";
+import Animated, { Value } from "react-native-reanimated";
+import { vec } from "react-native-redash";
+import { onGestureEvent } from "react-native-redash/lib/module/v1";
 
 interface IProps {
     data: IBook;
@@ -34,7 +37,7 @@ function BookCover({ data, goBrief }: IProps) {
 
     return (
         <Touchable style={styles.container} onPress={onPress}>
-            <Image
+            <Animated.Image
                 defaultSource={SandGlass}
                 source={errorLoad ? ErrorImage : { uri: data.image }}
                 onError={onError}

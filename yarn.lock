@@ -1407,6 +1407,11 @@ abort-controller@^3.0.0:
   dependencies:
     event-target-shim "^5.0.0"
 
+abs-svg-path@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.nlark.com/abs-svg-path/download/abs-svg-path-0.1.1.tgz#df601c8e8d2ba10d4a76d625e236a9a39c2723bf"
+  integrity sha1-32Acjo0roQ1KdtYl4japo5wnI78=
+
 absolute-path@^0.0.0:
   version "0.0.0"
   resolved "https://registry.npm.taobao.org/absolute-path/download/absolute-path-0.0.0.tgz#a78762fbdadfb5297be99b15d35a785b2f095bf7"
@@ -5944,6 +5949,13 @@ normalize-path@^3.0.0:
   resolved "https://registry.npm.taobao.org/normalize-path/download/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha1-Dc1p/yOhybEf0JeDFmRKA4ghamU=
 
+normalize-svg-path@^1.0.1:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/normalize-svg-path/download/normalize-svg-path-1.1.0.tgz#0e614eca23c39f0cffe821d6be6cd17e569a766c"
+  integrity sha1-DmFOyiPDnwz/6CHWvmzRflaadmw=
+  dependencies:
+    svg-arc-to-cubic-bezier "^3.0.0"
+
 npm-run-path@^2.0.0:
   version "2.0.2"
   resolved "https://registry.npm.taobao.org/npm-run-path/download/npm-run-path-2.0.2.tgz#35a9232dfa35d7067b4cb2ddf2357b1871536c5f"
@@ -6271,6 +6283,11 @@ parse-node-version@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/parse-node-version/download/parse-node-version-1.0.1.tgz#e2b5dbede00e7fa9bc363607f53327e8b073189b"
   integrity sha1-4rXb7eAOf6m8NjYH9TMn6LBzGJs=
+
+parse-svg-path@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.npm.taobao.org/parse-svg-path/download/parse-svg-path-0.1.2.tgz#7a7ec0d1eb06fa5325c7d3e009b859a09b5d49eb"
+  integrity sha1-en7A0esG+lMlx9PgCbhZoJtdSes=
 
 parse5@5.1.0:
   version "5.1.0"
@@ -6648,6 +6665,16 @@ react-is@^16.12.0, react-is@^16.13.0, react-is@^16.13.1, react-is@^16.7.0, react
   resolved "https://registry.npm.taobao.org/react-is/download/react-is-16.13.1.tgz?cache=0&sync_timestamp=1612541661140&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-is%2Fdownload%2Freact-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
 
+react-native-amap-geolocation@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npm.taobao.org/react-native-amap-geolocation/download/react-native-amap-geolocation-1.1.2.tgz#4388731828bbe84493ac5894d0df27b4402ae3c5"
+  integrity sha1-Q4hzGCi76ESTrFiU0N8ntEAq48U=
+
+react-native-amap3d@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.nlark.com/react-native-amap3d/download/react-native-amap3d-2.0.2.tgz#aa2be7d713c4915e294fe0ad319da080354d90a8"
+  integrity sha1-qivn1xPEkV4pT+CtMZ2ggDVNkKg=
+
 react-native-circular-progress@^1.3.7:
   version "1.3.7"
   resolved "https://registry.npm.taobao.org/react-native-circular-progress/download/react-native-circular-progress-1.3.7.tgz#cc430fbc612bd01134a8fc9667be107591ae6959"
@@ -6737,6 +6764,15 @@ react-native-reanimated@^1.13.2:
   integrity sha1-GuVFeyS0kT0XOloGS7KOrneD0pM=
   dependencies:
     fbjs "^1.0.0"
+
+react-native-redash@^16.0.11:
+  version "16.0.11"
+  resolved "https://registry.npm.taobao.org/react-native-redash/download/react-native-redash-16.0.11.tgz#973c3050a0645e3b9873790a8e68694770a32f27"
+  integrity sha1-lzwwUKBkXjuYc3kKjmhpR3CjLyc=
+  dependencies:
+    abs-svg-path "^0.1.1"
+    normalize-svg-path "^1.0.1"
+    parse-svg-path "^0.1.2"
 
 react-native-root-siblings@^4.0.0, react-native-root-siblings@^4.1.0:
   version "4.1.0"
@@ -7978,6 +8014,11 @@ supports-hyperlinks@^2.0.0:
   dependencies:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
+
+svg-arc-to-cubic-bezier@^3.0.0:
+  version "3.2.0"
+  resolved "https://registry.npm.taobao.org/svg-arc-to-cubic-bezier/download/svg-arc-to-cubic-bezier-3.2.0.tgz#390c450035ae1c4a0104d90650304c3bc814abe6"
+  integrity sha1-OQxFADWuHEoBBNkGUDBMO8gUq+Y=
 
 symbol-observable@^1.2.0:
   version "1.2.0"

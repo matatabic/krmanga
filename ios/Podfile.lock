@@ -1,4 +1,9 @@
 PODS:
+  - AMap3DMap (7.5.0):
+    - AMapFoundation (~> 1.6.3)
+  - AMapFoundation (1.6.7)
+  - AMapLocation (2.6.8):
+    - AMapFoundation (~> 1.6.4)
   - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
   - CocoaAsyncSocket (7.6.5)
@@ -256,6 +261,12 @@ PODS:
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
   - React-jsinspector (0.63.4)
+  - react-native-amap-geolocation (1.1.2):
+    - AMapLocation (~> 2.6.0)
+    - React
+  - react-native-amap3d (2.0.2):
+    - AMap3DMap (~> 7.5.0)
+    - React
   - react-native-config (1.4.2):
     - react-native-config/App (= 1.4.2)
   - react-native-config/App (1.4.2):
@@ -402,6 +413,8 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-amap-geolocation (from `../node_modules/react-native-amap-geolocation/lib/ios`)
+  - react-native-amap3d (from `../node_modules/react-native-amap3d/lib/ios`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-fingerprint-scanner (from `../node_modules/react-native-fingerprint-scanner`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -432,6 +445,9 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AMap3DMap
+    - AMapFoundation
+    - AMapLocation
     - Base64
     - boost-for-react-native
     - CocoaAsyncSocket
@@ -485,6 +501,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-amap-geolocation:
+    :path: "../node_modules/react-native-amap-geolocation/lib/ios"
+  react-native-amap3d:
+    :path: "../node_modules/react-native-amap3d/lib/ios"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-fingerprint-scanner:
@@ -541,6 +561,9 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AMap3DMap: fc7c911f5cf079d544ad7faec256c9554cbbb202
+  AMapFoundation: c7da72b42a713f1429c88af1858d623dde88934b
+  AMapLocation: dad27669c4ca68e395ce7532ff614b7d4d45f7b7
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
@@ -572,6 +595,8 @@ SPEC CHECKSUMS:
   React-jsi: a0418934cf48f25b485631deb27c64dc40fb4c31
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
+  react-native-amap-geolocation: 5b42219a67e29b4c1ce0b75faf3b8869f97e2f7c
+  react-native-amap3d: 26abcffc0fa7cd9f757cd9afe9bf7addb95105b0
   react-native-config: c98128a72bc2c3a1ca72caec0b021f0fa944aa29
   react-native-fingerprint-scanner: ac6656f18c8e45a7459302b84da41a44ad96dbbe
   react-native-netinfo: e849fc21ca2f4128a5726c801a82fc6f4a6db50d
